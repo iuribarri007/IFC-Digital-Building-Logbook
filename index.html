@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TFM-Digital Building LogBook</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https:/fonts.googleapis.com/icon?family=Material+Icons+Round">
+    <link rel="stylesheet" href="https:/fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="./src/styles/components.css">
+    <link rel="stylesheet" href="./src/styles/style.css">
+    <link rel="stylesheet" href="/src/styles/dblTable.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="logo-container">
+          <a href="index.html" class="logo-placeholder">
+            <img class="logo" src="/assets/images/dblLogo.png" alt="no-logo">
+          </a>
+          <div class="logo-title-container">
+            <h1 class="site-title">Digital</h1>
+            <h1 class="site-title">Building</h1>
+            <h1 class="site-title">Logbook</h1>
+          </div>
+        </div>
+        <div class="phases-container">
+          <nav class="phases-navigation">
+            <ul>
+              <li class="menu-item dropdown">
+                <a href="#phases">Project Phases <span class="dropdown-arrow">❯</span></a>
+                <ul class="dropdown-menu">
+                  <li class="dropdown-item">
+                    <a href="#phase-00" class="project-phase" id="0">00 Phase</a>
+                    <div class="dropdown-submenu">
+                      <p>Year of execution: XXXX</p>
+                      <p>Description: XXXX</p>
+                    </div>
+                  </li>
+                  <li class="dropdown-item">
+                    <a href="#phase-01" class="project-phase" id="1">01 Phase</a>
+                    <div class="dropdown-submenu">
+                      <p>Year of execution: XXXX</p>
+                      <p>Description: XXXX</p>
+                    </div>
+                  </li>
+                  <li class="dropdown-item">
+                    <a href="#phase-02" class="project-phase" id="2">02 Phase</a>
+                    <div class="dropdown-submenu">
+                      <p>Year of execution: XXXX</p>
+                      <p>Description: XXXX</p>
+                    </div>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </nav>
+        </div>
+        <div class="nav-container">
+          
+          <nav class="site-navigation">
+            <button class="menu-toggle" aria-controls="primary-menu" aria-expanded="false">
+              <span class="screen-reader-text">Menú</span>
+            </button>
+            <ul class="dbl-menu" id="dbl-PrimaryMenu">
+              <li class="menu-item">
+                <a href="#identification">
+                  <div class="icon-placeholder"></div> Identification
+                </a>
+              </li>
+              <li class="menu-item">
+                <a href="#general">
+                  <div class="icon-placeholder"></div> General
+                </a>
+              </li>
+              <li class="menu-item">
+                <a href="#legal-finance">
+                  <div class="icon-placeholder"></div> Legal and Finance
+                </a>
+              </li>
+              <li class="menu-item dropdown">
+                <a href="#dimensions">
+                  <div class="icon-placeholder"></div> Dimensions <span class="dropdown-arrow">❯</span>
+                </a>
+                <ul class="dropdown-menu">
+                  <li class="dropdown-item"><a href="#building-dimensions">Building dimensions</a></li>
+                  <li class="dropdown-item"><a href="#spaces-dimensions">Spaces dimensions</a></li>
+                </ul>
+              </li>
+              <li class="menu-item dropdown">
+                <a href="#performance">
+                  <div class="icon-placeholder"></div> Performance <span class="dropdown-arrow">❯</span>
+                </a>
+                <ul class="dropdown-menu">
+                  <li class="dropdown-item"><a href="#energy-performance">Energy performance</a></li>
+                  <li class="dropdown-item"><a href="#physical-accessibility">Physical accessibility</a></li>
+                </ul>
+              </li>
+              <li class="menu-item dropdown">
+                <a href="#structure-material">
+                  <div class="icon-placeholder"></div> Structure and Material <span class="dropdown-arrow">❯</span>
+                </a>
+                <ul class="dropdown-menu">
+                  <li class="dropdown-item"><a href="#thermal-envelope" class="show-content" data-target="dbl-StructureMaterial-ThermalEnvelope">Thermal envelope</a></li>
+                  <li class="dropdown-item"><a href="#material-inventory" class="show-content" data-target="dbl-StructureMaterial-MaterialInventory">Material inventory</a></li>
+                </ul>
+              </li>
+              <li class="menu-item">
+                <a href="#building-services">
+                  <div class="icon-placeholder"></div> Building Services
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </header>
+    <main>
+        <div id="viewer-container" style="min-width: 0; "></div>
+        <div class="category" id="dbl-StructureMaterial">
+          <div class="sidebar">
+            
+          </div>
+          <div class="dbl-table" id="dbl-StructureMaterial-ThermalEnvelope">
+            <h2>Thermal Envelope</h2>
+            <div id="alpine-template-container"></div>
+            <div id="alpine-template-container2"> </div>
+            <div id="alpine-template-container3"></div>
+          </div>
+          <div class="dbl-table" id="dbl-StructureMaterial-MaterialInventory">
+            <h2>Material Inventory</h2>
+            <div id="alpine-SkinMaterialInventory"></div>
+            <div id="alpine-StructuralMaterialInventory"></div>
+            <div id="alpine-ServiceMaterialInventory"></div>
+            <div id="alpine-SpaceMaterialInventory"></div>
+          </div>
+        </div>
+          
+    </main>
+</body>
+<script type="module" src="./src/components/getIfcData.ts"></script>
+<script type="module" src="./indexIFC.ts"></script>
+<script type="module" src="./src/main.js" defer></script>
+</html>

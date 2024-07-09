@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alpine.js with Vite</title>
+  <script type="module" src="/src/main.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+  <div x-data="envelopeData()">
+    <template x-for="(envelopes, envelopeKey) in data" :key="envelopeKey">
+      <div>
+        <h2 x-text="envelopeKey"></h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Envelope Code</th>
+              <th>Envelope Type</th>
+              <th>U-Value</th>
+              <th>Width</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template x-for="envelope in envelopes" :key="envelope.dblEnvelopeCode">
+              <tr>
+                <td x-text="envelope.dblEnvelopeCode"></td>
+                <td x-text="envelope.dblEnvelopeType"></td>
+                <td x-text="envelope.dblEnvelopeUvalue"></td>
+                <td x-text="envelope.dblEnvelopeWidth"></td>
+              </tr>
+              <tr>
+                <td colspan="4">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Component Type</th>
+                        <th>R-Value</th>
+                        <th>Width</th>
+                        <th>Net Area</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <template x-for="component in envelope.dblEnvelopeComponents" :key="component.dblComponentExpressId">
+                        <tr>
+                          <td x-text="component.dblComponentType"></td>
+                          <td x-text="component.dblComponentRvalue"></td>
+                          <td x-text="component.dblComponentWidth"></td>
+                          <td x-text="component.dblComponentNetArea"></td>
+                        </tr>
+                      </template>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </div>
+    </template>
+  </div>
+</body>
+</html>
