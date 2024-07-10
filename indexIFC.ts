@@ -51,12 +51,15 @@ cameraComponent.updateAspect()
 rendererComponent.postproduction.enabled= true
 //Setting the fragment manager in order to be able to download the fragment file 
 const threeColor= new THREE.Color("rgb(255,50,40)")
-highlighter.add("amazing",[new THREE.MeshStandardMaterial({color: "rgb(255,50,40)"})] )
-highlighter.add("amazing2",[new THREE.MeshStandardMaterial({color: "rgb(255,255,0)"})] )
+highlighter.add("amazing",[new THREE.MeshStandardMaterial({color: "rgb(75,193,221)"})] )
+
+
+//Grid and cube
+
+	const navCube = new OBC.CubeMap(viewer);
+	navCube.offset = 1;
+	navCube.setPosition("top-right");
 //
-
-
-
 const fragmentManager = new OBC.FragmentManager(viewer)
 
 let fragments = new OBC.FragmentManager(viewer)
@@ -67,8 +70,19 @@ ifcLoader.settings.wasm = {
   }
 ifcLoader.settings.webIfc.COORDINATE_TO_ORIGIN = true;
 ifcLoader.settings.webIfc.OPTIMIZE_PROFILES = true;
-//Plans
-
+//Camera
+const grid = new OBC.SimpleGrid(viewer);
+grid.visible = false
+function toggleProjection() {
+  cameraComponent.toggleProjection();
+}
+cameraComponent.projectionChanged.add(() => {
+  const projection = cameraComponent.getProjection();
+  grid.fade = projection === 'Perspective';
+});
+function setNavigationMode(navMode) {
+  cameraComponent.setNavigationMode(navMode);
+}
 
 //Clipper
 const clipper = new OBC.EdgesClipper(viewer);
@@ -115,7 +129,8 @@ toolbar.addChild(
   classificationsBtn,
   propertiesProcessor.uiElement.get("main"),
   colorBtn,
-  plans.uiElement.get('main')
+  plans.uiElement.get('main'),
+  cameraComponent.uiElement.get("main")
 )
 toolbar.name = "Main toolbar";
 viewer.ui.addToolbar(toolbar);
