@@ -1193,7 +1193,11 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
                       materialNetVolume = coveringWidth * coveringNetArea * materialFraction
                       materialWeight = materialNetVolume * materialMassDensity
                     }
-
+                
+                if(materialNetVolume!== undefined && materialWeight!== undefined){
+                  materialNetVolume = parseInt(materialNetVolume.toFixed(6))
+                  materialWeight = parseInt(materialWeight.toFixed(6))
+                } 
                 dblElementMaterial: dblElementMaterial = {
                   dblMaterialName: materialName,
                   dblMaterialFraction: materialFraction,
@@ -1532,10 +1536,10 @@ function sumMaterialArrays(...arrays: any): void {
         }
       });
       if (weightSum !== obj.dblMaterialWeightSum) {
-        obj.dblMaterialWeightSum = weightSum;
+        obj.dblMaterialWeightSum = weightSum.toFixed(6);
       }
       if (netVolumeSum !== obj.dblMaterialNetVolumeSum) {
-        obj.dblMaterialNetVolumeSum = netVolumeSum;
+        obj.dblMaterialNetVolumeSum = netVolumeSum.toFixed(6);
       }
     });
   });

@@ -1,35 +1,24 @@
-@import url('root.css');
+ @import url('root.css');
 :root{
-    --category-Width:55rem;
+
     --sidebar-Width:20rem;
 
 }
-.category{
-    z-index: 1;
-    width: var(--category-Width);
-    height: 100%;
-    background-color: var(--color-g1);
-    display:flex;
-    flex-direction: row;
-    
-}
-.sidebar{
-    position: relative;
-    width: var(--sidebar-Width);
-    background-color: var(--color-c1);
-}
-.dbl-table{
+
+/*.dbl-table{
     position: relative;
     flex-grow: 1;
     width: 100%;
     background-color: transparent;
-    flex: 1; /* Ocupa todo el espacio disponible verticalmente */
-    overflow: auto; /* Habilita el scroll automático si el contenido excede las dimensiones del div */
-    height: 70%; /* Altura máxima igual a la altura del body */
-    padding: 10px; /* Espaciado interno para evitar que el contenido toque los bordes */
+    flex: 1; 
+    overflow: auto; 
+    height: 70%; 
+    padding: 10px; 
     margin: 20px 0px 20px 0px;
     z-index: 99;
 }
+
+
 .dbl-tableEnvelopeType{
     font-size: var(--size-m);
 }
@@ -81,7 +70,7 @@
 }
 .fragment-inspector {
     font-size: 18px !important;
-    color: #000 !important; /* Negro */
+    color: #000 !important; 
     display: inline-block;
     scale: 0.8;
   }
@@ -140,4 +129,145 @@ th{
 }
 tr:hover {
     background-color: var(--color-g1)
+} */
+
+ .dbl-table {
+    display: none;
+    position: relative;
+    flex-grow: 1;
+    width: 100%;
+    background-color: transparent;
+    flex: 1; 
+    overflow: auto; 
+    height: 70%; 
+    padding: 10px; 
+    margin: 20px 0px 20px 0px;
+    z-index: 99;
+}
+
+.dbl-tableEnvelopeType {
+    font-size: var(--size-m);
+}
+
+.dbl-table-Level {
+    padding: 0px 0px 0px 10px;
+    margin: 0px;
+    justify-content: center;
+    border-top: 2px dotted black;
+}
+
+.dbl-table-Level:hover {
+    padding: 0px 0px 0px 10px;
+    margin: 0px;
+    justify-content: center;
+    border-top: 2px dotted black;
+    background-color: var(--color-c1);
+}
+
+.dbl-table-LevelText {
+    font-size: var(--size-ms);
+}
+
+.dbl-table-LevelArrow {
+    scale: 0.6;
+    color: black;
+    vertical-align: middle;
+}
+
+.dbl-table-EnvelopeContainer {
+    position: relative;
+    width: 100%;
+    overflow: auto;
+    left: 0rem;
+    border: 1px dotted black;
+    background-color: var(--color-g1);
+}
+
+.dbl-table-Envelope {
+    padding: 0px 0px 0px 10px;
+    margin: 0px 0px 0px 4px;
+    justify-content: center;
+}
+
+.dbl-table-EnvelopeText {
+    font-size: var(--size-s);
+    font-weight: 100;
+}
+
+.dbl-table-EnvelopeArrow {
+    scale: 0.6;
+    color: green;
+}
+
+.dbl-fragment-map-button {
+    width: 100px;
+}
+
+.fragment-inspector {
+    font-size: 18px !important;
+    color: #000 !important; /* Negro */
+    display: inline-block;
+    scale: 0.8;
+}
+
+.dbl-tableEnvelopeElementText {
+    font-size: var(--size-s);
+}
+
+.dbl-tableEnvelope-table {
+    position: relative;
+    border-collapse: collapse;
+    left: -1rem;
+    background-color: var(--color-g1);
+    width: 100%;
+    table-layout: auto;
+}
+
+.dbl-tableComponentContainer {
+    margin: 0px;
+    position: relative;
+}
+
+.dbl-tableComponentText {
+    font-size: var(--size-ms);
+    color: black;
+    padding: 0px;
+    margin: 0px;
+}
+
+.dbl-tableComponent-table {
+    width: 100%;
+    border-collapse: collapse;
+    position: relative;
+    left: -1rem;
+    background-color: var(--color-c3);
+    padding: 0rem;
+    margin: 0rem;
+}
+
+.dbl-tableComponent-tableColumn1 {
+    width: 1rem;
+}
+
+tr {
+    height: auto;
+    width: auto;
+}
+
+td {
+    padding: 5px;
+    font-size: var(--size-s);
+    width: 2rem;
+}
+
+th {
+    padding: 5px;
+    height: fit-content;
+    font-size: var(--size-s);
+    background-color: transparent;
+    text-align: left;
+}
+
+tr:hover {
+    background-color: var(--color-g1);
 }

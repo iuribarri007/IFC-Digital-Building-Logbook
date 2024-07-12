@@ -297,3 +297,229 @@ export const materialInventoryTemplate = `
         </div>
     </div>
 `;
+
+export function initializeEpcData({ data, mainTitle }) {
+    return {
+        data,
+        mainTitle,
+        getSafeData(data) {
+            return data !== undefined ? data : "Data is not available";
+        },
+        get dblEpcPhaseData() {
+            return data || {};
+        },
+        get scope() {
+            return this.getSafeData(this.dblEpcPhaseData.dblEpcDynamic?.scope);
+        },
+        get normative() {
+            return this.getSafeData(this.dblEpcPhaseData.dblEpcDynamic?.normative);
+        },
+        get startDate() {
+            return this.getSafeData(this.dblEpcPhaseData.dblEpcDynamic?.startDate);
+        },
+        get endDate() {
+            return this.getSafeData(this.dblEpcPhaseData.dblEpcDynamic?.endDate);
+        },
+        get epcProcedure() {
+            return this.getSafeData(this.dblEpcPhaseData.dblEpcDynamic?.epcProcedure);
+        },
+        get certificateId() {
+            return this.getSafeData(this.dblEpcPhaseData.dblEpcDynamic?.certificateId);
+        },
+        get certificateUrl() {
+            return this.getSafeData(this.dblEpcPhaseData.dblEpcDynamic?.epcCertificateUrl);
+        },
+        get buildingCerticateUrl() {
+            return this.getSafeData(this.dblEpcPhaseData.dblEpcDynamic?.epcBuildingUrl);
+        },
+        get emissionsEnergyRating() {
+            return this.getSafeData(this.dblEpcPhaseData.dblEpcEmissionsCO2?.emissionsEnergyRating);
+        },
+        get emissionsEnergyYearArea() {
+            return this.getSafeData(this.dblEpcPhaseData.dblEpcEmissionsCO2?.emissionsEnergyYearArea);
+        },
+        get emissionsDhwRating() {
+            return this.getSafeData(this.dblEpcPhaseData.dblEpcEmissionsCO2?.emissionsDhwRating);
+        },
+        get emissionsDhwYearArea() {
+            return this.getSafeData(this.dblEpcPhaseData.dblEpcEmissionsCO2?.emissionsDhwYearArea);
+        },
+        get emissionsHeatingRating() {
+            return this.getSafeData(this.dblEpcPhaseData.dblEpcEmissionsCO2?.emissionsHeatingRating);
+        },
+        get emissionsHeatingYearArea() {
+            return this.getSafeData(this.dblEpcPhaseData.dblEpcEmissionsCO2?.emissionsHeatingYearArea);
+        },
+        get nonRenEnergyConsumptionRating() {
+            return this.getSafeData(this.dblEpcPhaseData.dblEpcNonRenEnergyConsumption?.nonRenEnergyConsumptionRating);
+        },
+        get nonRenEnergyConsumptionYearArea() {
+            return this.getSafeData(this.dblEpcPhaseData.dblEpcNonRenEnergyConsumption?.nonRenEnergyConsumptionYearArea);
+        },
+        get nonRenDhwEnergyComsumptionRating() {
+            return this.getSafeData(this.dblEpcPhaseData.dblEpcNonRenEnergyConsumption?.nonRenDhwEnergyComsumptionRating);
+        },
+        get nonRenDhwEnergyConsumptionYearArea() {
+            return this.getSafeData(this.dblEpcPhaseData.dblEpcNonRenEnergyConsumption?.nonRenDhwEnergyConsumptionYearArea);
+        },
+        get nonRenHeatingEnergyConsumptionRating() {
+            return this.getSafeData(this.dblEpcPhaseData.dblEpcNonRenEnergyConsumption?.nonRenHeatingEnergyConsumptionRating);
+        },
+        get nonRenHeatingEnergyConsumptionYearArea() {
+            return this.getSafeData(this.dblEpcPhaseData.dblEpcNonRenEnergyConsumption?.nonRenHeatingEnergyConsumptionYearArea);
+        },
+        get energyDemandHeatingRating() {
+            return this.getSafeData(this.dblEpcPhaseData.dblEpcEnergyDemand?.energyDemandHeatingRating);
+        },
+        get energyDemandHeatingYearArea() {
+            return this.getSafeData(this.dblEpcPhaseData.dblEpcEnergyDemand?.energyDemandHeatingYearArea);
+        },
+        get energyDemandDhwRating() {
+            return this.getSafeData(this.dblEpcPhaseData.dblEpcEnergyDemand?.energyDemandDhwRating);
+        },
+        get energyDemandDhwYearArea() {
+            return this.getSafeData(this.dblEpcPhaseData.dblEpcEnergyDemand?.energyDemandDhwYearArea);
+        }
+    };
+}
+export const epcDataTemplate = `
+    <div>
+        <!-- Section for dblEpcDynamic -->
+        <div x-bind:class="{ 'subcategory-section': true }">
+            <h2 x-bind:class="{ 'subcategory-section-title': true }">Información Dinámica</h2>
+            <div class="grid">
+                <div class="row">
+                    <div class="cell">Scope: <span x-text="scope"></span></div>
+                    <div class="cell">Normativa: <span x-text="normative"></span></div>
+                </div>
+                <div class="row">
+                    <div class="cell">Fecha de inicio: <span x-text="startDate"></span></div>
+                    <div class="cell">Fecha de finalización: <span x-text="endDate"></span></div>
+                </div>
+                <div class="row">
+                    <div class="cell">Procedimiento EPC: <span x-text="epcProcedure"></span></div>
+                    <div class="cell">ID del certificado: <span x-text="certificateId"></span></div>
+                </div>
+                <div class="row">
+                    <div class="cell">
+                        URL del certificado: 
+                        <a :href="certificateUrl" x-text="certificateUrl"></a>
+                    </div>
+                    <div class="cell">
+                        URL del edificio: 
+                        <a :href="buildingCerticateUrl" x-text="buildingCerticateUrl"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Section for dblEpcEmissionsCO2 -->
+        <div x-bind:class="{ 'subcategory-section': true }">
+            <h2 x-bind:class="{ 'subcategory-section-title': true }">Emisiones de CO2</h2>
+            <table>
+                <tr>
+                    <td>Emisiones Energéticas:</td>
+                    <td x-text="emissionsEnergyRating"></td>
+                    <td x-text="emissionsEnergyYearArea"></td>
+                    <td><img src="path/to/image.jpg" alt="Emisiones Energéticas CO2"></td>
+                </tr>
+                <tr>
+                    <td>Emisiones DHW:</td>
+                    <td x-text="emissionsDhwRating"></td>
+                    <td x-text="emissionsDhwYearArea"></td>
+                    <td><img src="path/to/image.jpg" alt="Emisiones DHW CO2"></td>
+                </tr>
+                <tr>
+                    <td>Emisiones Calefacción:</td>
+                    <td x-text="emissionsHeatingRating"></td>
+                    <td x-text="emissionsHeatingYearArea"></td>
+                    <td><img src="path/to/image.jpg" alt="Emisiones de Calefacción CO2"></td>
+                </tr>
+            </table>
+        </div>
+        <!-- Section for dblEpcNonRenEnergyConsumption -->
+        <div x-bind:class="{ 'subcategory-section': true }">
+            <h2 x-bind:class="{ 'subcategory-section-title': true }">Consumo de Energía No Renovable</h2>
+            <table>
+                <tr>
+                    <td>Consumo Energético No Renovable:</td>
+                    <td x-text="nonRenEnergyConsumptionRating"></td>
+                    <td x-text="nonRenEnergyConsumptionYearArea"></td>
+                    <td><img src="path/to/image.jpg" alt="Consumo Energético No Renovable"></td>
+                </tr>
+                <tr>
+                    <td>Consumo DHW No Renovable:</td>
+                    <td x-text="nonRenDhwEnergyComsumptionRating"></td>
+                    <td x-text="nonRenDhwEnergyConsumptionYearArea"></td>
+                    <td><img src="path/to/image.jpg" alt="Consumo DHW No Renovable"></td>
+                </tr>
+                <tr>
+                    <td>Consumo Calefacción No Renovable:</td>
+                    <td x-text="nonRenHeatingEnergyConsumptionRating"></td>
+                    <td x-text="nonRenHeatingEnergyConsumptionYearArea"></td>
+                    <td><img src="path/to/image.jpg" alt="Consumo de Calefacción No Renovable"></td>
+                </tr>
+            </table>
+        </div>
+        <!-- Section for dblEpcEnergyDemand -->
+        <div x-bind:class="{ 'subcategory-section': true }">
+            <h2 x-bind:class="{ 'subcategory-section-title': true }">Demanda de Energía</h2>
+            <table>
+                <tr>
+                    <td>Demanda de Calefacción:</td>
+                    <td x-text="energyDemandHeatingRating"></td>
+                    <td x-text="energyDemandHeatingYearArea"></td>
+                    <td><img src="path/to/image.jpg" alt="Demanda de Calefacción"></td>
+                </tr>
+                <tr>
+                    <td>Demanda de DHW:</td>
+                    <td x-text="energyDemandDhwRating"></td>
+                    <td x-text="energyDemandDhwYearArea"></td>
+                    <td><img src="path/to/image.jpg" alt="Demanda de DHW"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+`;
+
+// export const epcPhaseDataTemplate = `
+//     <div x-data="epcPhaseDataLogic({ epcPhaseData })">
+//         <div x-if="epcPhaseData">
+//             <div>
+//                 <h2 @click="toggleSection('dblEpcDynamic')" style="cursor: pointer;">Dynamic Information <span style="float: right;">▶</span></h2>
+//                 <table x-show="isSectionOpen('dblEpcDynamic')">
+//                     <tr>
+//                         <td><strong>Scope:</strong></td>
+//                         <td x-text="epcPhaseData.dblEpcDynamic ? epcPhaseData.dblEpcDynamic.scope : ''"></td>
+//                         <td><strong>Normative:</strong></td>
+//                         <td x-text="epcPhaseData.dblEpcDynamic ? epcPhaseData.dblEpcDynamic.certificateId : ''"></td>
+//                     </tr>
+//                     <tr>
+//                         <td><strong>Start Date:</strong></td>
+//                         <td x-text="epcPhaseData.dblEpcDynamic ? epcPhaseData.dblEpcDynamic.startDate : ''"></td>
+//                         <td><strong>End Date:</strong></td>
+//                         <td x-text="epcPhaseData.dblEpcDynamic ? epcPhaseData.dblEpcDynamic.endDate : ''"></td>
+//                     </tr>
+//                     <tr>
+//                         <td><strong>EPC Procedure:</strong></td>
+//                         <td x-text="epcPhaseData.dblEpcDynamic ? epcPhaseData.dblEpcDynamic.epcProcedure : ''"></td>
+//                         <td><strong>Certificate Id:</strong></td>
+//                         <td x-text="epcPhaseData.dblEpcDynamic ? epcPhaseData.dblEpcDynamic.certificateId : ''"></td>
+//                     </tr>
+//                     <tr>
+//                         <td><strong>Certificate URL:</strong></td>
+//                         <td><a x-bind:href="epcPhaseData.dblEpcDynamic ? epcPhaseData.dblEpcDynamic.certificateUrl : ''" target="_blank" x-text="epcPhaseData.dblEpcDynamic ? epcPhaseData.dblEpcDynamic.certificateUrl : ''"></a></td>
+//                         <td><strong>Building Certificate URL:</strong></td>
+//                         <td><a x-bind:href="epcPhaseData.dblEpcDynamic ? epcPhaseData.dblEpcDynamic.buildingCertificateUrl : ''" target="_blank" x-text="epcPhaseData.dblEpcDynamic ? epcPhaseData.dblEpcDynamic.buildingCertificateUrl : ''"></a></td>
+//                     </tr>
+//                 </table>
+//             </div>
+
+//             <!-- Otros bloques de información similar para otras secciones -->
+//         </div>
+
+//         <div x-if="!epcPhaseData">
+//             <p>Los datos de epcPhaseData no están definidos aún.</p>
+//             <!-- Puedes manejar esto de acuerdo a tu requerimiento -->
+//         </div>
+//     </div>
+// `;

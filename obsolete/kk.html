@@ -1,80 +1,66 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Alpine.js with Vite</title>
-  <script type="module" src="/src/main.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 20px;
-    }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
-    }
-    th {
-      background-color: #f2f2f2;
-    }
-  </style>
-</head>
-<body>
-  <div x-data="envelopeData()">
-    <template x-for="(envelopes, envelopeKey) in data" :key="envelopeKey">
-      <div>
-        <h2 x-text="envelopeKey"></h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Envelope Code</th>
-              <th>Envelope Type</th>
-              <th>U-Value</th>
-              <th>Width</th>
-            </tr>
-          </thead>
-          <tbody>
-            <template x-for="envelope in envelopes" :key="envelope.dblEnvelopeCode">
-              <tr>
-                <td x-text="envelope.dblEnvelopeCode"></td>
-                <td x-text="envelope.dblEnvelopeType"></td>
-                <td x-text="envelope.dblEnvelopeUvalue"></td>
-                <td x-text="envelope.dblEnvelopeWidth"></td>
-              </tr>
-              <tr>
-                <td colspan="4">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Component Type</th>
-                        <th>R-Value</th>
-                        <th>Width</th>
-                        <th>Net Area</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <template x-for="component in envelope.dblEnvelopeComponents" :key="component.dblComponentExpressId">
-                        <tr>
-                          <td x-text="component.dblComponentType"></td>
-                          <td x-text="component.dblComponentRvalue"></td>
-                          <td x-text="component.dblComponentWidth"></td>
-                          <td x-text="component.dblComponentNetArea"></td>
-                        </tr>
-                      </template>
-                    </tbody>
-                  </table>
-                </td>
-              </tr>
-            </template>
-          </tbody>
-        </table>
+<main>
+  <div id="viewer-container" style="min-width: 0;"></div>
+
+  <div class="category hidden" id="dbl-Identification">
+      <button class="close-category">✖</button>
+      <div class="sidebar">
+          <div class="subcategory-container">
+              <button class="toggle-sidebar">⬅</button>
+              <button class="subcategory show-content" data-target="dbl-Identification-ThermalEnvelope">Thermal Envelope</button>
+              <button class="subcategory show-content" data-target="dbl-Identification-MaterialInventory">Material Inventory</button>
+          </div>
       </div>
-    </template>
+      <div class="dbl-table hidden" id="dbl-Identification-ThermalEnvelope">
+          <h2>Thermal Envelope</h2>
+          <div id="alpine-template-container"></div>
+          <div id="alpine-template-container2"></div>
+          <div id="alpine-template-container3"></div>
+      </div>
+      <div class="dbl-table hidden" id="dbl-Identification-MaterialInventory">
+          <h2>Material Inventory</h2>
+          <div id="alpine-SkinMaterialInventory"></div>
+          <div id="alpine-StructuralMaterialInventory"></div>
+          <div id="alpine-ServiceMaterialInventory"></div>
+          <div id="alpine-SpaceMaterialInventory"></div>
+      </div>
   </div>
-</body>
-</html>
+
+  <div class="category hidden" id="dbl-StructureMaterial">
+      <button class="close-category">✖</button>
+      <div class="sidebar">
+          <div class="subcategory-container">
+              <button class="toggle-sidebar">⬅</button>
+              <button class="subcategory show-content" data-target="dbl-StructureMaterial-ThermalEnvelope">Thermal Envelope</button>
+              <button class="subcategory show-content" data-target="dbl-StructureMaterial-MaterialInventory">Material Inventory</button>
+          </div>
+      </div>
+      <div class="dbl-table hidden" id="dbl-StructureMaterial-ThermalEnvelope">
+          <h2>Thermal Envelope</h2>
+          <div id="alpine-template-container"></div>
+          <div id="alpine-template-container2"></div>
+          <div id="alpine-template-container3"></div>
+      </div>
+      <div class="dbl-table hidden" id="dbl-StructureMaterial-MaterialInventory">
+          <h2>Material Inventory</h2>
+          <div id="alpine-SkinMaterialInventory"></div>
+          <div id="alpine-StructuralMaterialInventory"></div>
+          <div id="alpine-ServiceMaterialInventory"></div>
+          <div id="alpine-SpaceMaterialInventory"></div>
+      </div>
+  </div>
+
+  <div class="category hidden" id="dbl-Performance">
+      <button class="close-category">✖</button>
+      <div class="sidebar">
+          <div class="subcategory-container">
+              <button class="toggle-sidebar">⬅</button>
+              <button class="subcategory-btn show-content" data-target="dbl-Performance-EnergyPerformance">Energy Performance</button>
+              <button class="subcategory-btn show-content" data-target="dbl-Performance-PhysicalAccessibility">Physical Accessibility</button>
+          </div>
+      </div>
+      <div class="dbl-table hidden" id="dbl-Performance-EnergyPerformance"></div>
+      <div class="dbl-table hidden" id="dbl-Performance-PhysicalAccessibility"></div>
+  </div>
+  
+  <!-- Similar structures for other categories (e.g., dbl-General, dbl-LegalFinance, etc.) -->
+</main>

@@ -21,8 +21,13 @@ import Alpine from 'alpinejs';
 
 import { dblEnvData, thermalEnvelopeTemplate } from './src/template.js';
 import {dblMaterialData,materialInventoryTemplate } from './src/template.js';
+import { epcDataTemplate, initializeEpcData } from "./src/template.js"
 //
 import { getCertificates } from "./src/api/openDataCEE.js"
+import {dblEpcData} from "./src/components/getEpcData.js"
+import { dblEpc, dblEpcDynamic, dblEpcStatic, dblEpcEmissionsCO2, dblEpcEnergyDemand, dblEpcNonRenEnergyConsumption, UndefinedDblEpc } from "./src/components/interfaceEpc.js"
+
+
 
 const viewer = new OBC.Components()
 const sceneComponent = new OBC.SimpleScene(viewer)
@@ -266,10 +271,23 @@ async function loadIfcAsFragments(ifcModelFile) {
     materialManager.set(false, ["white"]);
 
   });
+  const dxfExporter = new OBC.DXFExporter(viewer);
 
+  plans.commands = {
+      "Export to DXF": async (plan) => {
+        if(plan!=undefined){
+          const link = document.createElement("a");
+          const result = await dxfExporter.export(plan.name);
+          const fileName = `${plan.name}.dxf`;
+          const file = new File([new Blob([result])], fileName);
+          link.href = URL.createObjectURL(file);
+          link.download = fileName;
+          link.click();
+          link.remove();
+        }
+      },
+  }
   
- 
-
   //
   //Classify the entities manually
   classifier.byStorey(model)
@@ -287,19 +305,14 @@ async function loadIfcAsFragments(ifcModelFile) {
   console.log(firstSetValues)
   const entries = Array.from(firstSetValues.values())
   const slicedEntriesFirst = entries.slice(0,12)
-  const slicedEntriesSecond = entries.slice(13,20)
+
 
   const slicedNewSetFirst = new Set(slicedEntriesFirst)
-  const slicedNewSetSecond = new Set(slicedEntriesSecond)
 
- 
-  
   const map = {
     [firstSetKey]: slicedNewSetFirst
   };
-  const mapSecond ={
-    [firstSetKey]:slicedNewSetSecond
-  };
+  
   console.log("map",map)
   colorBtn.onClick.add(()=>{
     colorBtn.active= !colorBtn.active
@@ -318,7 +331,7 @@ async function loadIfcAsFragments(ifcModelFile) {
   await classifyMaterials (dblWallElements,dblFloorElements,dblWindowElements,dblRoofElements,dblStrLinealElements,dblCoveringElements)
   
 }
-
+let dblEpcPhaseData:UndefinedDblEpc = {}
 //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 const phasesBtns = document.querySelectorAll('.project-phase')
 phasesBtns.forEach(button=>{
@@ -360,9 +373,11 @@ function getFragmentMapInfo() {
       if(envelopeFragmentMap!== undefined){
         if(!highlighterActive){
           const fragmentMapLenght = Object.keys(envelopeFragmentMap).length
-          highlighter.zoomToSelection = true
-          highlighter.highlightByID("amazing",envelopeFragmentMap)
-          highlighterActive = true;
+          if(fragmentMapLenght>0){
+            highlighter.zoomToSelection = true
+            highlighter.highlightByID("amazing",envelopeFragmentMap)
+            highlighterActive = true;
+          }
         } else{
           highlighter.clear("amazing")
           highlighter.zoomToSelection = false
@@ -375,9 +390,7 @@ function getFragmentMapInfo() {
 }
 
 function clearHighlighterOnOutsideClick() {
-  
   if(highlighterActive = true){
-    
     viewerContainer.addEventListener('click', function() {
       highlighter.clear("amazing"); 
       highlighterActive = false;
@@ -395,8 +408,7 @@ document.addEventListener('alpine:init', () => {
   Alpine.data('dblEnvData3', () => dblEnvData({ dataSets: { dblEnvelopeRoofs }, title: 'Aramotz Roof' }));
   Alpine.data('dblSkinMaterial', () => dblMaterialData({ categories: dblSkinMaterialInventory, mainTitle: 'Skin Material' }));
   Alpine.data('dblStructuralMaterial', () => dblMaterialData({ categories: dblStructuralMaterialInventory, mainTitle: 'Structural Material' }));
-
-  
+  Alpine.data('epcData', () => initializeEpcData({ data: dblEpcPhaseData, mainTitle: 'EPC Infooo' }));
 });
 
 function initializeAlpine() {
@@ -406,7 +418,6 @@ function initializeAlpine() {
       container1.setAttribute('x-data', 'dblEnvData1()');
       container1.innerHTML = thermalEnvelopeTemplate;
     }
-
     const container2 = document.getElementById('alpine-template-container2');
     if (container2) {
       container2.setAttribute('x-data', 'dblEnvData2()');
@@ -417,6 +428,7 @@ function initializeAlpine() {
       container3.setAttribute('x-data', 'dblEnvData3()');
       container3.innerHTML = thermalEnvelopeTemplate;
     }
+    //MaterialInventory
     const skinMaterialContainer = document.getElementById('alpine-SkinMaterialInventory');
     if (skinMaterialContainer) {
       skinMaterialContainer.setAttribute('x-data', 'dblSkinMaterial()');
@@ -427,13 +439,19 @@ function initializeAlpine() {
       structuraMaterialContainer.setAttribute('x-data', 'dblStructuralMaterial()');
       structuraMaterialContainer.innerHTML = materialInventoryTemplate;
     }
-
+    //epcDATA
+    const epcContainer = document.getElementById('alpine-epcPhaseData');
+    if (epcContainer) {
+        epcContainer.setAttribute('x-data', 'epcData()');
+        epcContainer.innerHTML = epcDataTemplate;
+    }
     Alpine.start();
     alpineInitialized = true; // Marca Alpine.js como iniciado
     getFragmentMapInfo()
     clearHighlighterOnOutsideClick()
   }
 }
+
 //Events:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 function ifcLoadEvent(event) {
   let buttonId = event.target.id;
@@ -443,12 +461,18 @@ function ifcLoadEvent(event) {
     console.log(phase);
     loadIfcAsFragments(ifcModel)
       .then(() => {
-        console.log("IFC successfully loaded", phase);
-        // Inicializa Alpine.js después de que el modelo IFC se haya cargado
-        getCertificates("48","27","Aramotz","1",1,10)
-          .then(certificate =>{
-            initializeAlpine();
-          })
+        let epcStartDate = phase.epcStartDate;
+        dblEpcPhaseData = dblEpcData.find(certificate => {
+        return certificate.dblEpcDynamic !== undefined && certificate.dblEpcDynamic.startDate === epcStartDate;
+        });
+        if (dblEpcPhaseData !== undefined) {
+            console.log("Datos de epcPhaseData encontrados:", dblEpcPhaseData);
+        } else {
+            console.log("Datos de epcPhaseData no encontrados.");
+        }
+      })
+      .then (()=>{
+        initializeAlpine(); // Inicializar Alpine.js después de obtener los datos
       })
       .catch(error => {
         console.log("Error loading IFC", error);

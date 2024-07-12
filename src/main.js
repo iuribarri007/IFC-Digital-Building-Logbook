@@ -1,75 +1,233 @@
-import Alpine from 'alpinejs';
-import { dblEnvelopeData1, dblEnvelopeData2 } from './templateData.js'
 
-//DOM logic::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+// document.addEventListener('DOMContentLoaded', function() {
+//     const menuToggle = document.querySelector('.menu-toggle');
+//     const menu = document.querySelector('#dbl-PrimaryMenu');
+//     const closeButtons = document.querySelectorAll('.close-category');
+//     const resizer = document.querySelector('.resizer');
+//     const closeMenuButton = document.querySelector('.close-menu');
+//     const subcategoryMenu = document.querySelector('.subcategory-menu');
+//     const closeSidebarButton = document.querySelector('.close-sidebar');
+//     const subcategorySidebar = document.querySelector('.subcategory-sidebar');
+//     const subcategoryArrowButtons = document.querySelectorAll('.subcategory-btn-controls');
+//     //
+//     const menuItems = document.querySelectorAll('.dbl-menu .menu-item a');
+//     const categories = document.querySelectorAll('.category');
+//     const categoryTitleTexts = document.querySelectorAll('.category-title-text');
+//     const subcategoryTitleContainers = document.querySelectorAll('.subcategory-title-container');
+//     const subcategoryContents = document.querySelectorAll('.subcategory-content');
+
+//     menuItems.forEach(item => {
+//         item.addEventListener('click', function(event) {
+//           event.preventDefault();
+//           const target = this.getAttribute('data-target');
+          
+//           // Mostrar el div .category
+//           const category = document.querySelector('.category');
+//           if (category) {
+//             category.classList.add('active');
+//           }
+          
+//           // Mostrar el div .category-title-text correspondiente
+//           categoryTitleTexts.forEach(text => {
+//             if (text.getAttribute('data-target') === target) {
+//               text.classList.remove('hidden');
+//             } else {
+//               text.classList.add('hidden');
+//             }
+//           });
+          
+//           // Mostrar el div .subcategory-title-container correspondiente
+//           subcategoryTitleContainers.forEach(container => {
+//             if (container.getAttribute('data-target') === target) {
+//               container.classList.remove('hidden');
+//             } else {
+//               container.classList.add('hidden');
+//             }
+//           });
+          
+//           // Mostrar el div .subcategory-content correspondiente
+//           subcategoryContents.forEach(content => {
+//             if (content.getAttribute('data-target') === target) {
+//               content.classList.remove('hidden');
+//             } else {
+//               content.classList.add('hidden');
+//             }
+//           });
+//         });
+//       });
+
+//     // Agregar evento para el botón toggle del menú
+//     menuToggle.addEventListener('click', function() {
+//         menu.classList.toggle('active');
+//     });
+
+//     // Agregar eventos para los botones de cerrar categoría
+//     closeButtons.forEach(button => {
+//         button.addEventListener('click', function(event) {
+//             event.preventDefault();
+//             const category = button.closest('.category');
+//             category.classList.remove('active');
+//         });
+//     });
+
+//     // Agregar eventos para los botones de flecha de subcategoría
+//     subcategoryArrowButtons.forEach(button => {
+//         button.addEventListener('click', function() {
+//             const arrow = this.querySelector('.subcategory-btn-arrow');
+//             arrow.classList.toggle('rotated');
+//         });
+//     });
+
+//     // Agregar evento para el botón de cerrar menú
+//     closeMenuButton.addEventListener('click', function() {
+//         subcategoryMenu.classList.toggle('closed');
+//     });
+
+//     // Agregar evento para el botón de cerrar barra lateral
+//     closeSidebarButton.addEventListener('click', function() {
+//         subcategorySidebar.classList.toggle('closed');
+//     });
+
+//     // Funcionalidad de redimensionamiento
+//     let isResizing = false;
+
+//     resizer.addEventListener('mousedown', function(e) {
+//         isResizing = true;
+//         document.body.style.cursor = 'ew-resize';
+//         document.addEventListener('mousemove', onMouseMove);
+//         document.addEventListener('mouseup', onMouseUp);
+//     });
+
+//     function onMouseMove(e) {
+//         if (!isResizing) return;
+
+//         // Obtiene el rectángulo del elemento subcategory-menu
+//         const rect = subcategoryMenu.getBoundingClientRect();
+
+//         // Calcula el nuevo ancho basado en la posición actual del mouse
+//         subcategoryMenu.style.width = `${e.clientX - rect.left}px`;
+//     }
+
+//     function onMouseUp() {
+//         isResizing = false;
+//         document.body.style.cursor = '';
+//         document.removeEventListener('mousemove', onMouseMove);
+//         document.removeEventListener('mouseup', onMouseUp);
+//     }
+// });
 document.addEventListener('DOMContentLoaded', function() {
     const menuToggle = document.querySelector('.menu-toggle');
     const menu = document.querySelector('#dbl-PrimaryMenu');
-    const dropdowns = document.querySelectorAll('.menu-item.dropdown');
-    const dropdownArrows = document.querySelectorAll('.dropdown-arrow');
-    const links = document.querySelectorAll('.show-content');
-    const tables = document.querySelectorAll('.dbl-table');
-
-    if (menuToggle == null) {
-        return;
-    }
-
-    // Toggle para el menú principal
-    menuToggle.addEventListener('click', function() {
-        const expanded = menuToggle.getAttribute('aria-expanded') === 'true' || false;
-        menuToggle.setAttribute('aria-expanded', !expanded);
-        if (menu !== null) {
-            menu.classList.toggle('open');
+    const closeButtons = document.querySelectorAll('.close-category');
+    const resizer = document.querySelector('.resizer');
+    const closeMenuButton = document.querySelector('.close-menu');
+    const subcategoryMenu = document.querySelector('.subcategory-menu');
+    const closeSidebarButton = document.querySelector('.close-sidebar');
+    const subcategorySidebar = document.querySelector('.subcategory-sidebar');
+    const subcategoryArrowButtons = document.querySelectorAll('.subcategory-btn-controls');
+  
+    const menuItems = document.querySelectorAll('.dbl-menu .menu-item a');
+    const categories = document.querySelectorAll('.category');
+    const categoryTitleTexts = document.querySelectorAll('.category-title-text');
+    const subcategoryTitleContainers = document.querySelectorAll('.subcategory-title-container');
+    const subcategoryContents = document.querySelectorAll('.subcategory-content');
+  
+    menuItems.forEach(item => {
+      item.addEventListener('click', function(event) {
+        event.preventDefault();
+        const target = this.getAttribute('data-target');
+        
+        // Mostrar el div .category
+        const category = document.querySelector('.category');
+        if (category) {
+          category.classList.add('active');
         }
-    });
-
-    // Toggle para los menús desplegables
-    dropdowns.forEach(dropdown => {
-        dropdown.addEventListener('click', function(event) {
-            event.stopPropagation();
-            const dropdownMenu = this.querySelector('.dropdown-menu');
-            dropdownMenu.classList.toggle('open');
+        
+        // Mostrar el div .category-title-text correspondiente
+        categoryTitleTexts.forEach(text => {
+          if (text.getAttribute('data-target') === target) {
+            text.classList.remove('hidden');
+          } else {
+            text.classList.add('hidden');
+          }
         });
-
-        dropdown.addEventListener('mouseleave', function() {
-            const dropdownMenu = this.querySelector('.dropdown-menu');
-            dropdownMenu.classList.remove('open');
+        
+        // Mostrar el div .subcategory-title-container correspondiente
+        subcategoryTitleContainers.forEach(container => {
+          if (container.getAttribute('data-target') === target) {
+            container.classList.remove('hidden');
+          } else {
+            container.classList.add('hidden');
+          }
         });
-    });
-
-    // Cerrar menús desplegables al hacer clic fuera de ellos
-    document.addEventListener('click', function() {
-        dropdowns.forEach(dropdown => {
-            const dropdownMenu = dropdown.querySelector('.dropdown-menu');
-            if (dropdownMenu)
-                dropdownMenu.classList.remove('open');
+        
+        // Mostrar el div .subcategory-content correspondiente
+        subcategoryContents.forEach(content => {
+          if (content.getAttribute('data-target') === target) {
+            content.classList.remove('hidden');
+          } else {
+            content.classList.add('hidden');
+          }
         });
+      });
     });
-
-    // Añadir clase para girar la flecha al hacer clic
-    dropdownArrows.forEach(arrow => {
-        arrow.addEventListener('click', function(event) {
-            event.stopPropagation(); // Prevenir que el evento se propague al dropdown
-            this.classList.toggle('rotate-down');
-        });
+  
+    // Agregar evento para el botón toggle del menú
+    menuToggle.addEventListener('click', function() {
+      menu.classList.toggle('active');
     });
-
-    // Mostrar y ocultar las tablas correspondientes al hacer clic en los enlaces del menú
-    links.forEach(link => {
-        link.addEventListener('click', function(event) {
-            event.preventDefault();
-            event.stopPropagation();
-
-            // Ocultar todas las tablas
-            tables.forEach(table => table.classList.remove('active'));
-
-            // Mostrar la tabla correspondiente
-            const targetId = link.getAttribute('data-target');
-            const targetElement = document.getElementById(targetId);
-            if (targetElement) {
-                targetElement.classList.add('active');
-            }
-        });
+  
+    // Agregar eventos para los botones de cerrar categoría
+    closeButtons.forEach(button => {
+      button.addEventListener('click', function(event) {
+        event.preventDefault();
+        const category = button.closest('.category');
+        category.classList.remove('active');
+      });
     });
-});
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  
+    // Agregar eventos para los botones de flecha de subcategoría
+    subcategoryArrowButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const arrow = this.querySelector('.subcategory-btn-arrow');
+        arrow.classList.toggle('rotated');
+      });
+    });
+  
+    // Agregar evento para el botón de cerrar menú
+    closeMenuButton.addEventListener('click', function() {
+      subcategoryMenu.classList.toggle('closed');
+    });
+  
+    // Agregar evento para el botón de cerrar barra lateral
+    closeSidebarButton.addEventListener('click', function() {
+      subcategorySidebar.classList.toggle('closed');
+    });
+  
+    // Funcionalidad de redimensionamiento
+    let isResizing = false;
+  
+    resizer.addEventListener('mousedown', function(e) {
+      isResizing = true;
+      document.body.style.cursor = 'ew-resize';
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+    });
+  
+    function onMouseMove(e) {
+      if (!isResizing) return;
+  
+      // Obtiene el rectángulo del elemento subcategory-menu
+      const rect = subcategoryMenu.getBoundingClientRect();
+  
+      // Calcula el nuevo ancho basado en la posición actual del mouse
+      subcategoryMenu.style.width = `${e.clientX - rect.left}px`;
+    }
+  
+    function onMouseUp() {
+      isResizing = false;
+      document.body.style.cursor = '';
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    }
+  });

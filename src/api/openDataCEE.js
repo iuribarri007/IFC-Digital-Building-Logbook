@@ -51,7 +51,7 @@ export async function getCertificates(county, municipality, street, portal, curr
     }
     let building = undefined 
     const data = await response.json();
-    console.log(data)
+    //console.log(data)
     data.features.forEach((feature)=>{
         if(feature.properties.location.portal == portal.toString()){
             building = feature
@@ -62,16 +62,16 @@ export async function getCertificates(county, municipality, street, portal, curr
       //console.log(building)
       const energyCertificateArray = building.properties._links.certificates.buildings
       for (let energyCertificate of energyCertificateArray){
-        console.log(energyCertificate)
+        //console.log(energyCertificate)
         const certificateLink = energyCertificate.href
         try{const certificateResponse = await fetch(certificateLink)
           const certificateData = await certificateResponse.json();
-          console.log(certificateData)
+          //console.log(certificateData)
           certificates.push(certificateData)}
         catch{console.log("El certificado no carga")}
       }
       const validEnergyCertificates = getUniqueObjectsWithClosestStartDate(certificates);
-      console.log(validEnergyCertificates)
+      //console.log(validEnergyCertificates)
     }
 
   } catch (error) {
