@@ -271,3 +271,7 @@ th {
 tr:hover {
     background-color: var(--color-g1);
 }
+.dbl-img-performance-epc{
+    width: 3.6rem;
+    height: 1.2rem;
+}

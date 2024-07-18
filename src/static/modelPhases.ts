@@ -24,13 +24,6 @@ let phase1:ObjectPhaseInfo ={
     description: "Thermal Envelope renovation and elevator installation",
     ifcModel: "ifc/20240702/ph01_tfm_modified.ifc"
 }
-let phase2:ObjectPhaseInfo ={
-    id:2,
-    year:2035,
-    epcScope:"",
-    epcStartDate:"",
-    description: "Buildinj Services renovation",
-    ifcModel: "ifc/202"
-}
-projectPhasesArray.push(phase0,phase1,phase2)
+
+projectPhasesArray.push(phase0,phase1)
 

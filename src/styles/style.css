@@ -2,7 +2,7 @@
 :root {
   --header-Height:6rem;
   --header-Width:100vw;
-  --logo-container-Width:25rem;
+  --logo-container-Width:28rem;
   --logo-Height:5rem;
   --logo-Width:5rem;
 }
@@ -131,37 +131,89 @@ main {
   padding-right: 5px;
   color: black;
 }
-
-.category-title {
-  height: 2rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: var(--logo-container-Width);
-  font-family: var(--font-f1);
-  font-weight: 400;
-  font-size: var(--size-ms);
-  text-decoration: underline;
-}
-
-.category-title-text {
-  position: absolute;
-  text-decoration: underline;
-}
-
 .subcategory {
   display: flex;
   flex: 1;
   flex-direction: row;
   height: calc(100% - var(--header-Height));
 }
+/*/Subcategory-Sidebar/*/
 
+.subcategory-sidebar{
+  display: flex;
+  flex-direction: column;
+  width: var(--logo-container-Width);
+  position: relative;
+  align-items: center;
+  z-index: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.subcategory-sidebar-top {
+  display: flex;
+  position: sticky;
+  flex-direction: column;
+  width: var(--logo-container-Width);
+  font-family: var(--font-f1);
+  font-weight: 400;
 
-.subcategory-title-container {
+}
+.subcategory-sidebar-content-container{
   position: absolute;
+  display: block;
+  height: 100%;
   width: var(--logo-container-Width);
   flex: 1;
+}
+.subcategory-sidebar-content{
+  position: relative;
   display: flex;
+  width: var(--logo-container-Width);
+  
+  height: 100%;
+}
+.sidebar-content{
+  position: absolute;
+  margin-left: 0.2rem;
+  margin-top: 0.2rem;
+  width: var(--logo-container-Width);
+  flex: 1;
+  background-color: var(--color-g2);
+  overflow: auto;
+}
+.subcategory-sidebar-top>.category-title-container {
+  display: inline-block;
+  position: sticky;
+  align-items: center; /* Centra verticalmente */
+  justify-content: center; /* Centra horizontalmente */
+  height: 2rem;
+  width: var(--logo-container-Width);
+  background-color: var(--color-c0);
+
+}
+.subcategory-sidebar-top>.category-title-container>.category-title-text {
+  position: absolute;
+  width: var(--logo-container-Width);
+  text-decoration: underline;
+  font-family: var(--font-f1);
+  font-weight: 500;
+  font-size: var(--size-ms);
+}
+.subcategory-sidebar-top>.subcategory-btn-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-wrap: wrap;
+  width: var(--logo-container-Width);
+  z-index: 1;
+}
+.subcategory-title-container {
+  width: var(--logo-container-Width);
+  flex: 1;
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   justify-content: space-evenly;
   font-family: var(--font-f1);
 }
@@ -220,11 +272,7 @@ main {
   transform: rotate(180deg);
 }
 
-.subcategory-menu {
-  width: 30rem;
-  background-color: var(--color-g1);
-  padding:0.5rem 1rem 0.5rem 1rem ;
-}
+
 
 .subcategory-menu.closed {
   display: none;
@@ -233,24 +281,12 @@ main {
   transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
   opacity: 1;
 }
-.subcategory-sidebar-content{
-  position: relative;
-  display: flex;
-  justify-content: space-around;
-  width: var(--logo-container-Width);
-}
+
 .subcategory-menu.closed, .subcategory-sidebar.closed {
   transform: translateX(-100%); 
   opacity: 0; 
 }
-.sidebar-content{
-  margin-left: 0.2rem;
-  margin-top: 2rem;
-  width: 100%;
-  top: 10rem;
-  background-color: var(--color-g2);
-  overflow: auto;
-}
+
 .data-container{
   width: var(--logo-container-Width);
   height: 100%;
@@ -278,7 +314,9 @@ main {
 .hidden {
   display: none;
 }
-
+.active {
+  display: block;
+}
 .open {
   display: block;
 }
@@ -389,16 +427,7 @@ main {
   align-items: center;
   width: var(--logo-container-Width);
 }
-.category-title-container {
-  display: flex;
-  align-items: center; /* Centra verticalmente */
-  justify-content: center; /* Centra horizontalmente */
-  height: 2rem;
-  width: var(--logo-container-Width);
-  font-family: var(--font-f1);
-  font-weight: 400;
-  font-size: var(--size-ms);
-}
+
 .category-title-text {
   display: flex; /* Asegura que el h2 sea un contenedor flex */
   align-items: center; /* Centra verticalmente el texto dentro del h2 */
@@ -415,31 +444,13 @@ main {
   height: calc(100% -( var(--header-Height)));
   position: relative;
 }
-.subcategory-sidebar{
-  display: flex;
-  flex-direction: column;
-  width: var(--logo-container-Width);
-  position: relative;
-  align-items: center;
-  z-index: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
+
 .subcategory-section{
   display: flex;
   flex-direction: column;
   margin: 0.5rem 1rem 0.5rem 1rem;
 }
-.subcategory-btn-container {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: stretch;
-  width: var(--logo-container-Width);
-  z-index: 1;
-  background-color: rgba(55, 55, 55, 0.5);
-}
+
 .subcategory-title-container {
   width: var(--logo-container-Width);
   height: auto;
@@ -449,9 +460,30 @@ main {
   justify-content: space-evenly;
   align-items: center; /* Para centrar los botones verticalmente */
 }
-.subcategory-content{
+.subcategory-menu {
+  position: relative;
+  min-width: 20rem;
   height: 100%;
+  background-color: var(--color-g1);
+}
+.subcategory-menu-content-container{
+  position: absolute;
+  overflow:auto;
+  width: 100%;
+  height: 100%;
+
+}
+.subcategory-content{
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
   overflow: auto;
+  background-color: var(--color-g2);
+  padding:0.5rem 1.5rem 0.5rem 1.5rem ;
+  z-index: 2;
+
 }
 .subcategory-constrols-container{
   display: flex;
@@ -501,6 +533,7 @@ main {
   bottom: 0;
   width: 0; 
   cursor: ew-resize;
+  z-index: 3;
 }
 
 .resizer::before {
@@ -676,7 +709,6 @@ th, td {
     padding: 8px;
     text-align: left;
 }
-
 .hidden {
   display: none;
 }
@@ -692,5 +724,26 @@ th, td {
 }
 .subcategory-section-title{
   font-size: var(--size-ms);
+  font-family: var(--font-f1);
+  text-decoration: underline;
+  font-weight: 500;
+  padding-bottom: 0.5rem;
 }
 
+.subcategory-section td {
+  padding: 5x; /* Añade relleno para espaciar el contenido de las celdas */
+  border: 1px solid #ccc; /* Añade bordes para separar visualmente las celdas */
+  text-align: center; /* Centra el texto dentro de las celdas */
+}
+
+/* Primeras dos columnas */
+.subcategory-section td:nth-child(1),
+.subcategory-section td:nth-child(2) {
+  width: 40%; /* Establece el ancho al 40% para la primera y segunda columna */
+  text-align: left;
+}
+
+/* Tercera columna */
+.subcategory-section td:nth-child(3) {
+  width: 20%; /* Establece el ancho al 20% para la tercera columna */
+}

@@ -18,7 +18,7 @@
   <header class="site-header">
     <div class="logo-container">
         <a href="index.html" class="logo-placeholder">
-            <img class="logo" src="/assets/images/dblLogo.png" alt="no-logo">
+            <img class="logo" src="/assets/images/logos/dblLogo.png" alt="no-logo">
         </a>
         <div class="logo-title-container">
             <h1 class="site-title">Digital</h1>
@@ -107,24 +107,38 @@
   <div class="category " id="dbl-Identification">
     <div class="subcategory">
       <div class="subcategory-sidebar">
-        <div class="category-title">
+        <div class="subcategory-sidebar-top">
             <div class="category-title-container">
                 <h2 class="category-title-text" data-target="dbl-Performance">PERFORMANCE</h2>
                 <h2 class="category-title-text" data-target="dbl-StructureMaterial">STRUCTURE AND MATERIAL</h2>
             </div>
             <div class="subcategory-btn-container">
+                <div class="subcategory-title-container" data-target="dbl-Dimensions">
+                    <button class="subcategory-title-btn" data-target="dbl-Dimensions-1">GENERAL DIMENSIONS</button>
+                    <button class="subcategory-title-btn" data-target="dbl-Dimensions-2">DETAILED DIMENSIONS</button>
+                  </div>
                 <div class="subcategory-title-container" data-target="dbl-Performance">
-                  <button class="subcategory-title-btn" data-target="dbl-Performance-EnergyPerformance">ENERGY</button>
-                  <button class="subcategory-title-btn" data-target="dbl-Performance-Accessibility">ACCESSIBILITY</button>
+                  <button class="subcategory-title-btn" data-target="dbl-Performance-1">ENERGY</button>
+                  <button class="subcategory-title-btn" data-target="dbl-Performance-2">ACCESSIBILITY</button>
                 </div>
                 <div class="subcategory-title-container" data-target="dbl-StructureMaterial">
-                  <button class="subcategory-title-btn" data-target="dbl-Performance-EnergyPerformance">THERMAL ENVELOPE</button>
-                  <button class="subcategory-title-btn" data-target="dbl-Performance-Accessibility">MATERIAL INVENTORY</button>
+                  <button class="subcategory-title-btn" data-target="dbl-StructureMaterial-1">THERMAL ENVELOPE</button>
+                  <button class="subcategory-title-btn" data-target="dbl-StructureMaterial-2">MATERIAL INVENTORY</button>
                 </div>
+                
             </div>
         </div>
         <div class="subcategory-sidebar-content" >
-            <div class="sidebar-content" id="alpine-epcPhaseData" data-target="dbl-Performance"></div>
+            <div class="subcategory-sidebar-content-container" data-target="dbl-Performance">
+                <div class="sidebar-content" id="alpine-epcPhaseData" data-target="dbl-Performance-1"></div>
+                <div class="sidebar-content" data-target="dbl-Performance-2">Soy Accessibility</div>
+            </div>
+            <div class="subcategory-sidebar-content-container" data-target="dbl-StructureMaterial">
+                <div class="sidebar-content" data-target="dbl-StructureMaterial-1">
+                    <div id="alpine-StructureMaterial-ThermalEnvelope-Static"></div>
+                </div>
+                <div class="sidebar-content" data-target="dbl-StructureMaterial-2"> Soy material inventory</div>
+            </div> 
         </div>
       </div>
       <div class="subcategory-constrols-container">
@@ -135,14 +149,25 @@
         <div class="category-top">
           <button class="close-category">✖</button>
         </div>
-        <div class="subcategory-content" data-target="dbl-Performance">
-            <div id="alpine-SkinMaterialInventory"></div>
-            <div id="alpine-StructuralMaterialInventory"></div>
+        <div class="subcategory-menu-content-container" data-target="dbl-Performance">
+            <div class="subcategory-content" data-target="dbl-Performance-1">
+                Renovation Passport
+            </div>
+            <div class="subcategory-content" data-target="dbl-Performance-2">
+                Soy dbl-Perofrmance 2
+            </div>
+            
         </div>
-        <div class="subcategory-content" data-target="dbl-StructureMaterial">
-            <div id="alpine-template-container"></div>
-            <div id="alpine-template-container2"></div>
-            <div id="alpine-template-container3"></div>
+        <div class="subcategory-menu-content-container" data-target="dbl-StructureMaterial">
+            <div class="subcategory-content" data-target="dbl-StructureMaterial-1">
+                <div id="alpine-template-container"></div>
+                <div id="alpine-template-container2"></div>
+                <div id="alpine-template-container3"></div>
+            </div>
+            <div class="subcategory-content" data-target="dbl-StructureMaterial-2">
+                <div id="alpine-SkinMaterialInventory"></div>
+                <div id="alpine-StructuralMaterialInventory"></div>
+            </div>
         </div>
         <div class="resizer"></div>
       </div>

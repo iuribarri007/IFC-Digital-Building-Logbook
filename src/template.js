@@ -170,6 +170,51 @@ export const thermalEnvelopeTemplate = `
         </template>
     </div>`;
 
+//:::::::::::::::::::::::::::::::::::::
+export const envelopeVerticalSummaryTemplate = `
+    <div>
+        <h3 x-text="title"></h3>
+        <template x-for="(item, key) in envelopeData" :key="key">
+            <div class="subcategory-section">
+                <h4 class="subcategory-section-title" x-text="item.dblVerticalEnvelopeSummaryOrientation + ' Facade'"></h4>
+                <div style="display: flex;">
+                    <div style="flex: 1;">
+                        <img src="path_to_image" alt="Image">
+                    </div>
+                    <div style="flex: 1;">
+                        <table border="1">
+                            <tr>
+                                <td>Facade Gross Area:</td>
+                                <td x-text="item.dblWallEnvelopeSummaryGrossAreaSum"></td>
+                            </tr>
+                            <tr>
+                                <td>Window Area:</td>
+                                <td x-text="item.dblWindowEnvelopeSummaryNetAreaSum"></td>
+                            </tr>
+                            <tr>
+                                <td>Window to Wall Ratio:</td>
+                                <td x-text="item.dblWindowToWallRatio"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+`;
+export function dblEnvelopeVerticalSummarize({ envelopeData, title }) {
+    return {
+        envelopeData: envelopeData,
+        title: title,
+        toggleDetails(key) {
+            this.envelopeData[key].expanded = !this.envelopeData[key].expanded;
+        },
+        isDetailsOpen(key) {
+            return this.envelopeData[key].expanded;
+        }
+    };
+}
+//:::::::::::::::::::::::::::::://
 export function dblMaterialData({ categories, mainTitle }) {
     // Inicialización del estado de expansión y otros estados necesarios
     categories.forEach(category => {
@@ -303,7 +348,7 @@ export function initializeEpcData({ data, mainTitle }) {
         data,
         mainTitle,
         getSafeData(data) {
-            return data !== undefined ? data : "Data is not available";
+            return data !== undefined ? data : "No Data";
         },
         get dblEpcPhaseData() {
             return data || {};
@@ -386,27 +431,27 @@ export const epcDataTemplate = `
     <div>
         <!-- Section for dblEpcDynamic -->
         <div x-bind:class="{ 'subcategory-section': true }">
-            <h2 x-bind:class="{ 'subcategory-section-title': true }">Información Dinámica</h2>
+            <h2 x-bind:class="{ 'subcategory-section-title': true }"> Energy Performance information</h2>
             <div class="grid">
                 <div class="row">
                     <div class="cell">Scope: <span x-text="scope"></span></div>
-                    <div class="cell">Normativa: <span x-text="normative"></span></div>
+                    <div class="cell">Normative: <span x-text="normative"></span></div>
                 </div>
                 <div class="row">
-                    <div class="cell">Fecha de inicio: <span x-text="startDate"></span></div>
-                    <div class="cell">Fecha de finalización: <span x-text="endDate"></span></div>
+                    <div class="cell">EPC Start date: <span x-text="startDate"></span></div>
+                    <div class="cell">EPC End date: <span x-text="endDate"></span></div>
                 </div>
                 <div class="row">
-                    <div class="cell">Procedimiento EPC: <span x-text="epcProcedure"></span></div>
-                    <div class="cell">ID del certificado: <span x-text="certificateId"></span></div>
+                    <div class="cell">EPC Procedure: <span x-text="epcProcedure"></span></div>
+                    <div class="cell">Certificate ID: <span x-text="certificateId"></span></div>
                 </div>
                 <div class="row">
                     <div class="cell">
-                        URL del certificado: 
+                        Certificate URL: 
                         <a :href="certificateUrl" x-text="certificateUrl"></a>
                     </div>
                     <div class="cell">
-                        URL del edificio: 
+                        Building URL: 
                         <a :href="buildingCerticateUrl" x-text="buildingCerticateUrl"></a>
                     </div>
                 </div>
@@ -414,72 +459,173 @@ export const epcDataTemplate = `
         </div>
         <!-- Section for dblEpcEmissionsCO2 -->
         <div x-bind:class="{ 'subcategory-section': true }">
-            <h2 x-bind:class="{ 'subcategory-section-title': true }">Emisiones de CO2</h2>
+            <h2 x-bind:class="{ 'subcategory-section-title': true }">CO2 emissions</h2>
             <table>
                 <tr>
-                    <td>Emisiones Energéticas:</td>
-                    <td x-text="emissionsEnergyRating"></td>
-                    <td x-text="emissionsEnergyYearArea"></td>
-                    <td><img src="path/to/image.jpg" alt="Emisiones Energéticas CO2"></td>
+                    <td>Operational energy emissions:</td>
+                    <td x-text="emissionsEnergyYearArea + ' [kg CO2/m2 year]'"></td>
+                    <td><img class="dbl-img-performance-epc" x-bind:src="'../assets/images/dbl-images/dbl-performance-epc/epcLabel-' + emissionsEnergyRating + '.png'" alt="No label"></td>
                 </tr>
                 <tr>
-                    <td>Emisiones DHW:</td>
-                    <td x-text="emissionsDhwRating"></td>
-                    <td x-text="emissionsDhwYearArea"></td>
-                    <td><img src="path/to/image.jpg" alt="Emisiones DHW CO2"></td>
+                    <td>Domestic Hot Water emissions:</td>
+                    <td x-text="emissionsDhwYearArea + ' [kg CO2/m2 year]'"></td>
+                    <td><img class="dbl-img-performance-epc" x-bind:src="'../assets/images/dbl-images/dbl-performance-epc/epcLabel-' + emissionsDhwRating + '.png'" alt="No label"></td>
                 </tr>
                 <tr>
-                    <td>Emisiones Calefacción:</td>
-                    <td x-text="emissionsHeatingRating"></td>
-                    <td x-text="emissionsHeatingYearArea"></td>
-                    <td><img src="path/to/image.jpg" alt="Emisiones de Calefacción CO2"></td>
+                    <td>Heating emissions:</td>
+                    <td x-text="emissionsHeatingYearArea + ' [kg CO2/m2 year]'"></td>
+                    <td><img class="dbl-img-performance-epc" x-bind:src="'../assets/images/dbl-images/dbl-performance-epc/epcLabel-' + emissionsHeatingRating + '.png'" alt="No label"></td>
                 </tr>
             </table>
         </div>
         <!-- Section for dblEpcNonRenEnergyConsumption -->
         <div x-bind:class="{ 'subcategory-section': true }">
-            <h2 x-bind:class="{ 'subcategory-section-title': true }">Consumo de Energía No Renovable</h2>
+            <h2 x-bind:class="{ 'subcategory-section-title': true }">Non Renewable energy consumption</h2>
             <table>
                 <tr>
-                    <td>Consumo Energético No Renovable:</td>
-                    <td x-text="nonRenEnergyConsumptionRating"></td>
-                    <td x-text="nonRenEnergyConsumptionYearArea"></td>
-                    <td><img src="path/to/image.jpg" alt="Consumo Energético No Renovable"></td>
+                    <td>Non renewable general energy consumption:</td>
+                    <td x-text="nonRenEnergyConsumptionYearArea + ' [kWh/m2 year]'"></td>
+                    <td><img class="dbl-img-performance-epc" x-bind:src="'../assets/images/dbl-images/dbl-performance-epc/epcLabel-' + nonRenEnergyConsumptionRating + '.png'" alt="No label"></td>
                 </tr>
                 <tr>
-                    <td>Consumo DHW No Renovable:</td>
-                    <td x-text="nonRenDhwEnergyComsumptionRating"></td>
-                    <td x-text="nonRenDhwEnergyConsumptionYearArea"></td>
-                    <td><img src="path/to/image.jpg" alt="Consumo DHW No Renovable"></td>
+                    <td>Non renewable DMH energy consumption:</td>
+                    <td x-text="nonRenDhwEnergyConsumptionYearArea + ' [kWh/m2 year]'"></td>
+                    <td><img class="dbl-img-performance-epc" x-bind:src="'../assets/images/dbl-images/dbl-performance-epc/epcLabel-' + nonRenDhwEnergyComsumptionRating + '.png'" alt="No label"></td>
+                    
+                    
                 </tr>
                 <tr>
-                    <td>Consumo Calefacción No Renovable:</td>
-                    <td x-text="nonRenHeatingEnergyConsumptionRating"></td>
-                    <td x-text="nonRenHeatingEnergyConsumptionYearArea"></td>
-                    <td><img src="path/to/image.jpg" alt="Consumo de Calefacción No Renovable"></td>
+                    <td>Non renewable Heating energy consumption:</td>
+                    <td x-text="nonRenHeatingEnergyConsumptionYearArea + ' [kWh/m2 year]'"></td>
+                    <td><img class="dbl-img-performance-epc" x-bind:src="'../assets/images/dbl-images/dbl-performance-epc/epcLabel-' + nonRenHeatingEnergyConsumptionRating + '.png'" alt="No label"></td>
+                    
+                    
                 </tr>
             </table>
         </div>
         <!-- Section for dblEpcEnergyDemand -->
         <div x-bind:class="{ 'subcategory-section': true }">
-            <h2 x-bind:class="{ 'subcategory-section-title': true }">Demanda de Energía</h2>
+            <h2 x-bind:class="{ 'subcategory-section-title': true }">Energy demand</h2>
             <table>
                 <tr>
-                    <td>Demanda de Calefacción:</td>
-                    <td x-text="energyDemandHeatingRating"></td>
-                    <td x-text="energyDemandHeatingYearArea"></td>
-                    <td><img src="path/to/image.jpg" alt="Demanda de Calefacción"></td>
+                    <td>Heating demand:</td>
+                    <td x-text="energyDemandHeatingYearArea + ' [kWh/m2 year]'"></td>
+                    <td class="td-img"><img class="dbl-img-performance-epc" x-bind:src="'../assets/images/dbl-images/dbl-performance-epc/epcLabel-' + energyDemandHeatingRating + '.png'" alt="No label"></td>
                 </tr>
                 <tr>
-                    <td>Demanda de DHW:</td>
-                    <td x-text="energyDemandDhwRating"></td>
-                    <td x-text="energyDemandDhwYearArea"></td>
-                    <td><img src="path/to/image.jpg" alt="Demanda de DHW"></td>
+                    <td>DHW demand:</td>
+                    <td x-text="energyDemandDhwYearArea + ' [kWh/m2 year]'"></td>
+                    <td class="td-img"><img class="dbl-img-performance-epc" x-bind:src="'../assets/images/dbl-images/dbl-performance-epc/epcLabel-' + energyDemandDhwRating + '.png'" alt="No label"></td>
                 </tr>
             </table>
         </div>
     </div>
 `;
+// export const epcDataTemplate = `
+//     <div>
+//         <!-- Section for dblEpcDynamic -->
+//         <div x-bind:class="{ 'subcategory-section': true }">
+//             <h2 x-bind:class="{ 'subcategory-section-title': true }"> Energy Performance information</h2>
+//             <div class="grid">
+//                 <div class="row">
+//                     <div class="cell">Scope: <span x-text="scope"></span></div>
+//                     <div class="cell">Normative: <span x-text="normative"></span></div>
+//                 </div>
+//                 <div class="row">
+//                     <div class="cell">EPC Start date: <span x-text="startDate"></span></div>
+//                     <div class="cell">EPC End date: <span x-text="endDate"></span></div>
+//                 </div>
+//                 <div class="row">
+//                     <div class="cell">EPC Procedure: <span x-text="epcProcedure"></span></div>
+//                     <div class="cell">Certificate ID: <span x-text="certificateId"></span></div>
+//                 </div>
+//                 <div class="row">
+//                     <div class="cell">
+//                         Certificate URL: 
+//                         <a :href="certificateUrl" x-text="certificateUrl"></a>
+//                     </div>
+//                     <div class="cell">
+//                         Building URL: 
+//                         <a :href="buildingCerticateUrl" x-text="buildingCerticateUrl"></a>
+//                     </div>
+//                 </div>
+//             </div>
+//         </div>
+//         <!-- Section for dblEpcEmissionsCO2 -->
+//         <div x-bind:class="{ 'subcategory-section': true }">
+//             <h2 x-bind:class="{ 'subcategory-section-title': true }">CO2 emissions</h2>
+//             <table>
+//                 <tr>
+//                     <td><img src="../assets/images/dbl-images/dbl-performance-epc/epcLabel-A.png" alt="Emisiones Energéticas CO2"></td>
+//                     <td>Operational energy emissions:</td>
+//                     <td x-text="emissionsEnergyRating"></td>
+//                     <td x-text="emissionsEnergyYearArea"></td>
+//                 </tr>
+//                 <tr>
+//                     <td><img src="../assets/images/dbl-images/dbl-performance-epc/epcLabel-A.png" alt="Emisiones DHW CO2"></td>
+//                     <td>Domestic Hot Water emissions:</td>
+//                     <td x-text="emissionsDhwRating"></td>
+//                     <td x-text="emissionsDhwYearArea"></td>
+                    
+//                 </tr>
+//                 <tr>
+//                     <td><img src="../assets/images/dbl-images/dbl-performance-epc/epcLabel-A.png" alt="Emisiones de Calefacción CO2"></td>
+//                     <td>Heating emissions:</td>
+//                     <td x-text="emissionsHeatingRating"></td>
+//                     <td x-text="emissionsHeatingYearArea"></td>
+                    
+//                 </tr>
+//             </table>
+//         </div>
+//         <!-- Section for dblEpcNonRenEnergyConsumption -->
+//         <div x-bind:class="{ 'subcategory-section': true }">
+//             <h2 x-bind:class="{ 'subcategory-section-title': true }">Non Renewable energy consumption</h2>
+//             <table>
+//                 <tr>
+//                     <td><img src="../assets/images/dbl-images/dbl-performance-epc/epcLabel-A.png" alt="Consumo Energético No Renovable"></td>
+//                     <td>Non renewable general energy consumption:</td>
+//                     <td x-text="nonRenEnergyConsumptionRating"></td>
+//                     <td x-text="nonRenEnergyConsumptionYearArea"></td>
+                    
+//                 </tr>
+//                 <tr>
+//                     <td><img src="../assets/images/dbl-images/dbl-performance-epc/epcLabel-A.png" alt="Consumo DHW No Renovable"></td>
+//                     <td>Non renewable DMH energy consumption:</td>
+//                     <td x-text="nonRenDhwEnergyComsumptionRating"></td>
+//                     <td x-text="nonRenDhwEnergyConsumptionYearArea"></td>
+                    
+//                 </tr>
+//                 <tr>
+//                     <td><img src="../assets/images/dbl-images/dbl-performance-epc/epcLabel-A.png" alt="Consumo de Calefacción No Renovable"></td>
+//                     <td>Non renewable Heating energy consumption:</td>
+//                     <td x-text="nonRenHeatingEnergyConsumptionRating"></td>
+//                     <td x-text="nonRenHeatingEnergyConsumptionYearArea"></td>
+                    
+//                 </tr>
+//             </table>
+//         </div>
+//         <!-- Section for dblEpcEnergyDemand -->
+//         <div x-bind:class="{ 'subcategory-section': true }">
+//             <h2 x-bind:class="{ 'subcategory-section-title': true }">Energy demand</h2>
+//             <table>
+//                 <tr>
+//                     <td><img src="../assets/images/dbl-images/dbl-performance-epc/epcLabel-A.png" alt="Demanda de Calefacción"></td>
+//                     <td>Heating demand:</td>
+//                     <td x-text="energyDemandHeatingRating"></td>
+//                     <td x-text="energyDemandHeatingYearArea"></td>
+                    
+//                 </tr>
+//                 <tr>
+//                     <td><img src="../assets/images/dbl-images/dbl-performance-epc/epcLabel-A.png" alt="Demanda de DHW"></td>
+//                     <td>DHW demand:</td>
+//                     <td x-text="energyDemandDhwRating"></td>
+//                     <td x-text="energyDemandDhwYearArea"></td>
+                    
+//                 </tr>
+//             </table>
+//         </div>
+//     </div>
+// `;
 
 // export const epcPhaseDataTemplate = `
 //     <div x-data="epcPhaseDataLogic({ epcPhaseData })">

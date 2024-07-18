@@ -11,14 +11,12 @@ import { dblWindowProps, dblWindowQtos } from "./interfaceIFC";
 import { dblHorElementProps, dblHorElementQtos } from "./interfaceIFC";
 //Import Structural elements interfaces
 import { dblStrLinealProps,dblStrLinealQtos } from "./interfaceIFC";
+import { dblComposedEntity,dblEnvelopeVerticalComponent,dblEnvelopeVerticalLayered, dblEnvelopeHorizontalComponent, dblEnvelopeHorizontalLayered,
+          dblEnvelopeWindowComponent, dblEnvelopeWindow,       
+ } from "./interfaceIFC";
+import { dblMaterialCategory, } from "./interfaceIFC";
+import { dblEnvelopeSummaryOrientationVertical,dblFloorEnvelopeSummary,dblRoofEnvelopeSummary } from "./interfaceIFC";
 
-import {
-  expression,
-  element,
-  property,
-} from "three/examples/jsm/nodes/Nodes.js";
-import { WebGLNodeBuilder } from "three/examples/jsm/renderers/webgl/nodes/WebGLNodeBuilder.js";
-import { NodeData } from "three/examples/jsm/nodes/core/NodeBuilder.js";
 
 interface ModelEntityIdFragment {
   expressId: number|undefined,
@@ -32,6 +30,88 @@ function checkPresentExpressIdIndex(
 ): number {
   return fragments.findIndex((fragment) => fragment.expressId === expressId);
 }
+
+const ifcDblWall = [WEBIFC.IFCWALL,WEBIFC.IFCWALLSTANDARDCASE,WEBIFC.IFCWALLELEMENTEDCASE]
+function isDblWall(ifcEntityType:number):boolean{
+  return ifcDblWall.includes(ifcEntityType)
+}
+
+const ifcDblWindow = [WEBIFC.IFCWINDOW]
+function isDblWindow (ifcEntityType:number):boolean {
+  return ifcDblWindow.includes(ifcEntityType)
+}
+
+const ifcDblFloor = [WEBIFC.IFCSLAB,WEBIFC.IFCSLABSTANDARDCASE,WEBIFC.IFCSLABELEMENTEDCASE]
+function isDblFloor (ifcEntityType:number):boolean{
+  return ifcDblFloor.includes(ifcEntityType)
+}
+
+const ifcDblCovering = [WEBIFC.IFCCOVERING]
+function isDblCovering (ifcEntityType:number):boolean{
+  return ifcDblCovering.includes(ifcEntityType)
+}
+
+const ifcDblRoof = [WEBIFC.IFCROOF]
+function isDblRoof (ifcEntityType:number):boolean{
+  return ifcDblRoof.includes(ifcEntityType)
+}
+
+const ifcDblStair = [WEBIFC.IFCSTAIR , WEBIFC.IFCSTAIRFLIGHT]
+function isDblStair (ifcEntityType:number):boolean{
+  return ifcDblStair.includes(ifcEntityType)
+}
+
+const ifcDblRamp = [WEBIFC.IFCRAMP, WEBIFC.IFCRAMPFLIGHT]
+function isDblRamp (ifcEntityType:number):boolean{
+  return ifcDblRamp.includes(ifcEntityType)
+}
+
+const ifcDblColumn = [WEBIFC.IFCCOLUMN, WEBIFC.IFCCOLUMNSTANDARDCASE]
+function isDblColumn (ifcEntityType:number):boolean{
+  return ifcDblColumn.includes(ifcEntityType)
+}
+
+const ifcDblRailing = [WEBIFC.IFCRAILING]
+function isDblRailing (ifcEntityType:number):boolean{
+  return ifcDblRailing.includes(ifcEntityType)
+}
+
+const ifcDblCurtainWall = [WEBIFC.IFCCURTAINWALL]
+function isDblCurtainWall (ifcEntityType:number):boolean{
+  return ifcDblCurtainWall.includes(ifcEntityType)
+}
+
+const ifcDblMember = [WEBIFC.IFCMEMBER, WEBIFC.IFCMEMBERSTANDARDCASE]
+function isDblMember (ifcEntityType:number):boolean {
+  return ifcDblMember.includes(ifcEntityType)
+}
+
+const ifcDblPlate = [WEBIFC.IFCPLATE , WEBIFC.IFCPLATESTANDARDCASE]
+function isDblPlate (ifcEntityType:number):boolean {
+  return ifcDblPlate.includes(ifcEntityType)
+}
+
+const ifcDblStrLinealElement = [WEBIFC.IFCBEAM,WEBIFC.IFCBEAMSTANDARDCASE,WEBIFC.IFCCOLUMN,WEBIFC.IFCCOLUMNSTANDARDCASE]
+function isDblStructuralLinealElement (ifcEntityType:number):boolean{
+  return ifcDblStrLinealElement.includes(ifcEntityType)
+}
+
+const ifcDblFooting =[WEBIFC.IFCFOOTING]
+function isDblFooting (ifcEntityType:number):boolean{
+  return ifcDblFooting.includes(ifcEntityType)
+}
+
+const ifcDblProxy = [WEBIFC.IFCBUILDINGELEMENTPROXY,WEBIFC.IFCPROXY]
+function isDblProxy (ifcEntityType:number):boolean{
+  return ifcDblProxy.includes(ifcEntityType)
+}
+
+const ifcDblCommonElement = [...ifcDblWall,...ifcDblWindow,...ifcDblFloor,...ifcDblRoof,...ifcDblStair,...ifcDblRamp,
+  ...ifcDblStrLinealElement,...ifcDblCurtainWall,...ifcDblPlate,...ifcDblFooting,...ifcDblProxy]
+function isDblCommonElement (ifcEntityType:number):boolean{
+  return ifcDblCommonElement.includes(ifcEntityType)
+}
+// FALTAN ELEMENTOS IFC
 //
 export const modelFragmentIdByLevel: any = {};
 // Defining a function to check if a value is already present
@@ -40,34 +120,28 @@ export async function getEntityFragmentsByLevel(
   obj: any
 ) {
   const properties = model.properties;
-  if (properties === undefined || null) {
-    return;
-  }
+  if (properties === undefined || null) {return;}
   console.log(obj)
-  const storeys = obj.storeys;
-  let classifiedIdProps: any = null;
+  let storeys
+  storeys = obj.storeys;
+  let classifiedIdProps: any = {};
   let classifiedIdType: any = null;
   //console.log(storeys)
-  for (const level in storeys) {
+  for (let level in storeys) {
     const modelEntityFragmentLevelArray: any = [];
-
     modelFragmentIdByLevel[level] = modelEntityFragmentLevelArray;
     const storeysObject = storeys[level];
-    for (const e in storeysObject) {
-      const set = storeysObject[e];
-
-      //console.log(e,set)
-      const fragmentId = e;
-      const setArray = Array.from(set);
-
+    for (let e in storeysObject) {
+      let set = storeysObject[e];
+      let fragmentId = e;
+      let setArray = Array.from(set);
       let modelEntityIdFragment: ModelEntityIdFragment = {
         expressId: undefined,
         fragmentIds: [fragmentId],
         fragmentMap: {}
       };
-
       for (let id in setArray) {
-        const classifiedId: number = setArray[id] as number;
+        let classifiedId: number = setArray[id] as number;
         //console.log(classifiedId)
          modelEntityIdFragment = {
           expressId: classifiedId,
@@ -75,38 +149,17 @@ export async function getEntityFragmentsByLevel(
           fragmentMap: {}
         };
         const fragmentArray= modelEntityIdFragment.fragmentIds
-
         classifiedIdProps = properties[classifiedId];
+
+        //console.log(properties)
+        //console.log(classifiedId)
+        //console.log(classifiedIdProps)
+        
+
         classifiedIdType = classifiedIdProps.type;
         //
         //console.log(modelEntityIdFragment)
-        if (
-          classifiedIdType === WEBIFC.IFCWALL ||
-          classifiedIdType === WEBIFC.IFCWALLSTANDARDCASE ||
-          classifiedIdType === WEBIFC.IFCWALLELEMENTEDCASE ||
-          classifiedIdType === WEBIFC.IFCCURTAINWALL || //Ifc Wall classes
-          classifiedIdType === WEBIFC.IFCWINDOW ||
-          classifiedIdType === WEBIFC.IFCPLATE ||
-          classifiedIdType === WEBIFC.IFCRAILING ||
-          classifiedIdType === WEBIFC.IFCMEMBER ||
-          classifiedIdType === WEBIFC.IFCDOOR || //IfcWindow or Curtain pannel
-          classifiedIdType === WEBIFC.IFCSLAB ||
-          classifiedIdType === WEBIFC.IFCSLABSTANDARDCASE ||
-          classifiedIdType === WEBIFC.IFCSLABELEMENTEDCASE ||
-          classifiedIdType === WEBIFC.IFCCOVERING || // Ifc floors and related
-          classifiedIdType === WEBIFC.IFCROOF ||
-          classifiedIdType === WEBIFC.IFCBUILDINGELEMENTPROXY ||
-          classifiedIdType === WEBIFC.IFCBUILDINGELEMENT || //Ifc
-          classifiedIdType === WEBIFC.IFCCOLUMN ||
-          classifiedIdType === WEBIFC.IFCCOLUMNSTANDARDCASE ||
-          classifiedIdType === WEBIFC.IFCBEAM ||
-          classifiedIdType === WEBIFC.IFCFOOTING ||
-          classifiedIdType === WEBIFC.IFCPILE ||
-          classifiedIdType === WEBIFC.IFCSTAIR ||
-          classifiedIdType === WEBIFC.IFCSTAIRFLIGHT ||
-          classifiedIdType === WEBIFC.IFCRAMP ||
-          classifiedIdType === WEBIFC.IFCRAMPFLIGHT
-        ) {
+        if ( isDblCommonElement(classifiedIdType)) {
           const index = checkPresentExpressIdIndex(
             classifiedId,
             modelEntityFragmentLevelArray
@@ -141,25 +194,23 @@ export async function getEntityFragmentsByLevel(
       })
     }
   }
-  console.log("This is the thing",modelFragmentIdByLevel)
+  console.log("These are the fragments",modelFragmentIdByLevel)
 }
-
 //model entitiesObjectbyLevel
 interface ModelEntity {
-  key: number; // or string if expressID is string
+  key: number; 
   entityType: number;
   Attributes: {
     GlobalId: string;
     Name: string;
     Tag: string;
-    // PredefinedType?: string; // Uncomment if needed
   };
-  [key: string]: any; // To accommodate dynamically added properties
+  [key: string]: any;
 }
 interface ModelEntityPset {
   [key: string]: any; // Adjust this type based on the actual structure of the properties
 }
-//Defining a new interface
+
 interface ModelElement {
   expressId: number;
   fragmentId: Fragment;
@@ -206,20 +257,25 @@ interface externalWindowEntity {
   };
 }
 //
-export const dblWallElements: any = {};
-export const dblWindowElements: any = {};
-export const dblFloorElements: any = {};
-export const dblRoofElements: any = {};
+export let dblWallElements: any 
+export let dblWindowElements: any
+export let dblFloorElements: any
+export let dblRoofElements: any 
 //
-export const dblStrLinealElements: any ={}
-export const dblCoveringElements: any={}
-//
-
+export let dblStrLinealElements: any 
+export let dblCoveringElements: any
 //
 //Function
 export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
-  const properties = model.properties;
+  dblWallElements = {};
+  dblWindowElements = {};
+  dblFloorElements= {};
+  dblRoofElements = {};
+  
+  dblStrLinealElements ={}
+  dblCoveringElements={}
 
+  const properties = model.properties;
   if (properties === undefined || null) {
     return;
   }
@@ -234,10 +290,6 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
         item.Name.value.includes("Common") ||
         item.Name.value.includes("DBL"))
   );
-
-  //
-  OBC.IfcPropertiesUtils.getPsetRel;
-  //
   for (const level in obj) {
     //
     let levelArray = obj[level];
@@ -251,7 +303,6 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
     //
     const dblModelStrLinealLevelArray:any=[];
     const dblModelCoveringLevelArray: any=[];
-    
     //
     const dblModelStairsLevelArray:any=[]
     const dblModelRailingLevelArray:any=[]
@@ -269,7 +320,6 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
       const fragmentMap = levelArray[id].fragmentMap
 
       let dblElementMaterialSet: any = [];
-      
       let dblWallProps: dblWallProps = {
         dblWallType: undefined,
         dblIsLoadBearing: undefined,
@@ -284,6 +334,7 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
         dblWallWidth: undefined,
         dblWallHeight: undefined,
         dblWallNetArea: undefined,
+        dblWallGrossArea: undefined,
         dblWallNetVolume: undefined,
       };
       //Windows
@@ -332,7 +383,7 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
         dblHorElementNetArea: undefined,
         dblHorElementNetVolume: undefined,
       };
-      let dblStrLinealProps :dblStrLinealProps ={
+      let dblStrLinealProps :dblStrLinealProps = {
         dblIsLoadBearing: undefined, 
         dblIsExternal: undefined
       }
@@ -350,7 +401,6 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
         dblCoveringGrossArea: undefined,
         dblCoveringNetArea: undefined
       }
-
       //console.log(expressID,idProps)
       //
       const dblEntity: dblEntity = {
@@ -396,7 +446,8 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
       let wallLenght: undefined | number = undefined;
       let wallWidth: undefined | number = undefined;
       let wallHeight: undefined | number = undefined;
-      let wallNetSideArea: any | undefined = undefined;
+      let wallNetSideArea: number | undefined = undefined;
+      let wallGrossArea : number|undefined;
       let wallNetVolume: undefined | number = undefined;
       ///MaterialLayers
       let wallMaterialName = undefined;
@@ -517,7 +568,7 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
               const conditionPsetWindow = typePsetWindow.some((pset) =>
                 elemementTypePsetName.includes(pset)
               );
-              if ((isWall || isFloor || isRoof) && conditionPsetCommon) {
+              if ((isDblWall(idType) || isDblFloor(idType) || isDblRoof(idType)) && conditionPsetCommon) {
                 switch (typePropName) {
                   case "ThermalTransmittance":
                     elementUvalue = parseFloat(typePropValue.toFixed(2));
@@ -529,7 +580,7 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
                     elementIsLoadBearing = typePropValue;
                     break;
                 }
-              } else if (isWindow && conditionPsetWindow) {
+              } else if (isDblWindow(idType) && conditionPsetWindow) {
                 //console.log(expressID,elementTypePset)
                 switch (typePropName) {
                   case "ThermalTransmittance":
@@ -569,7 +620,7 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
                     windowFrameThickness = typePropValue;
                     break;
                 }
-              }else if((isColumn||isBeam)&& conditionPsetCommon){
+              }else if((isDblStructuralLinealElement(idType))&& conditionPsetCommon){
                 switch (typePropName) {
                   case "IsExternal":
                     elementIsExternal = typePropValue;
@@ -688,6 +739,8 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
                     case "NetVolume":
                       wallNetVolume = parseFloat(quantityValue.toFixed(2));
                       break;
+                    //case "GrossSideArea":
+                    //  wallGrossArea = parseFloat(quantityValue.toFixed(2));
                   }
                 } else if (isFloor || isRoof) {
                   switch (quantityName) {
@@ -1229,13 +1282,18 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
           dblWallUvalue: elementUvalue,
           dblWallRvalue: elementRvalue,
         };
+        if(wallHeight !== undefined && wallLenght !== undefined){
+          wallGrossArea = (wallHeight)*(wallLenght)
+        }
         dblWallQtos: dblWallQtos = {
           dblWallLenght: wallLenght,
           dblWallWidth: wallWidth,
           dblWallHeight: wallHeight,
           dblWallNetArea: wallNetSideArea,
+          dblWallGrossArea: wallGrossArea,
           dblWallNetVolume: wallNetVolume,
         };
+        
         //console.log("DBL_Wall",dblWallProps,dblWallQtos,dblElementMaterialLayerSet)
         const dblWall = {
           entity: dblEntity,
@@ -1409,81 +1467,7 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
   //console.log("DBLExternalFloors",dblEnvelopeFloorElements)
   //console.log("DBLExternalRoofs",dblEnvelopeRoofElements)
 }
-export const dblEnvelopeWalls: any = {};
-export const dblEnvelopeFloors: any = {};
-export const dblEnvelopeWindows: any = {};
-export const dblEnvelopeRoofs: any = {};
 
-interface dblComposedEntity{
-  dblEnvelopeExpressIdArray:any[],
-  dblEnvelopeFragmentMap:{}
-}
-interface dblVerticalEnvelopeComponent {
-  dblComponentExpressId: string | undefined;
-  dblComponentEntityType: number | undefined;
-  dblComponentEnvelopeCode: string | undefined;
-  dblComponentType: string | undefined;
-  dblComponentRvalue: number | undefined;
-  dblComponentOrientation: string | undefined;
-  dblComponentWidth: number | undefined;
-  dblComponentNetArea: number | undefined;
-  dblEntity:dblEntity
-
-}
-interface dblVerticalLayeredEnvelope {
-  dblEnvelopeCode: string | undefined;
-  dblEnvelopeType: string | undefined;
-  dblEnvelopeUvalue: number | undefined;
-  dblEnvelopeWidth: number | undefined;
-  dblEnvelopeArea: number | undefined;
-  dblEnvelopeOrientation: string | undefined;
-  dblEnvelopeComponents: any[];
-  dblComposedEntity:dblComposedEntity;
-}
-interface dblHorizontalEnvelopeComponent {
-  dblComponentExpressId: string | undefined;
-  dblComponentEntityType: number | undefined;
-  dblComponentEnvelopeCode: string | undefined;
-  dblComponentType: string | undefined;
-  dblComponentRvalue: number | undefined;
-  dblComponentWidth: number | undefined;
-  dblComponentNetArea: number | undefined;
-  dblEntity:dblEntity
-}
-interface dblHorizontalLayeredEnvelope {
-  dblEnvelopeCode: string | undefined;
-  dblEnvelopeType: string | undefined;
-  dblEnvelopeUvalue: number | undefined;
-  dblEnvelopeWidth: number | undefined;
-  dblEnvelopeArea: number | undefined;
-  dblEnvelopeComponents: any[];
-  dblComposedEntity:dblComposedEntity;
-}
-interface dblWindowEnvelopeComponent {
-  dblEnvelopeExpressId: string | undefined;
-}
-interface dblWindowEnvelope {
-  dblEnvelopeCode: string | undefined;
-  dblEnvelopeOrientation: string | undefined;
-  dblEnvelopeWindowType: string | undefined;
-  dblEnvelopeWindowWidth: number | undefined;
-  dblEnvelopeWindowHeight: number | undefined;
-  dblEnvelopeWindowUvalue: number | undefined;
-  dblEnvelopeWindowgValue: number | undefined;
-  dblEnvelopeWindowCount: number | undefined;
-  dblEnvelopeComponents: any[];
-  dblComposedEntity:dblComposedEntity;
-}
-interface dblMaterialCategory {
-  dblMaterialCategoryUniclassName: string|undefined
-  dblMaterialCategoryUniclassCode:string|undefined
-  dblMaterialCategoryWasteCategory: string|undefined
-  dblMaterialCategoryMassDensity: number|undefined
-  dblMaterialNetVolumeSum: number|undefined
-  dblMaterialWeightSum:number|undefined
-  dblMaterialArray:{}[]
-}
-const dblMaterial = {};
 //
 function checkEnvelopeValue(envelopeValue: string, array: any[]) {
   return array.findIndex(
@@ -1536,24 +1520,28 @@ function sumMaterialArrays(...arrays: any): void {
         }
       });
       if (weightSum !== obj.dblMaterialWeightSum) {
-        obj.dblMaterialWeightSum = weightSum.toFixed(6);
+        obj.dblMaterialWeightSum = parseFloat(weightSum.toFixed(6));
       }
       if (netVolumeSum !== obj.dblMaterialNetVolumeSum) {
-        obj.dblMaterialNetVolumeSum = netVolumeSum.toFixed(6);
+        obj.dblMaterialNetVolumeSum = parseFloat(netVolumeSum.toFixed(6)) ;
       }
     });
   });
 }
 
 
-export const dblSkinMaterialInventory: any = [];
-export const dblStructuralMaterialInventory: any = [];
-export const dblServiceMaterialInventory: any = [];
-export const dblSpaceMaterialInventory: any = [];
-export const dblStuffMaterialInventory: any = [];
+export let dblSkinMaterialInventory: any 
+export let dblStructuralMaterialInventory: any 
+export let dblServiceMaterialInventory: any 
+export let dblSpaceMaterialInventory: any 
+export let dblStuffMaterialInventory: any 
 
 export async function classifyMaterials(...obj) {  
-  
+  dblSkinMaterialInventory= [];
+  dblStructuralMaterialInventory = [];
+  dblServiceMaterialInventory= [];
+  dblSpaceMaterialInventory= [];
+  dblStuffMaterialInventory = [];
 
   obj.forEach((obj) => {
     for (const level in obj) {
@@ -1625,7 +1613,16 @@ export async function classifyMaterials(...obj) {
   console.log("SpaceMaterialInventory",dblSpaceMaterialInventory)
   console.log("StuffMaterialInventory",dblStuffMaterialInventory)
 }
+//
+export let dblEnvelopeWalls: any 
+export let dblEnvelopeFloors: any 
+export let dblEnvelopeWindows: any 
+export let dblEnvelopeRoofs: any 
 export async function classifyEnvelope(...obj) {
+  dblEnvelopeWalls = {};
+  dblEnvelopeFloors = {};
+  dblEnvelopeWindows = {};
+  dblEnvelopeRoofs = {};
   obj.forEach((obj) => {
     for (const level in obj) {
       const dblLevel = obj[level];
@@ -1642,11 +1639,11 @@ export async function classifyEnvelope(...obj) {
         const componentFragmentMap= dblEntity.fragmentMap
         //
         let dblComposedEntity:dblComposedEntity ={
+          dblIfcType:undefined,
           dblEnvelopeExpressIdArray:[],
           dblEnvelopeFragmentMap:{}
         }
         
-
         //console.log(componentExpressId,"Here some Maps",componentFragmentMap)
         const isWall =
           componentEntityType === WEBIFC.IFCWALL ||
@@ -1666,10 +1663,12 @@ export async function classifyEnvelope(...obj) {
           const componentRvalue = dblElement.props.dblWallRvalue;
           const componentWidth = dblElement.qtos.dblWallWidth;
           const componentNetArea = dblElement.qtos.dblWallNetArea;
+          const componentGrossArea = dblElement.qtos.dblWallGrossArea
           const componentOrientation = dblElement.props.dblWallEnvelopeOrientation;
+          
            
           //
-          const dblEnvelopeComponent: dblVerticalEnvelopeComponent = {
+          const dblEnvelopeComponent: dblEnvelopeVerticalComponent = {
             dblComponentExpressId: componentExpressId,
             dblComponentEntityType: componentEntityType,
             dblComponentEnvelopeCode: componentEnvelopeCode,
@@ -1678,23 +1677,23 @@ export async function classifyEnvelope(...obj) {
             dblComponentOrientation: componentOrientation,
             dblComponentWidth: componentWidth,
             dblComponentNetArea: componentNetArea,
+            dblComponentGrossArea:componentGrossArea,
             dblEntity:dblEntity
           };
-          const dblEnvelopeWall: dblVerticalLayeredEnvelope = {
+          const dblEnvelopeWall: dblEnvelopeVerticalLayered = {
             dblEnvelopeCode: envelopeCode,
             dblEnvelopeType: undefined,
             dblEnvelopeUvalue: undefined,
             dblEnvelopeWidth: undefined,
-            dblEnvelopeArea: undefined,
+            dblEnvelopeNetArea: undefined,
+            dblEnvelopeGrossArea: undefined,
             dblEnvelopeOrientation: componentOrientation,
             dblEnvelopeComponents: [],
             dblComposedEntity:dblComposedEntity
           };
+          dblEnvelopeWall.dblComposedEntity.dblIfcType = dblElement.entity.entityType
           //console.log(dblElement)
-          const envelopeIndex = checkEnvelopeValue(
-            envelopeCode,
-            dblEnvelopeWallLevelArray
-          );
+          const envelopeIndex = checkEnvelopeValue(envelopeCode,dblEnvelopeWallLevelArray);
           const targetElement = dblEnvelopeWallLevelArray[envelopeIndex];
           if (envelopeIndex !== -1 && targetElement !== undefined) {
             //console.log("si está", envelopeIndex,dblEnvelopeWallLevelArray[envelopeIndex])
@@ -1709,20 +1708,19 @@ export async function classifyEnvelope(...obj) {
             dblEnvelopeWall.dblEnvelopeComponents.push(dblEnvelopeComponent);
             for (let fragmentId in componentFragmentMap){
               if(componentFragmentMap.hasOwnProperty(fragmentId)){
-                dblEnvelopeWall.dblComposedEntity.dblEnvelopeFragmentMap[fragmentId]= new Set (componentFragmentMap[fragmentId])
+                dblEnvelopeWall.dblComposedEntity.dblEnvelopeFragmentMap[fragmentId] = new Set (componentFragmentMap[fragmentId])
               }
             }
           }
         } else if (isFloor || isRoof) {
           const envelopeCode = dblElement.props.dblHorElementEnvelopeCode;
           const componentType = dblElement.props.dblHorElementType;
-          const componentEnvelopeCode =
-            dblElement.props.dblHorElementEnvelopeCode;
+          const componentEnvelopeCode = dblElement.props.dblHorElementEnvelopeCode;
           const componentRvalue = dblElement.props.dbHorElementrRvalue;
           const componentWidth = dblElement.qtos.dblHorElementWidth;
           const componentNetArea = dblElement.qtos.dblHorElementNetArea;
 
-          const dblEnvelopeHorizontalComponent: dblHorizontalEnvelopeComponent =
+          const dblEnvelopeHorizontalComponent: dblEnvelopeHorizontalComponent =
             {
               dblComponentExpressId: componentExpressId,
               dblComponentEntityType: componentEntityType,
@@ -1733,20 +1731,22 @@ export async function classifyEnvelope(...obj) {
               dblComponentNetArea: componentNetArea,
               dblEntity:dblEntity
             };
-          const dblEnvelopeHorizontal: dblHorizontalLayeredEnvelope = {
+          const dblEnvelopeHorizontal: dblEnvelopeHorizontalLayered = {
             dblEnvelopeCode: envelopeCode,
             dblEnvelopeType: undefined,
             dblEnvelopeUvalue: undefined,
             dblEnvelopeWidth: undefined,
-            dblEnvelopeArea: undefined,
+            dblEnvelopeNetArea: undefined,
             dblEnvelopeComponents: [],
             dblComposedEntity:dblComposedEntity
           };
+          if(dblElement.entity.entityType!== undefined){
+            dblEnvelopeHorizontal.dblComposedEntity.dblIfcType = dblElement.entity.entityType
+          }
+          
+          //
           if (isFloor) {
-            const envelopeIndex = checkEnvelopeValue(
-              envelopeCode,
-              dblEnvelopeFloorLevelArray
-            );
+            const envelopeIndex = checkEnvelopeValue(envelopeCode,dblEnvelopeFloorLevelArray);
             const targetElement = dblEnvelopeFloorLevelArray[envelopeIndex];
             if (envelopeIndex !== -1 && targetElement !== undefined) {
               targetElement.dblEnvelopeComponents.push(dblEnvelopeHorizontalComponent);
@@ -1762,13 +1762,9 @@ export async function classifyEnvelope(...obj) {
                   dblEnvelopeHorizontal.dblComposedEntity.dblEnvelopeFragmentMap[fragmentId]= new Set (componentFragmentMap[fragmentId])
                 }
               }
-              
             }
           } else if (isRoof) {
-            const envelopeIndex = checkEnvelopeValue(
-              envelopeCode,
-              dblEnvelopeRoofLevelArray
-            );
+            const envelopeIndex = checkEnvelopeValue(envelopeCode, dblEnvelopeRoofLevelArray);
             const targetElement = dblEnvelopeRoofLevelArray[envelopeIndex];
             if (envelopeIndex !== -1 && targetElement !== undefined) {
               targetElement.dblEnvelopeComponents.push(dblEnvelopeHorizontalComponent);
@@ -1781,41 +1777,43 @@ export async function classifyEnvelope(...obj) {
               dblEnvelopeHorizontal.dblEnvelopeComponents.push(dblEnvelopeHorizontalComponent);
               for (let fragmentId in componentFragmentMap){
                 if(componentFragmentMap.hasOwnProperty(fragmentId)){
-                  dblEnvelopeHorizontal.dblComposedEntity.dblEnvelopeFragmentMap[fragmentId]= new Set (componentFragmentMap[fragmentId])
+                  dblEnvelopeHorizontal.dblComposedEntity.dblEnvelopeFragmentMap[fragmentId] = new Set (componentFragmentMap[fragmentId])
                 }
               }
             }
           }
         } else if (isWindow) {
-          const envelopeCode = dblElement.props.dblWindowEnvelopeCode;
-          const envelopeOrientation = dblElement.props.dblWindowEnvelopeOrientation;
+          
+          const envelopeWindowOrientation = dblElement.props.dblWindowEnvelopeOrientation
           const envelopeWindowType = dblElement.props.dblWindowType;
           const envelopeWindowWidth = dblElement.qtos.dblWindowWidth;
           const envelopeWindowHeight = dblElement.qtos.dblWindowHeight;
           const envelopeWindowUvalue = dblElement.qtos.dblWindowUvalue;
-          const envelopeWindowgValue = dblElement.qtos.dblWindowGvalue;
+          const envelopeWindowGvalue = dblElement.qtos.dblWindowGvalue;
           const envelopeWindowCount = undefined;
-
-          const dblWindowEnvelopeComponent: dblWindowEnvelopeComponent = {
+          const envelopeCode = dblElement.props.dblWindowEnvelopeCode;
+          const dblWindowEnvelopeComponent: dblEnvelopeWindowComponent = {
             dblEnvelopeExpressId: componentExpressId,
           };
-          const dblEnvelopeWindow: dblWindowEnvelope = {
+          const dblEnvelopeWindow: dblEnvelopeWindow = {
             dblEnvelopeCode: envelopeCode,
-            dblEnvelopeOrientation: undefined,
-            dblEnvelopeWindowType: undefined,
-            dblEnvelopeWindowWidth: undefined,
-            dblEnvelopeWindowHeight: undefined,
-            dblEnvelopeWindowUvalue: undefined,
-            dblEnvelopeWindowgValue: undefined,
+            dblEnvelopeOrientation: envelopeWindowOrientation,
+            dblEnvelopeNetArea: (envelopeWindowWidth * envelopeWindowHeight),
+            dblEnvelopeWindowType: envelopeWindowType,
+            dblEnvelopeWindowWidth: envelopeWindowWidth,
+            dblEnvelopeWindowHeight: envelopeWindowHeight,
+            dblEnvelopeWindowUvalue: envelopeWindowUvalue,
+            dblEnvelopeWindowgValue: envelopeWindowGvalue,
             dblEnvelopeWindowCount: undefined,
             dblEnvelopeComponents: [],
             dblComposedEntity:dblComposedEntity
           };
+          
+          if(dblElement.hasOwnProperty("entity")&& dblElement.entity.hasOwnProperty("entityType")){
+            dblEnvelopeWindow.dblComposedEntity.dblIfcType = dblElement.entity.entityType
+          }
           //console.log(dblEnvelopeWindow)
-          const envelopeIndex = checkEnvelopeValue(
-            envelopeCode,
-            dblEnvelopeWindowLevelArray
-          );
+          const envelopeIndex = checkEnvelopeValue(envelopeCode,dblEnvelopeWindowLevelArray);
           const targetElement = dblEnvelopeWindowLevelArray[envelopeIndex];
           if (envelopeIndex !== -1 && targetElement != undefined) {
             //TAMOS AQUI
@@ -1844,13 +1842,13 @@ export async function classifyEnvelope(...obj) {
           const envelopeWidth: number = componentArray.reduce((sum: number, component) => sum + component.dblComponentWidth,0);
           const envelopeRvalue: number = componentArray.reduce((sum: number, component) => sum + component.dblComponentRvalue,0);
           const envelopeNetArea: number = componentArray.reduce((sum: number, component) => sum + component.dblComponentNetArea,0);
+          const envelopeGrossArea: number = componentArray.reduce((sum: number, component) => sum + component.dblComponentGrossArea,0);
 
           envelopeWall.dblEnvelopeType = concatenatedTypes;
           envelopeWall.dblEnvelopeWidth = parseFloat(envelopeWidth.toFixed(2));
-          envelopeWall.dblEnvelopeUvalue = parseFloat(
-            (1 / envelopeRvalue).toFixed(2)
-          );
-          envelopeWall.dblEnvelopeArea = envelopeNetArea / componentArray.length;
+          envelopeWall.dblEnvelopeUvalue = parseFloat((1 / envelopeRvalue).toFixed(2));
+          envelopeWall.dblEnvelopeNetArea = envelopeNetArea / componentArray.length;
+          envelopeWall.dblEnvelopeGrossArea = envelopeGrossArea/ componentArray.length; //OJO CUIDADAO
         }
       }
       if (dblEnvelopeFloorLevelArray.length !== 0) {
@@ -1858,8 +1856,7 @@ export async function classifyEnvelope(...obj) {
         for (const envelopeFloor of dblEnvelopeFloorLevelArray) {
           const componentArray = envelopeFloor.dblEnvelopeComponents;
           const concatenatedTypes = componentArray
-            .map((component) => component.dblComponentType)
-            .join("+");
+            .map((component) => component.dblComponentType).join("+");
           const envelopeWidth: number = componentArray.reduce((sum: number, component) => sum + component.dblComponentWidth,0);
           const envelopeRvalue: number = componentArray.reduce((sum: number, component) => sum + component.dblComponentRvalue,0);
           const envelopeNetArea: number = componentArray.reduce((sum: number, component) => sum + component.dblComponentNetArea,0);
@@ -1867,36 +1864,23 @@ export async function classifyEnvelope(...obj) {
           envelopeFloor.dblEnvelopeType = concatenatedTypes;
           envelopeFloor.dblEnvelopeWidth = parseFloat(envelopeWidth.toFixed(2));
           envelopeFloor.dblEnvelopeUvalue = parseFloat((1 / envelopeRvalue).toFixed(2));
-          envelopeFloor.dblEnvelopeArea =envelopeNetArea / componentArray.length;
+          envelopeFloor.dblEnvelopeNetArea =envelopeNetArea / componentArray.length;
         }
       }
       if (dblEnvelopeRoofLevelArray.length !== 0) {
         dblEnvelopeRoofs[level] = dblEnvelopeRoofLevelArray;
         for (const envelopeRoof of dblEnvelopeRoofLevelArray) {
           const componentArray = envelopeRoof.dblEnvelopeComponents;
-          const concatenatedTypes = componentArray
-            .map((component) => component.dblComponentType)
-            .join("+");
-          const envelopeWidth: number = componentArray.reduce(
-            (sum: number, component) => sum + component.dblComponentWidth,
-            0
-          );
-          const envelopeRvalue: number = componentArray.reduce(
-            (sum: number, component) => sum + component.dblComponentRvalue,
-            0
-          );
-          const envelopeNetArea: number = componentArray.reduce(
-            (sum: number, component) => sum + component.dblComponentNetArea,
-            0
-          );
+          const concatenatedTypes = componentArray.map((component) => component.dblComponentType).join("+");
+          const envelopeWidth: number = componentArray.reduce((sum: number, component) => sum + component.dblComponentWidth,0);
+          const envelopeRvalue: number = componentArray.reduce((sum: number, component) => sum + component.dblComponentRvalue,0);
+          const envelopeNetArea: number = componentArray.reduce((sum: number, component) => sum + component.dblComponentNetArea,0);
 
           envelopeRoof.dblEnvelopeType = concatenatedTypes;
           envelopeRoof.dblEnvelopeWidth = parseFloat(envelopeWidth.toFixed(2));
           envelopeRoof.dblEnvelopeUvalue = parseFloat(
-            (1 / envelopeRvalue).toFixed(2)
-          );
-          envelopeRoof.dblEnvelopeArea =
-            envelopeNetArea / componentArray.length;
+            (1 / envelopeRvalue).toFixed(2));
+          envelopeRoof.dblEnvelopeNetArea = envelopeNetArea / componentArray.length;
         }
       }
       if (dblEnvelopeWindowLevelArray.length !== 0) {
@@ -1911,4 +1895,116 @@ export async function classifyEnvelope(...obj) {
   console.log(dblEnvelopeFloors);
   console.log(dblEnvelopeRoofs);
   console.log(dblEnvelopeWindows);
+}
+//
+export let dblEnvelopeSummaryVertical: { [key: string]: dblEnvelopeSummaryOrientationVertical }
+export let dblEnvelopeSummaryFloors:dblFloorEnvelopeSummary 
+export let dblEnvelopeSummaryRoofs:dblRoofEnvelopeSummary
+//
+export async function summarizeEnvelope (...env){
+
+  dblEnvelopeSummaryVertical ={};
+  dblEnvelopeSummaryRoofs = {
+    dblRoofEnvelopeSummaryAreaSum:0
+  };
+  dblEnvelopeSummaryFloors = {
+    dblFloorEnvelopeSummaryAreaSum:0
+  };
+  //
+  env.forEach((env)=>{
+    for (let l in env){
+      const level= env[l]
+      for (const element of level){
+        const ifcEntityType = element.dblComposedEntity.dblIfcType
+        const envelopeVerticalSummaryOrientation = element.dblEnvelopeOrientation
+        const envelopeSummaryNetArea = parseFloat(element.dblEnvelopeNetArea.toFixed(2))
+        //
+        const envelopeFragmentMap =  element.dblComposedEntity.dblEnvelopeFragmentMap
+        const targetSummaryElement = dblEnvelopeSummaryVertical[envelopeVerticalSummaryOrientation]
+        //
+        if(isDblWall(ifcEntityType) && element.hasOwnProperty("dblEnvelopeGrossArea") && element.hasOwnProperty("dblEnvelopeOrientation")&& element.hasOwnProperty("dblComposedEntity")){
+          const envelopeSummaryGrossArea = parseFloat(element.dblEnvelopeGrossArea.toFixed(2))
+          
+          const dblComposedEntity:dblComposedEntity = {
+            dblIfcType:ifcEntityType,
+            dblEnvelopeExpressIdArray: [],
+            dblEnvelopeFragmentMap:{}
+          }
+          //console.log(envelopeVerticalSummaryOrientation)
+          if(!dblEnvelopeSummaryVertical[envelopeVerticalSummaryOrientation]){
+            
+            const dblEnvelopeSummaryElement: dblEnvelopeSummaryOrientationVertical = {
+              dblVerticalEnvelopeSummaryOrientation: envelopeVerticalSummaryOrientation,
+              dblWallEnvelopeSummaryNetAreaSum: 0,
+              dblWallEnvelopeSummaryGrossAreaSum: parseFloat(envelopeSummaryGrossArea.toFixed(2)),
+              dblWindowToWallRatio: 0,
+              dblWindowEnvelopeSummaryNetAreaSum:0,
+              dblEnvelopePercentageOverTotal:0,
+              dblComposedEntity: dblComposedEntity
+            }
+
+            for (let fragmentId in envelopeFragmentMap){
+              console.log("ahora si",[envelopeFragmentMap],envelopeFragmentMap[fragmentId]) //POR AQUI ESTAMOS 25
+              if(!dblComposedEntity.dblEnvelopeFragmentMap[fragmentId]){
+                dblComposedEntity.dblEnvelopeFragmentMap[fragmentId] = new Set(envelopeFragmentMap[fragmentId]) 
+              } 
+            }
+            dblEnvelopeSummaryVertical[envelopeVerticalSummaryOrientation]= dblEnvelopeSummaryElement 
+          }
+          else if(targetSummaryElement.dblWallEnvelopeSummaryNetAreaSum !== undefined && targetSummaryElement.dblComposedEntity!== undefined && targetSummaryElement.dblWallEnvelopeSummaryGrossAreaSum!== undefined  ){
+            
+            targetSummaryElement.dblWallEnvelopeSummaryNetAreaSum += parseFloat(envelopeSummaryGrossArea.toFixed(2))
+            targetSummaryElement.dblWallEnvelopeSummaryGrossAreaSum += parseFloat(envelopeSummaryGrossArea.toFixed(2))
+            for (let fragmentId in envelopeFragmentMap){
+              if(!targetSummaryElement.dblComposedEntity.dblEnvelopeFragmentMap[fragmentId]){
+                targetSummaryElement.dblComposedEntity.dblEnvelopeFragmentMap[fragmentId] = new Set(envelopeFragmentMap[fragmentId])
+              } else{
+                
+                envelopeFragmentMap[fragmentId].forEach(value => targetSummaryElement.dblComposedEntity?.dblEnvelopeFragmentMap[fragmentId].add(value))
+                envelopeFragmentMap[fragmentId].forEach(value=> console.log("asdasd",envelopeFragmentMap[fragmentId],value))
+              }
+            }
+          }
+         //console.log(element)
+        }
+        else if(isDblWindow(ifcEntityType)){
+
+          if(!dblEnvelopeSummaryVertical[envelopeVerticalSummaryOrientation]){
+            const dblEnvelopeVerticalSummaryElement: dblEnvelopeSummaryOrientationVertical = {
+              dblVerticalEnvelopeSummaryOrientation: envelopeVerticalSummaryOrientation,
+              dblWallEnvelopeSummaryNetAreaSum: 0,
+              dblWallEnvelopeSummaryGrossAreaSum: 0,
+              dblWindowToWallRatio: 0,
+              dblWindowEnvelopeSummaryNetAreaSum:envelopeSummaryNetArea,
+              dblEnvelopePercentageOverTotal:0,
+              dblComposedEntity:undefined
+            }
+            dblEnvelopeSummaryVertical[envelopeVerticalSummaryOrientation] = dblEnvelopeVerticalSummaryElement
+
+          } else if( dblEnvelopeSummaryVertical[envelopeVerticalSummaryOrientation].dblWindowEnvelopeSummaryNetAreaSum !== undefined){
+            dblEnvelopeSummaryVertical[envelopeVerticalSummaryOrientation].dblWindowEnvelopeSummaryNetAreaSum += envelopeSummaryNetArea
+          }
+        }
+        else if (isDblFloor(ifcEntityType) && envelopeSummaryNetArea!== undefined){
+          dblEnvelopeSummaryFloors.dblFloorEnvelopeSummaryAreaSum += envelopeSummaryNetArea
+        }
+        else if (isDblRoof(ifcEntityType) && envelopeSummaryNetArea!== undefined){
+          dblEnvelopeSummaryRoofs.dblRoofEnvelopeSummaryAreaSum += envelopeSummaryNetArea
+        }
+      }
+    }
+  })
+  
+  for (let key in dblEnvelopeSummaryVertical){
+    const element = dblEnvelopeSummaryVertical[key]
+    if(element.dblWallEnvelopeSummaryGrossAreaSum!== undefined  && element.dblWindowEnvelopeSummaryNetAreaSum){
+      const dblWindowToWallRatio = ((element.dblWindowEnvelopeSummaryNetAreaSum)/(element.dblWallEnvelopeSummaryGrossAreaSum))
+      element.dblWindowToWallRatio = parseFloat(dblWindowToWallRatio.toFixed(2))
+      element.dblWallEnvelopeSummaryNetAreaSum = element.dblWallEnvelopeSummaryGrossAreaSum - element.dblWindowEnvelopeSummaryNetAreaSum
+      //
+      element.dblWindowEnvelopeSummaryNetAreaSum = parseFloat(element.dblWindowEnvelopeSummaryNetAreaSum.toFixed(2))
+    }
+  }
+
+  console.log("Esto",dblEnvelopeSummaryVertical, dblEnvelopeSummaryRoofs, dblEnvelopeSummaryFloors)
 }
