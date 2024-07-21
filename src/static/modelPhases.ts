@@ -14,7 +14,8 @@ let phase0:ObjectPhaseInfo ={
     epcScope:"EdifExistente",
     epcStartDate:"2021-02-28",
     description: "Original Construction",
-    ifcModel: "ifc/20240702/ph00_tfm_modified.ifc"
+    ifcModel:"ifc/Tecnalia_TFM_Presentacion/ph00_tfm_modified.ifc"
+    // ifcModel: "ifc/20240702/ph00_tfm_modified.ifc"
 }
 let phase1:ObjectPhaseInfo ={
     id:1,
@@ -22,7 +23,8 @@ let phase1:ObjectPhaseInfo ={
     epcScope:"Proyecto",
     epcStartDate: "2022-08-04",
     description: "Thermal Envelope renovation and elevator installation",
-    ifcModel: "ifc/20240702/ph01_tfm_modified.ifc"
+    ifcModel: "ifc/Tecnalia_TFM_Presentacion/ph01_tfm_modified.ifc"
+    // ifcModel: "ifc/20240702/ph01_tfm_modified.ifc"
 }
 
 projectPhasesArray.push(phase0,phase1)

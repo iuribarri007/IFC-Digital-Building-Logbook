@@ -1618,6 +1618,7 @@ export let dblEnvelopeWalls: any
 export let dblEnvelopeFloors: any 
 export let dblEnvelopeWindows: any 
 export let dblEnvelopeRoofs: any 
+
 export async function classifyEnvelope(...obj) {
   dblEnvelopeWalls = {};
   dblEnvelopeFloors = {};
