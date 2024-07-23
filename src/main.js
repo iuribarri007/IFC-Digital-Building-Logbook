@@ -660,28 +660,60 @@ subcategoryButtons.forEach(button => {
 
   // Funcionalidad de redimensionamiento
   let isResizing = false;
-
+  const minWidth = 20 * 16; // 20rem in pixels (assuming 16px base font size)
+  const maxWidth = window.innerWidth * 0.4; // 60% of the viewport widt
+ 
   resizer.addEventListener('mousedown', function(e) {
       isResizing = true;
       document.body.style.cursor = 'ew-resize';
       document.addEventListener('mousemove', onMouseMove);
       document.addEventListener('mouseup', onMouseUp);
   });
-
+  
   function onMouseMove(e) {
       if (!isResizing) return;
-
+  
       // Obtiene el rectángulo del elemento subcategory-menu
       const rect = subcategoryMenu.getBoundingClientRect();
-
+  
       // Calcula el nuevo ancho basado en la posición actual del mouse
-      subcategoryMenu.style.width = `${e.clientX - rect.left}px`;
+      let newWidth = e.clientX - rect.left;
+  
+      // Limita el nuevo ancho entre minWidth y maxWidth
+      if (newWidth >= minWidth && newWidth <= maxWidth) {
+          subcategoryMenu.style.width = `${newWidth}px`;
+      }
   }
-
+  
   function onMouseUp() {
       isResizing = false;
       document.body.style.cursor = '';
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
   }
+//   let isResizing = false;
+
+//   resizer.addEventListener('mousedown', function(e) {
+//       isResizing = true;
+//       document.body.style.cursor = 'ew-resize';
+//       document.addEventListener('mousemove', onMouseMove);
+//       document.addEventListener('mouseup', onMouseUp);
+//   });
+
+//   function onMouseMove(e) {
+//       if (!isResizing) return;
+
+//       // Obtiene el rectángulo del elemento subcategory-menu
+//       const rect = subcategoryMenu.getBoundingClientRect();
+
+//       // Calcula el nuevo ancho basado en la posición actual del mouse
+//       subcategoryMenu.style.width = `${e.clientX - rect.left}px`;
+//   }
+
+//   function onMouseUp() {
+//       isResizing = false;
+//       document.body.style.cursor = '';
+//       document.removeEventListener('mousemove', onMouseMove);
+//       document.removeEventListener('mouseup', onMouseUp);
+//   }
 });

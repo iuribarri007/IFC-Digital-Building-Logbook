@@ -5,25 +5,31 @@ import { FragmentMap, FragmentsGroup, IfcProperties } from "bim-fragment"
 import { Fragment } from "bim-fragment"
 import { color, exp, or, viewportResolution } from "three/examples/jsm/nodes/Nodes.js"
 import { ViewHelper } from "three/examples/jsm/helpers/ViewHelper.js"
-//Local imports
-//Local logic
-import { wallEntitiesByLevel, dblEnvelopeWallElements, dblEnvelopeWindowElements, dblEnvelopeFloorElements, dblEnvelopeRoofElements } from "./src/components/getIfcData.js"
-import { floorEntitiesByLevel, windowEntitiesByLevel, roofEntitiesByLevel, } from "./src/components/getIfcData.js"
-import { modelFragmentIdByLevel } from "./src/components/getIfcData.js"
-//Import logic
-import { getEntityFragmentsByLevel, getDblEntitiesByLevel, classifyEnvelope, classifyMaterials, summarizeEnvelope } from "./src/components/getIfcData.js"
-import { dblWallElements, dblFloorElements, dblWindowElements, dblRoofElements, dblStrLinealElements, dblCoveringElements } from "./src/components/getIfcData.js"
-import { dblEnvelopeWalls, dblEnvelopeFloors, dblEnvelopeRoofs, dblEnvelopeWindows } from "./src/components/getIfcData.js"
-import { dblEnvelopeSummaryVertical } from "./src/components/getIfcData.js"
-import { dblSkinMaterialInventory, dblStructuralMaterialInventory, dblServiceMaterialInventory, dblSpaceMaterialInventory, dblStuffMaterialInventory } from "./src/components/getIfcData.js"
+//Local imports ESTO ESTÁ BIEN
+// Imports from getIfcData
+import { modelFragmentIdByLevel } from "./src/components/getIfcEntities.js"
+import { getEntityFragmentsByLevel, getDblEntitiesByLevel} from "./src/components/getIfcEntities.js"
+import { dblWallElements, dblFloorElements, dblWindowElements, dblRoofElements, dblStrLinealElements, dblCoveringElements } from "./src/components/getIfcEntities.js"
+import { dblEnvelopeWallElements, dblEnvelopeWindowElements, dblEnvelopeFloorElements, dblEnvelopeRoofElements } from "./src/components/getIfcEntities.js"
+// Imports from getIfcMaterialInventoryData
+import { classifyMaterials } from "./src/components/getIfcMaterialInventoryData.js"
+import { dblSkinMadasterSummary,dblStructuralMadasterSummary,dblServiceMadasterSummary,dblSpaceMadasterSummary, dblStuffMadasterSummary} from "./src/components/getIfcMaterialInventoryData.js"
+import { dblSkinMaterialInventory,dblStructuralMaterialInventory,dblServiceMaterialInventory,dblSpaceMaterialInventory,dblStuffMaterialInventory } from "./src/components/getIfcMaterialInventoryData.js"
+// Imports from getIfcThermalEnvelopeData
+import { classifyEnvelope, summarizeEnvelope } from "./src/components/getIfcThermalEnvelopeData.js"
+import { dblEnvelopeWalls,dblEnvelopeFloors,dblEnvelopeRoofs,dblEnvelopeWindows } from "./src/components/getIfcThermalEnvelopeData.js"
+import { dblEnvelopeSummaryVertical} from "./src/components/getIfcThermalEnvelopeData.js"
+// Project phases
 import { projectPhasesArray } from "./src/static/modelPhases"
 //Alpine
 import Alpine, { remove } from 'alpinejs';
-
-import { dblEnvData, thermalEnvelopeTemplate, dblEnvelopeVerticalSummarize, envelopeVerticalSummaryTemplate } from './src/template.js';
-
-import { dblMaterialData, materialInventoryTemplate } from './src/template.js';
-import { epcDataTemplate, initializeEpcData } from "./src/template.js"
+//ThermalEnvelopeTemplates and logic
+import { thermalEnvelopeTemplate, thermalEnvelopeWindowTemplate, envelopeVerticalSummaryTemplate, } from "./src/templates/templateThermalEnvelope.js"
+import {  dblEnvelopeVerticalSummarize, dblShowThermalEnvelope,dblShowThermalEnvelopeWindows } from "./src/templates/templateThermalEnvelope.js"
+//MaterialInventoryTemplates and logic
+import { dblShowMaterialInventory, materialInventoryTemplate,dblShowMaterialMadasterSummary,materialMadasterSummaryTemplate } from './src/templates/templateMaterialInventory.js';
+//EpcTemplates and logic
+import { epcDataTemplate, dblShowEpcData } from "./src/templates/templateEPC.js"
 //
 import { getCertificates } from "./src/api/openDataCEE.js"
 import { dblEpcData } from "./src/components/getEpcData.js"
@@ -273,7 +279,6 @@ async function loadIfcAsFragments(ifcModelFile) {
       }
     },
   }
-
   plans.updatePlansList();
   toolbar.addChild(plans.uiElement.get('main'));
   plans.onNavigated.add(() => {
@@ -322,19 +327,19 @@ async function loadIfcAsFragments(ifcModelFile) {
   await getDblEntitiesByLevel(model, modelFragmentIdByLevel)
   //
   await classifyEnvelope(dblEnvelopeWallElements, dblEnvelopeFloorElements, dblEnvelopeRoofElements, dblEnvelopeWindowElements)
-
   await classifyMaterials(dblWallElements, dblFloorElements, dblWindowElements, dblRoofElements, dblStrLinealElements, dblCoveringElements)
-
   await summarizeEnvelope(dblEnvelopeWalls, dblEnvelopeWindows, dblEnvelopeFloors, dblEnvelopeRoofs)
-  await console.log("Summaryyy", dblEnvelopeSummaryVertical)
-  console.log(model)
-  getAllFragments(model)
+  // await console.log("Summaryyy", dblEnvelopeSummaryVertical)
+
+  // console.log(model)
+  // getAllFragments(model)
+
   //console.log("los planooos",plans)
   //console.log(scene.children)
   //console.log(3 ,classifier)
   console.log(2,fragments.groups[0])
 }
-let dblEpcPhaseData: UndefinedDblEpc = {}
+export let dblEpcPhaseData: UndefinedDblEpc = {}
 //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 const phasesBtns = document.querySelectorAll('.project-phase')
@@ -354,9 +359,8 @@ async function getAllFragments (model){
       allModelFragments[fragmentId] = new Set(expressIdArray)
     }
   })
-  console.log("Aver",allModelFragments)
+  //console.log("Aver",allModelFragments)
 }
-
 let allFragmentsExceptSelected
 async function getAllFragmentExceptSelected (highlightedFragments, allModelFragments){
   allFragmentsExceptSelected = structuredClone(allModelFragments)
@@ -382,9 +386,6 @@ async function getAllFragmentExceptSelected (highlightedFragments, allModelFragm
     }
     console.log(allModelFragments,allFragmentsExceptSelected)
   }
-  
-  
-
 }
 function findFragmentMap(envelopeCode, dataSetName, levelKey) {
   let baseObject;
@@ -441,6 +442,7 @@ function getFragmentMapInfo() {
         } else {
           highlighterActive = false
           highlighter.clear("amazing")
+          highlighter.clear("lines")
           highlighter.clear("transparentMaterial")
         }
       }
@@ -452,6 +454,7 @@ function clearHighlighterOnOutsideClick() {
   if (highlighterActive = true) {
     viewerContainer.addEventListener('click', function () {
       highlighter.clear("amazing");
+      highlighter.clear("lines")
       highlighter.clear("transparentMaterial")
       highlighterActive = false;
       highlighter.zoomToSelection = false
@@ -459,19 +462,28 @@ function clearHighlighterOnOutsideClick() {
   }
 }
 //ALPINE:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-let alpineInitialized = false;
+export let alpineInitialized = false;
 document.addEventListener('alpine:init', () => {
-  Alpine.data('dblEnvData1', () => dblEnvData({ dataSets: { dblEnvelopeWalls }, title: 'Aramotz Facades' }));
-  Alpine.data('dblEnvData2', () => dblEnvData({ dataSets: { dblEnvelopeFloors }, title: 'Aramotz Floors' }));
-  Alpine.data('dblEnvData3', () => dblEnvData({ dataSets: { dblEnvelopeRoofs }, title: 'Aramotz Roof' }));
+  Alpine.data('dblThermalEnvelopeDynamicFacades', () => dblShowThermalEnvelope({ envelopeType: { dblEnvelopeWalls }, title: 'Building Facades' }));
+  Alpine.data('dblThermalEnvelopeDynamicFloors', () => dblShowThermalEnvelope({ envelopeType: { dblEnvelopeFloors }, title: 'Building Floors' }));
+  Alpine.data('dblThermalEnvelopeDynamicRoofs', () => dblShowThermalEnvelope({ envelopeType: { dblEnvelopeRoofs }, title: 'Building Roofs' }));
+  Alpine.data('dblThermalEnvelopeDynamicWindows', () => dblShowThermalEnvelopeWindows({ envelopeType: { dblEnvelopeWindows }, title: 'Building Windows' }));
   //
-  Alpine.data('dblEnvelopeVerticalSummarize', () => dblEnvelopeVerticalSummarize({ envelopeData: dblEnvelopeSummaryVertical, title: 'Facade data summary' }));
-
+  Alpine.data('dblThermalEnvelopeDynamicVertical', () => dblEnvelopeVerticalSummarize({ envelopeData: dblEnvelopeSummaryVertical, title: 'Facade data summary' }));
   //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-  Alpine.data('dblSkinMaterial', () => dblMaterialData({ categories: dblSkinMaterialInventory, mainTitle: 'Skin Material' }));
-  Alpine.data('dblStructuralMaterial', () => dblMaterialData({ categories: dblStructuralMaterialInventory, mainTitle: 'Structural Material' }));
+  Alpine.data('dblSkinMaterial', () => dblShowMaterialInventory({ categories: dblSkinMaterialInventory, mainTitle: 'Skin Layer Material' }));
+  Alpine.data('dblStructuralMaterial', () => dblShowMaterialInventory({ categories: dblStructuralMaterialInventory, mainTitle: 'Structural Layer Materials' }));
+  Alpine.data('dblServiceMaterial', () => dblShowMaterialInventory({ categories: dblServiceMaterialInventory, mainTitle: 'Service Layer Materials' }));
+  Alpine.data('dblSpaceMaterial', () => dblShowMaterialInventory({ categories: dblSpaceMaterialInventory, mainTitle: 'Space Layer Materials' }));
+  Alpine.data('dblStuffMaterial', () => dblShowMaterialInventory({ categories: dblStuffMaterialInventory, mainTitle: 'Stuff Layer Materials' }));
+  //
+  Alpine.data('dblMadasterSummaryStaticSkin',() => dblShowMaterialMadasterSummary({ layerMadasterSummary: dblSkinMadasterSummary, mainTitle: 'Skin materialSummary' }));
+  Alpine.data('dblMadasterSummaryStaticStructural',() => dblShowMaterialMadasterSummary({ layerMadasterSummary: dblStructuralMadasterSummary, mainTitle: 'Structural materialSummary'}));
+  Alpine.data('dblMadasterSummaryStaticService', () => dblShowMaterialMadasterSummary({ layerMadasterSummary: dblServiceMadasterSummary, mainTitle: 'Service materialSummary' }));
+  Alpine.data('dblMadasterSummaryStaticSpace', () => dblShowMaterialMadasterSummary({ layerMadasterSummary: dblSpaceMadasterSummary, mainTitle: 'Space materialSummary' }));
+  Alpine.data('dblMadasterSummaryStaticStuff', () => dblShowMaterialMadasterSummary({ layerMadasterSummary: dblStuffMadasterSummary, mainTitle: 'Stuff materialSummary' }));
   //::::::::::::::::::::::::::::::::
-  Alpine.data('epcData', () => initializeEpcData({ data: dblEpcPhaseData, mainTitle: 'EPC Infooo' }));
+  Alpine.data('epcData', () => dblShowEpcData({ data: dblEpcPhaseData, mainTitle: 'EPC Infooo' }));
 });
 interface AlpineElement extends HTMLElement {
   __x?: {
@@ -480,15 +492,28 @@ interface AlpineElement extends HTMLElement {
 }
 function clearAlpineComponents() {
   const containers = [
-    'alpine-template-container',
-    'alpine-template-container2',
-    'alpine-template-container3',
-    'alpine-StructureMaterial-ThermalEnvelope-Static',
-    'alpine-SkinMaterialInventory',
-    'alpine-StructuralMaterialInventory',
+    'alpine-ThermalEnvelope-Dynamic-Facades',
+    'alpine-ThermalEnvelope-Dynamic-Floors',
+    'alpine-ThermalEnvelope-Dynamic-Roofs',
+    'alpine-ThermalEnvelope-Dynamic-Windows',
+    //
+    'alpine-ThermalEnvelope-Static-Vertical',
+    //
+    'alpine-MadasterSummary-Static-Skin',
+    'alpine-MadasterSummary-Static-Structural',
+    'alpine-MadasterSummary-Static-Service',
+    'alpine-MadasterSummary-Static-Space',
+    'alpine-MadasterSummary-Static-Stuff',
+    //
+    'alpine-MaterialInventory-Dynamic-Skin',
+    'alpine-MaterialInventory-Dynamic-Structural',
+    'alpine-MaterialInventory-Dynamic-Service',
+    'alpine-MaterialInventory-Dynamic-Space',
+    'alpine-MaterialInventory-Dynamic-Stuff',
+    //
     'alpine-epcPhaseData'
   ];
-
+ 
   containers.forEach(containerId => {
     const container = document.getElementById(containerId) as AlpineElement; // Aserción de tipo
     if (container) {
@@ -504,37 +529,84 @@ function clearAlpineComponents() {
 function initializeAlpine() {
   if (alpineInitialized) {clearAlpineComponents()}
 
-    const container1 = document.getElementById('alpine-template-container');
-    if (container1) {
-      container1.setAttribute('x-data', 'dblEnvData1()');
-      container1.innerHTML = thermalEnvelopeTemplate;
+    const thermalEnvelopeDynamicFacades = document.getElementById('alpine-ThermalEnvelope-Dynamic-Facades');
+    if (thermalEnvelopeDynamicFacades) {
+      thermalEnvelopeDynamicFacades.setAttribute('x-data', 'dblThermalEnvelopeDynamicFacades()');
+      thermalEnvelopeDynamicFacades.innerHTML = thermalEnvelopeTemplate;
     }
-    const container2 = document.getElementById('alpine-template-container2');
-    if (container2) {
-      container2.setAttribute('x-data', 'dblEnvData2()');
-      container2.innerHTML = thermalEnvelopeTemplate;
+    const thermalEnvelopeDynamicFloors = document.getElementById('alpine-ThermalEnvelope-Dynamic-Floors');
+    if (thermalEnvelopeDynamicFloors) {
+      thermalEnvelopeDynamicFloors.setAttribute('x-data', 'dblThermalEnvelopeDynamicFloors()');
+      thermalEnvelopeDynamicFloors.innerHTML = thermalEnvelopeTemplate;
     }
-    const container3 = document.getElementById('alpine-template-container3');
-    if (container3) {
-      container3.setAttribute('x-data', 'dblEnvData3()');
-      container3.innerHTML = thermalEnvelopeTemplate;
+    const thermalEnvelopeDynamicRoofs = document.getElementById('alpine-ThermalEnvelope-Dynamic-Roofs');
+    if (thermalEnvelopeDynamicRoofs) {
+      thermalEnvelopeDynamicRoofs.setAttribute('x-data', 'dblThermalEnvelopeDynamicRoofs()');
+      thermalEnvelopeDynamicRoofs.innerHTML = thermalEnvelopeTemplate;
     }
-    const thermalEnvelopeStaticContainer = document.getElementById('alpine-StructureMaterial-ThermalEnvelope-Static');
-    if (thermalEnvelopeStaticContainer) {
-      thermalEnvelopeStaticContainer.setAttribute('x-data', 'dblEnvelopeVerticalSummarize()');
-      thermalEnvelopeStaticContainer.innerHTML = envelopeVerticalSummaryTemplate;
+    const thermalEnvelopeDynamicWindows = document.getElementById('alpine-ThermalEnvelope-Dynamic-Windows');
+    if(thermalEnvelopeDynamicWindows){
+      thermalEnvelopeDynamicWindows.setAttribute('x-data', 'dblThermalEnvelopeDynamicWindows()');
+      thermalEnvelopeDynamicWindows.innerHTML = thermalEnvelopeWindowTemplate;
+    }
+
+    const thermalEnvelopeStaticVertical = document.getElementById('alpine-ThermalEnvelope-Static-Vertical');
+    if (thermalEnvelopeStaticVertical) {
+      thermalEnvelopeStaticVertical.setAttribute('x-data', 'dblThermalEnvelopeDynamicVertical()');
+      thermalEnvelopeStaticVertical.innerHTML = envelopeVerticalSummaryTemplate;
     }
     //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     //MaterialInventory
-    const skinMaterialContainer = document.getElementById('alpine-SkinMaterialInventory');
-    if (skinMaterialContainer) {
-      skinMaterialContainer.setAttribute('x-data', 'dblSkinMaterial()');
-      skinMaterialContainer.innerHTML = materialInventoryTemplate;
+    const materialInventoryDynamicSkin = document.getElementById('alpine-MaterialInventory-Dynamic-Skin');
+    if (materialInventoryDynamicSkin) {
+      materialInventoryDynamicSkin.setAttribute('x-data', 'dblSkinMaterial()');
+      materialInventoryDynamicSkin.innerHTML = materialInventoryTemplate;
     }
-    const structuraMaterialContainer = document.getElementById('alpine-StructuralMaterialInventory')
-    if (structuraMaterialContainer) {
-      structuraMaterialContainer.setAttribute('x-data', 'dblStructuralMaterial()');
-      structuraMaterialContainer.innerHTML = materialInventoryTemplate;
+    const structuralMaterialContainer = document.getElementById('alpine-MaterialInventory-Dynamic-Structural')
+    if (structuralMaterialContainer) {
+      structuralMaterialContainer.setAttribute('x-data', 'dblStructuralMaterial()');
+      structuralMaterialContainer.innerHTML = materialInventoryTemplate;
+    }
+    const serviceMaterialContainer = document.getElementById('alpine-MaterialInventory-Dynamic-Service')
+    if (serviceMaterialContainer) {
+      serviceMaterialContainer.setAttribute('x-data', 'dblServiceMaterial()');
+      serviceMaterialContainer.innerHTML = materialInventoryTemplate;
+    }
+    const spaceMaterialContainer = document.getElementById('alpine-MaterialInventory-Dynamic-Space')
+    if (spaceMaterialContainer) {
+      spaceMaterialContainer.setAttribute('x-data', 'dblSpaceMaterial()');
+      spaceMaterialContainer.innerHTML = materialInventoryTemplate;
+    }
+    const stuffMaterialContainer = document.getElementById('alpine-MaterialInventory-Dynamic-Stuff')
+    if (stuffMaterialContainer) {
+      stuffMaterialContainer.setAttribute('x-data', 'dblStuffMaterial()');
+      stuffMaterialContainer.innerHTML = materialInventoryTemplate;
+    }
+    //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    const madasterSummaryStaticSkin = document.getElementById('alpine-MadasterSummary-Static-Skin')
+    if(madasterSummaryStaticSkin){
+      madasterSummaryStaticSkin.setAttribute('x-data', 'dblMadasterSummaryStaticSkin()');
+      madasterSummaryStaticSkin.innerHTML = materialMadasterSummaryTemplate;
+    }
+    const madasterSummaryStaticStructural = document.getElementById('alpine-MadasterSummary-Static-Structural')
+    if(madasterSummaryStaticStructural){
+      madasterSummaryStaticStructural.setAttribute('x-data', 'dblMadasterSummaryStaticStructural()');
+      madasterSummaryStaticStructural.innerHTML = materialMadasterSummaryTemplate;
+    }
+    const madasterSummaryStaticService = document.getElementById('alpine-MadasterSummary-Static-Service')
+    if(madasterSummaryStaticService){
+      madasterSummaryStaticService.setAttribute('x-data', 'dblMadasterSummaryStaticService()');
+      madasterSummaryStaticService.innerHTML = materialMadasterSummaryTemplate;
+    }
+    const madasterSummaryStaticSpace = document.getElementById('alpine-MadasterSummary-Static-Space')
+    if(madasterSummaryStaticSpace){
+      madasterSummaryStaticSpace.setAttribute('x-data', 'dblMadasterSummaryStaticSpace()');
+      madasterSummaryStaticSpace.innerHTML = materialMadasterSummaryTemplate;
+    }
+    const madasterSummaryStaticStuff = document.getElementById('alpine-MadasterSummary-Static-Stuff')
+    if(madasterSummaryStaticStuff){
+      madasterSummaryStaticStuff.setAttribute('x-data', 'dblMadasterSummaryStaticStuff()');
+      madasterSummaryStaticStuff.innerHTML = materialMadasterSummaryTemplate;
     }
     //epcDATA
     const epcContainer = document.getElementById('alpine-epcPhaseData');

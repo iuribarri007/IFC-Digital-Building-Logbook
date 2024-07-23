@@ -178,8 +178,9 @@ main {
   margin-top: 0.2rem;
   width: var(--logo-container-Width);
   flex: 1;
-  background-color: var(--color-g2);
+  background-color: var(--color-g1);
   overflow: auto;
+  padding: 1rem;
 }
 .subcategory-sidebar-top>.category-title-container {
   display: inline-block;
@@ -450,7 +451,12 @@ main {
   flex-direction: column;
   margin: 0.5rem 1rem 0.5rem 1rem;
 }
-
+.subcategory-section-imgStatic{
+  flex: 0.5;
+}
+.subcategory-section-tableStatic{
+  flex:1;
+}
 .subcategory-title-container {
   width: var(--logo-container-Width);
   height: auto;
@@ -462,7 +468,8 @@ main {
 }
 .subcategory-menu {
   position: relative;
-  min-width: 20rem;
+  min-width: 30rem;
+  max-width: 60%;
   height: 100%;
   background-color: var(--color-g1);
 }

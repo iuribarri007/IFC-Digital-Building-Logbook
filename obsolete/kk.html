@@ -1,66 +1,9 @@
-<main>
-  <div id="viewer-container" style="min-width: 0;"></div>
-
-  <div class="category hidden" id="dbl-Identification">
-      <button class="close-category">✖</button>
-      <div class="sidebar">
-          <div class="subcategory-container">
-              <button class="toggle-sidebar">⬅</button>
-              <button class="subcategory show-content" data-target="dbl-Identification-ThermalEnvelope">Thermal Envelope</button>
-              <button class="subcategory show-content" data-target="dbl-Identification-MaterialInventory">Material Inventory</button>
-          </div>
-      </div>
-      <div class="dbl-table hidden" id="dbl-Identification-ThermalEnvelope">
-          <h2>Thermal Envelope</h2>
-          <div id="alpine-template-container"></div>
-          <div id="alpine-template-container2"></div>
-          <div id="alpine-template-container3"></div>
-      </div>
-      <div class="dbl-table hidden" id="dbl-Identification-MaterialInventory">
-          <h2>Material Inventory</h2>
-          <div id="alpine-SkinMaterialInventory"></div>
-          <div id="alpine-StructuralMaterialInventory"></div>
-          <div id="alpine-ServiceMaterialInventory"></div>
-          <div id="alpine-SpaceMaterialInventory"></div>
-      </div>
-  </div>
-
-  <div class="category hidden" id="dbl-StructureMaterial">
-      <button class="close-category">✖</button>
-      <div class="sidebar">
-          <div class="subcategory-container">
-              <button class="toggle-sidebar">⬅</button>
-              <button class="subcategory show-content" data-target="dbl-StructureMaterial-ThermalEnvelope">Thermal Envelope</button>
-              <button class="subcategory show-content" data-target="dbl-StructureMaterial-MaterialInventory">Material Inventory</button>
-          </div>
-      </div>
-      <div class="dbl-table hidden" id="dbl-StructureMaterial-ThermalEnvelope">
-          <h2>Thermal Envelope</h2>
-          <div id="alpine-template-container"></div>
-          <div id="alpine-template-container2"></div>
-          <div id="alpine-template-container3"></div>
-      </div>
-      <div class="dbl-table hidden" id="dbl-StructureMaterial-MaterialInventory">
-          <h2>Material Inventory</h2>
-          <div id="alpine-SkinMaterialInventory"></div>
-          <div id="alpine-StructuralMaterialInventory"></div>
-          <div id="alpine-ServiceMaterialInventory"></div>
-          <div id="alpine-SpaceMaterialInventory"></div>
-      </div>
-  </div>
-
-  <div class="category hidden" id="dbl-Performance">
-      <button class="close-category">✖</button>
-      <div class="sidebar">
-          <div class="subcategory-container">
-              <button class="toggle-sidebar">⬅</button>
-              <button class="subcategory-btn show-content" data-target="dbl-Performance-EnergyPerformance">Energy Performance</button>
-              <button class="subcategory-btn show-content" data-target="dbl-Performance-PhysicalAccessibility">Physical Accessibility</button>
-          </div>
-      </div>
-      <div class="dbl-table hidden" id="dbl-Performance-EnergyPerformance"></div>
-      <div class="dbl-table hidden" id="dbl-Performance-PhysicalAccessibility"></div>
-  </div>
-  
-  <!-- Similar structures for other categories (e.g., dbl-General, dbl-LegalFinance, etc.) -->
-</main>
+<div>
+    <h2 @click="toggleLevel(levelKey)" style="cursor: pointer;" :class="{'dbl-table-Level': true}" class="dbl-table-Level">
+        <span x-text="'Level: ' + levelKey" :class="{'dbl-table-LevelText': true}" class="dbl-table-LevelText">Level: 00_Ground Floor</span>
+        <span :class="{'arrow': true, 'down': isLevelOpen(levelKey),'dbl-table-LevelArrow' : true}" class="arrow dbl-table-LevelArrow">▶ </span>
+    </h2>
+    <div x-show="isLevelOpen(levelKey)" style="margin-left: 20px; display: none;">
+        
+    </div>
+</div>

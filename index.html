@@ -45,13 +45,6 @@
                                   <p>Description: XXXX</p>
                               </div>
                           </li>
-                          <li class="dropdown-item">
-                              <a href="#phase-02" class="project-phase" id="2">02 Phase</a>
-                              <div class="dropdown-submenu">
-                                  <p>Year of execution: XXXX</p>
-                                  <p>Description: XXXX</p>
-                              </div>
-                          </li>
                       </ul>
                   </li>
               </ul>
@@ -130,14 +123,20 @@
         </div>
         <div class="subcategory-sidebar-content" >
             <div class="subcategory-sidebar-content-container" data-target="dbl-Performance">
-                <div class="sidebar-content" id="alpine-epcPhaseData" data-target="dbl-Performance-1"></div>
+                <div class="sidebar-content" id="alpine-epcPhaseData" data-target="dbl-Performance-1"  ></div>
                 <div class="sidebar-content" data-target="dbl-Performance-2">Soy Accessibility</div>
             </div>
             <div class="subcategory-sidebar-content-container" data-target="dbl-StructureMaterial">
                 <div class="sidebar-content" data-target="dbl-StructureMaterial-1">
-                    <div id="alpine-StructureMaterial-ThermalEnvelope-Static"></div>
+                    <div id="alpine-ThermalEnvelope-Static-Vertical" class="subcategory-section-StaticContent"></div>
                 </div>
-                <div class="sidebar-content" data-target="dbl-StructureMaterial-2"> Soy material inventory</div>
+                <div class="sidebar-content" data-target="dbl-StructureMaterial-2"> 
+                    <div id="alpine-MadasterSummary-Static-Skin" class="subcategory-section-StaticContent"></div>
+                    <div id="alpine-MadasterSummary-Static-Structural" class="subcategory-section-StaticContent"></div>
+                    <div id="alpine-MadasterSummary-Static-Service" class="subcategory-section-StaticContent"></div>
+                    <div id="alpine-MadasterSummary-Static-Space" class="subcategory-section-StaticContent"></div>
+                    <div id="alpine-MadasterSummary-Static-Stuff" class="subcategory-section-StaticContent"></div>
+                </div>
             </div> 
         </div>
       </div>
@@ -156,17 +155,20 @@
             <div class="subcategory-content" data-target="dbl-Performance-2">
                 Soy dbl-Perofrmance 2
             </div>
-            
         </div>
         <div class="subcategory-menu-content-container" data-target="dbl-StructureMaterial">
             <div class="subcategory-content" data-target="dbl-StructureMaterial-1">
-                <div id="alpine-template-container"></div>
-                <div id="alpine-template-container2"></div>
-                <div id="alpine-template-container3"></div>
+                <div id="alpine-ThermalEnvelope-Dynamic-Facades"></div>
+                <div id="alpine-ThermalEnvelope-Dynamic-Floors"></div>
+                <div id="alpine-ThermalEnvelope-Dynamic-Roofs"></div>
+                <div id="alpine-ThermalEnvelope-Dynamic-Windows"></div>
             </div>
             <div class="subcategory-content" data-target="dbl-StructureMaterial-2">
-                <div id="alpine-SkinMaterialInventory"></div>
-                <div id="alpine-StructuralMaterialInventory"></div>
+                <div id="alpine-MaterialInventory-Dynamic-Skin" ></div>
+                <div id="alpine-MaterialInventory-Dynamic-Structural"></div>
+                <div id="alpine-MaterialInventory-Dynamic-Service"></div>
+                <div id="alpine-MaterialInventory-Dynamic-Space"></div>
+                <div id="alpine-MaterialInventory-Dynamic-Stuff"></div>
             </div>
         </div>
         <div class="resizer"></div>
@@ -177,7 +179,7 @@
   </div>
 </main>
 </body>
-<script type="module" src="./src/components/getIfcData.ts"></script>
+<script type="module" src="./src/components/getIfcEntities.ts"></script>
 <script type="module" src="./src/components/getEpcData.ts"></script>
 <script type="module" src="./indexIFC.ts"></script>
 <script type="module" src="./src/main.js" defer></script>
