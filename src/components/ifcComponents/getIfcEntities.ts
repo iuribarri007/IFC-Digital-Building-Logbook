@@ -760,7 +760,7 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
                 }
               }
             }
-            console.log(productUniclassCode, productUniclassName)
+            //console.log(productUniclassCode, productUniclassName)
             if (
               DBL.isDblWall(idType) &&
               wallNetVolume !== undefined &&

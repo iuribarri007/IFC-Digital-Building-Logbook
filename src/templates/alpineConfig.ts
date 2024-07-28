@@ -2,21 +2,21 @@ import Alpine, { remove } from 'alpinejs';
 // Import templates
 import { thermalEnvelopeTemplate,thermalEnvelopeWindowTemplate, envelopeVerticalSummaryTemplate,dblShowThermalEnvelope, dblShowThermalEnvelopeWindows, dblEnvelopeVerticalSummarize } from "./templateThermalEnvelope";
 import { materialInventoryTemplate, materialMadasterSummaryTemplate,dblShowMaterialInventory,dblShowMaterialMadasterSummary } from "./templateMaterialInventory";
-import { dblEnvelopeWalls,dblEnvelopeFloors,dblEnvelopeRoofs,dblEnvelopeWindows,dblEnvelopeSummaryVertical } from "../components/getIfcThermalEnvelopeData";
+import { dblEnvelopeWalls,dblEnvelopeFloors,dblEnvelopeRoofs,dblEnvelopeWindows,dblEnvelopeSummaryVertical } from "../components/ifcComponents/getIfcThermalEnvelopeData";
 import { dblShowEpcData,epcDataTemplate} from './templateEPC';
 // Import Objects
-import { dblSkinMaterialInventory,dblStructuralMaterialInventory,dblServiceMaterialInventory,dblSpaceMaterialInventory,dblStuffMaterialInventory } from '../components/getIfcMaterialInventoryData';
-import { dblSkinMadasterSummary,dblStructuralMadasterSummary,dblServiceMadasterSummary,dblSpaceMadasterSummary,dblStuffMadasterSummary } from '../components/getIfcMaterialInventoryData';
-import { dblEpcPhaseData} from '../../indexIFC';
-import { alpineInitialized } from '../../indexIFC';
+import { dblSkinMaterialInventory,dblStructuralMaterialInventory,dblServiceMaterialInventory,dblSpaceMaterialInventory,dblStuffMaterialInventory } from '../components/ifcComponents/getIfcMaterialInventoryData';
+import { dblSkinMadasterSummary,dblStructuralMadasterSummary,dblServiceMadasterSummary,dblSpaceMadasterSummary,dblStuffMadasterSummary } from '../components/ifcComponents/getIfcMaterialInventoryData';
+import { dblEpcPhaseData } from '../main';
+
 
 interface AlpineElement extends HTMLElement {
   __x?: {
     $destroy: () => void;
   };
 }
-
-document.addEventListener('alpine:init', () => {
+export function alpineTemplatesInit(){
+  document.addEventListener('alpine:init', () => {
     Alpine.data('dblThermalEnvelopeDynamicFacades', () => dblShowThermalEnvelope({ envelopeType: { dblEnvelopeWalls }, title: 'Building Facades' }));
     Alpine.data('dblThermalEnvelopeDynamicFloors', () => dblShowThermalEnvelope({ envelopeType: { dblEnvelopeFloors }, title: 'Building Floors' }));
     Alpine.data('dblThermalEnvelopeDynamicRoofs', () => dblShowThermalEnvelope({ envelopeType: { dblEnvelopeRoofs }, title: 'Building Roofs' }));
@@ -30,16 +30,17 @@ document.addEventListener('alpine:init', () => {
     Alpine.data('dblSpaceMaterial', () => dblShowMaterialInventory({ categories: dblSpaceMaterialInventory, mainTitle: 'Space Layer Materials' }));
     Alpine.data('dblStuffMaterial', () => dblShowMaterialInventory({ categories: dblStuffMaterialInventory, mainTitle: 'Stuff Layer Materials' }));
     //
-    Alpine.data('dblMadasterSummaryStaticSkin',() => dblShowMaterialMadasterSummary({ layerMadasterSummary: dblSkinMadasterSummary, mainTitle: 'Skin materialSummary' }));
-    Alpine.data('dblMadasterSummaryStaticStructural',() => dblShowMaterialMadasterSummary({ layerMadasterSummary: dblStructuralMadasterSummary, mainTitle: 'Structural materialSummary'}));
-    Alpine.data('dblMadasterSummaryStaticService', () => dblShowMaterialMadasterSummary({ layerMadasterSummary: dblServiceMadasterSummary, mainTitle: 'Service materialSummary' }));
-    Alpine.data('dblMadasterSummaryStaticSpace', () => dblShowMaterialMadasterSummary({ layerMadasterSummary: dblSpaceMadasterSummary, mainTitle: 'Space materialSummary' }));
-    Alpine.data('dblMadasterSummaryStaticStuff', () => dblShowMaterialMadasterSummary({ layerMadasterSummary: dblStuffMadasterSummary, mainTitle: 'Stuff materialSummary' }));
+    Alpine.data('dblMadasterSummaryStaticSkin',() => dblShowMaterialMadasterSummary({ layerMadasterSummary: dblSkinMadasterSummary, mainTitle: 'Skin Material Summary' }));
+    Alpine.data('dblMadasterSummaryStaticStructural',() => dblShowMaterialMadasterSummary({ layerMadasterSummary: dblStructuralMadasterSummary, mainTitle: 'Structural Material Summary'}));
+    Alpine.data('dblMadasterSummaryStaticService', () => dblShowMaterialMadasterSummary({ layerMadasterSummary: dblServiceMadasterSummary, mainTitle: 'Service Material Summary' }));
+    Alpine.data('dblMadasterSummaryStaticSpace', () => dblShowMaterialMadasterSummary({ layerMadasterSummary: dblSpaceMadasterSummary, mainTitle: 'Space Material Summary' }));
+    Alpine.data('dblMadasterSummaryStaticStuff', () => dblShowMaterialMadasterSummary({ layerMadasterSummary: dblStuffMadasterSummary, mainTitle: 'Stuff Material Summary' }));
     //::::::::::::::::::::::::::::::::
     Alpine.data('epcData', () => dblShowEpcData({ data: dblEpcPhaseData, mainTitle: 'EPC Infooo' }));
   });
 
-export function clearAlpineComponents() {
+}
+export function alpineClearComponents() {
   const containers = [
     'alpine-ThermalEnvelope-Dynamic-Facades',
     'alpine-ThermalEnvelope-Dynamic-Floors',
@@ -74,8 +75,7 @@ export function clearAlpineComponents() {
     }
   });
 }
-
-export function asignTemplateData() {
+export function alpineAsignTemplateData() {
   const thermalEnvelopeDynamicFacades = document.getElementById('alpine-ThermalEnvelope-Dynamic-Facades');
     if (thermalEnvelopeDynamicFacades) {
       thermalEnvelopeDynamicFacades.setAttribute('x-data', 'dblThermalEnvelopeDynamicFacades()');
@@ -161,5 +161,4 @@ export function asignTemplateData() {
       epcContainer.setAttribute('x-data', 'epcData()');
       epcContainer.innerHTML = epcDataTemplate;
     }
-
 }

@@ -1,8 +1,9 @@
-import { certificates } from "../static/energyPerformanceCertificate";
+import { certificates } from "../../static/energyPerformanceCertificate";
 import { dblEpc,dblEpcStatic,dblEpcDynamic,dblEpcEmissionsCO2,dblEpcNonRenEnergyConsumption,dblEpcEnergyDemand } from "./interfaceEpc";
 
 export const dblEpcData:dblEpc[] =[]
-function transformCertificateData  (certificates){
+
+export function transformCertificateData  (certificates){
     certificates.forEach(certificate => {
         console.log(certificate)
        
@@ -119,6 +120,6 @@ function transformCertificateData  (certificates){
         }
         dblEpcData.push(dblEpc)
     });
-    //console.log(dblEpcData)
+    console.log("Certificados energetics", certificates)
 }
-transformCertificateData(certificates)
+

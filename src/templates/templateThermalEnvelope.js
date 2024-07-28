@@ -37,106 +37,6 @@ export function dblShowThermalEnvelope({ envelopeType, title }) {
     };
 }
 
-// export const thermalEnvelopeTemplate = `
-//     <h2 @click="toggleAllEnvelopes" style="cursor: pointer;" :class="{'dbl-tableElementType': true}">
-//         <span x-text="title"></span>
-//         <span :class="{'arrow': true, 'down': isAllEnvelopesOpen()}">▶</span>
-//     </h2>
-//     <div x-show="isAllEnvelopesOpen()">
-//         <template x-for="(data, dataSetKey) in envelopeType" :key="dataSetKey">
-//             <div>
-//                 <template x-for="(envelopes, levelKey) in data" :key="levelKey">
-//                     <div>
-//                         <h2 @click="toggleLevel(levelKey)" style="cursor: pointer;" :class="{'dbl-table-Level': true}">
-//                             <span x-text="'Level: ' + levelKey" :class="{'dbl-table-LevelText': true}"></span>
-//                             <span :class="{'arrow': true, 'down': isLevelOpen(levelKey),'dbl-table-LevelArrow' : true}">▶ </span>
-//                         </h2>
-//                         <div x-show="isLevelOpen(levelKey)" style="margin-left: 20px;">
-//                             <template x-for="(envelope, index) in envelopes" :key="index">
-//                                 <div x-data="{ isOpen: isEnvelopeOpen(envelope), showComponents: false }" :class="{'dbl-table-ElementContainer': true}">
-//                                     <h4 @click="toggleEnvelope(envelope); isOpen = !isOpen" style="cursor: pointer; display: flex; align-items: center; justify-content: space-between;" :class="{'dbl-table-Envelope': true}">
-//                                         <span x-text="'Envelope: ' + envelope.dblEnvelopeCode" :class="{'dbl-table-EnvelopeText': true}"></span>
-//                                         <div style="display: flex; align-items: center;">
-//                                             <button class="dbl-fragment-map-button"
-//                                                 style="background: none; border: none; margin-left: 10px;"
-//                                                 :data-envelope-code="envelope.dblEnvelopeCode"
-//                                                 :data-dataset-name="dataSetKey"
-//                                                 :data-level-key="levelKey"
-//                                                 @click.stop>
-//                                                 <span class="fragment-inspector" style="font-size: 18px; color: #000;">🔍</span> <!-- Lupa como icono -->
-//                                             </button>
-//                                             <span :class="{'arrow': true, 'down': isOpen, 'dbl-table-EnvelopeArrow': true}" style="margin-left: 10px;">▶</span>
-//                                         </div>
-//                                     </h4>
-                                    
-//                                     <div x-show="isOpen" style="margin-left: 20px;">
-//                                         <table border="1" :class="{'dbl-tableEnvelope-table': true}">
-//                                             <thead>
-//                                                 <tr>
-//                                                     <th>Atributo</th>
-//                                                     <th>Valor</th>
-//                                                 </tr>
-//                                             </thead>
-//                                             <tbody>
-//                                                 <tr>
-//                                                     <td>EnvelopeCode</td>
-//                                                     <td x-text="envelope.dblEnvelopeCode"></td>
-//                                                 </tr>
-//                                                 <tr>
-//                                                     <td>EnvelopeType</td>
-//                                                     <td x-text="envelope.dblEnvelopeType"></td>
-//                                                 </tr>
-//                                                 <tr>
-//                                                     <td>EnvelopeUvalue</td>
-//                                                     <td x-text="envelope.dblEnvelopeUvalue"></td>
-//                                                 </tr>
-//                                                 <tr>
-//                                                     <td>EnvelopeWidth</td>
-//                                                     <td x-text="envelope.dblEnvelopeWidth"></td>
-//                                                 </tr>
-//                                             </tbody>
-//                                         </table>
-//                                         <div :class="{'dbl-tableComponentContainer': true}">
-//                                             <h4 @click="showComponents = !showComponents" style="cursor: pointer;" :class="{'dbl-tableComponentText': true}">
-//                                                 Envelope Components
-//                                                 <span :class="{'arrow': true, 'down': showComponents}" style="margin-left: 10px;">+</span>
-//                                             </h4>
-//                                             <div x-show="showComponents" style="margin-left: 20px;">
-//                                                 <table border="1" :class="{'dbl-tableComponent-table': true}">
-//                                                     <thead>
-//                                                         <tr>
-//                                                             <th :class="{'dbl-tableComponent-tableColumn1': true}">ComponentType</th>
-//                                                             <th>Width (m)</th>
-//                                                             <th>R-value (m2 K/W)</th>
-//                                                             <th>Net Area (m2)</th>
-//                                                             <th>Year</th>
-//                                                         </tr>
-//                                                     </thead>
-//                                                     <tbody>
-//                                                         <template x-for="component in envelope.dblEnvelopeComponents" :key="component.dblComponentExpressId">
-//                                                             <tr>
-//                                                                 <td x-text="component.dblComponentType" :class="{'dbl-tableComponent-tableColumn1': true}"></td>
-//                                                                 <td x-text="component.dblComponentWidth"></td>
-//                                                                 <td x-text="component.dblComponentRvalue"></td>
-//                                                                 <td x-text="component.dblComponentNetArea"></td>
-//                                                                 <td x-text="component.dblComponentYearProduction"></td>
-//                                                             </tr>
-//                                                         </template>
-//                                                     </tbody>
-//                                                 </table>
-//                                             </div>
-//                                         </div>
-//                                         <hr>
-//                                     </div>
-//                                 </div>
-//                             </template>
-//                         </div>
-//                     </div>
-//                 </template>
-//             </div>
-//         </template>
-//     </div>`;
-
 export const thermalEnvelopeTemplate = `
     <h2 @click="toggleAllEnvelopes" style="cursor: pointer; display: flex; align-items: center; justify-content: space-between;" :class="{'dbl-tableElementType': true}">
         <span x-text="title"></span>
@@ -201,7 +101,7 @@ export const thermalEnvelopeTemplate = `
                                                 Envelope Components
                                                 <span :class="{'arrow': true, 'down': showComponents}" style="margin-left: 10px;">+</span>
                                             </h4>
-                                            <div x-show="showComponents" style="margin-left: 20px;">
+                                            <div x-show="showComponents" style="margin-left: 5px;">
                                                 <table border="1" :class="{'dbl-tableComponent-table': true}">
                                                     <thead>
                                                         <tr>
@@ -351,7 +251,7 @@ export function dblShowThermalEnvelopeWindows({ envelopeType, title }) {
                       </tr>
                       <tr>
                         <td>Window orientation</td>
-                        <td x-text="item.dblEnvelopeWindowOrientation"></td>
+                        <td x-text="item.dblEnvelopeOrientation"></td>
                       </tr>
                       <tr>
                         <td>Envelope Type</td>
@@ -395,6 +295,38 @@ export function dblShowThermalEnvelopeWindows({ envelopeType, title }) {
 `;
 
 
+// export const envelopeVerticalSummaryTemplate = `
+//     <div>
+//         <h4 x-text="title"></h4>
+//         <template x-for="(item, key) in envelopeData" :key="key">
+//             <div class="subcategory-section">
+//                 <h4 class="subcategory-section-title" x-text="item.dblVerticalEnvelopeSummaryOrientation + ' Facade'"></h4>
+//                 <div style="display: flex;">
+//                     <div class="subcategory-section-imgStatic">
+//                         <img src="path_to_image" alt="Image">
+//                     </div>
+//                     <div class="subcategory-section-tableStatic">
+//                         <table border="1">
+//                             <tr>
+//                                 <td>Facade Gross Area:</td>
+//                                 <td x-text="item.dblWallEnvelopeSummaryGrossAreaSum"></td>
+//                             </tr>
+//                             <tr>
+//                                 <td>Window Area:</td>
+//                                 <td x-text="item.dblWindowEnvelopeSummaryNetAreaSum"></td>
+//                             </tr>
+//                             <tr>
+//                                 <td>Window to Wall Ratio:</td>
+//                                 <td x-text="item.dblWindowToWallRatio"></td>
+//                             </tr>
+//                         </table>
+//                     </div>
+//                 </div>
+//             </div>
+//         </template>
+//     </div>
+// `;
+
 export const envelopeVerticalSummaryTemplate = `
     <div>
         <h4 x-text="title"></h4>
@@ -402,9 +334,9 @@ export const envelopeVerticalSummaryTemplate = `
             <div class="subcategory-section">
                 <h4 class="subcategory-section-title" x-text="item.dblVerticalEnvelopeSummaryOrientation + ' Facade'"></h4>
                 <div style="display: flex;">
-                    <div class="subcategory-section-imgStatic">
-                        <img src="path_to_image" alt="Image">
-                    </div>
+                    <button class="subcategory-section-imgStatic">
+                        <img :src="'../../assets/images/dbl-images/dbl-envelope-orientation/' + item.dblVerticalEnvelopeSummaryOrientation.toLowerCase().replace(/ /g, '-') + '.png'" alt="Image">
+                    </button>
                     <div class="subcategory-section-tableStatic">
                         <table border="1">
                             <tr>

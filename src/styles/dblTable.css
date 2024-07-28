@@ -20,7 +20,7 @@
 }
 
 .dbl-tableElementType {
-    font-size: var(--size-m);
+    font-size: var(--size-ms);
     background-color: var(--color-c1);
     border-top: dashed 1px black;
 }
