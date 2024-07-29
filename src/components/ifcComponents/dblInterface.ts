@@ -115,8 +115,8 @@ export interface dblElementMaterial{
   dblMaterialWasteCategory:string|undefined;
   dblMaterialThermalConductivity: number|undefined;
   dblMaterialDensity: number|undefined;
-  dblMaterialNetVolume:number|undefined;//= NetArea * LayerThickness
-  dblMaterialWeight: number|undefined;// = (dblLayerMaterialDensity)/(dblLayerNetVolume)
+  dblMaterialNetVolume:number|undefined;
+  dblMaterialWeight: number|undefined;
 }
 
 //Wall interface

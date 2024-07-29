@@ -1,3 +1,4 @@
+// Material Inventory dynamic
 export const materialInventoryTemplate = `
     <div class="dbl-tableElementType">
         <h2 @click="toggleAllMaterials" style="cursor: pointer;">
@@ -41,15 +42,13 @@ export const materialInventoryTemplate = `
         </div>
     </div>
 `;
+
 export function dblShowMaterialInventory({ categories, mainTitle }) {
-    // Función para verificar y devolver datos seguros
     function getSafeData(data, defaultValue = "Not found") {
         return data !== undefined ? data : defaultValue;
     }
-
-    // Inicialización del estado de expansión y otros estados necesarios
     (categories || []).forEach(category => {
-        category.expanded = false;  // Estado de expansión para cada categoría
+        category.expanded = false;  
     });
 
     return {
@@ -60,38 +59,31 @@ export function dblShowMaterialInventory({ categories, mainTitle }) {
         toggleAllMaterials() {
             this.isAllMaterialsOpen = !this.isAllMaterialsOpen;
         },
-
         toggleCategory(categoryIndex) {
             this.categories[categoryIndex].expanded = !this.categories[categoryIndex].expanded;
         },
-
         isCategoryOpen(categoryIndex) {
             return this.categories[categoryIndex].expanded;
         },
-
         getSafeData,
-
         get dblMaterialCategories() {
             return Array.isArray(categories) ? categories : [];
         },
-
         get mainTitleSafe() {
             return getSafeData(mainTitle, "No Material Categories Found");
         }
     };
 }
+// Material Inventory static
 export function dblShowMaterialMadasterSummary({ layerMadasterSummary, mainTitle }) {
     // Función para verificar y devolver datos seguros
     function getSafeData(data, defaultValue = "Not found") {
         return data !== undefined ? data : defaultValue;
     }
-
     return {
         layerMadasterSummary: layerMadasterSummary,
         mainTitle: mainTitle,
-
         getSafeData,
-
         get safeLayerMadasterSummary() {
             return Array.isArray(layerMadasterSummary) ? layerMadasterSummary : [];
         }

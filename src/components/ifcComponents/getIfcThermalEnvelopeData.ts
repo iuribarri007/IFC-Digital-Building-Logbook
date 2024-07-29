@@ -11,6 +11,7 @@ export let dblEnvelopeFloors: {}
 export let dblEnvelopeWindows: {} 
 export let dblEnvelopeRoofs: {} 
 
+// Classify the and group the elements of the thermal envelope based on the envelopeCode
 export async function classifyEnvelope(...obj) {
   dblEnvelopeWalls = {};
   dblEnvelopeFloors = {};
@@ -37,7 +38,7 @@ export async function classifyEnvelope(...obj) {
           dblEnvelopeExpressIdArray:[],
           dblEnvelopeFragmentMap:{}
         }
-        //
+        //Thermal Envelope walls
         if (DBL.isDblWall(idType)) {
           const envelopeCode = dblElement.props.dblWallEnvelopeCode;
           const componentType = dblElement.props.dblWallType;
@@ -48,7 +49,7 @@ export async function classifyEnvelope(...obj) {
           const componentGrossArea = dblElement.qtos.dblWallGrossArea
           const componentOrientation = dblElement.props.dblWallEnvelopeOrientation;
           const componentYearProduction = dblElement.props.dblYearProduction 
-          //
+          
           const dblEnvelopeComponent: DBL.dblEnvelopeVerticalComponent = {
             dblComponentExpressId: componentExpressId,
             dblComponentEntityType: idType,
@@ -74,11 +75,11 @@ export async function classifyEnvelope(...obj) {
             dblComposedEntity:dblComposedEntity
           };
           dblEnvelopeWall.dblComposedEntity.dblIfcType = dblElement.entity.entityType
-          //console.log(dblElement)
+
           const envelopeIndex = checkEnvelopeValue(envelopeCode,dblEnvelopeWallLevelArray);
           const targetElement = dblEnvelopeWallLevelArray[envelopeIndex];
           if (envelopeIndex !== -1 && targetElement !== undefined) {
-            //console.log("si está", envelopeIndex,dblEnvelopeWallLevelArray[envelopeIndex])
+
             targetElement.dblEnvelopeComponents.push(dblEnvelopeComponent);
             for (let fragmentId in componentFragmentMap){
               if(componentFragmentMap.hasOwnProperty(fragmentId)){
@@ -94,7 +95,9 @@ export async function classifyEnvelope(...obj) {
               }
             }
           }
-        } else if (DBL.isDblFloor(idType) || DBL.isDblRoof(idType)) {
+        } 
+        //Thermal Envelope horizontal elements
+        else if (DBL.isDblFloor(idType) || DBL.isDblRoof(idType)) {
           const envelopeCode = dblElement.props.dblHorElementEnvelopeCode;
           const componentType = dblElement.props.dblHorElementType;
           const componentEnvelopeCode = dblElement.props.dblHorElementEnvelopeCode;
@@ -126,7 +129,7 @@ export async function classifyEnvelope(...obj) {
           if(dblElement.entity.entityType!== undefined){
             dblEnvelopeHorizontal.dblComposedEntity.dblIfcType = dblElement.entity.entityType
           }
-          //
+          // Horizontal elements floors
           if (DBL.isDblFloor(idType)) {
             const envelopeIndex = checkEnvelopeValue(envelopeCode,dblEnvelopeFloorLevelArray);
             const targetElement = dblEnvelopeFloorLevelArray[envelopeIndex];
@@ -145,7 +148,9 @@ export async function classifyEnvelope(...obj) {
                 }
               }
             }
-          } else if (DBL.isDblRoof(idType)) {
+          } 
+          // Horizontal elements roofs
+          else if (DBL.isDblRoof(idType)) {
             const envelopeIndex = checkEnvelopeValue(envelopeCode, dblEnvelopeRoofLevelArray);
             const targetElement = dblEnvelopeRoofLevelArray[envelopeIndex];
             if (envelopeIndex !== -1 && targetElement !== undefined) {
@@ -164,7 +169,9 @@ export async function classifyEnvelope(...obj) {
               }
             }
           }
-        } else if (DBL.isDblWindow(idType)) {
+        } 
+        // Thermal Envelope windows
+        else if (DBL.isDblWindow(idType)) {
           const envelopeWindowOrientation = dblElement.props.dblWindowEnvelopeOrientation
           const envelopeWindowType = dblElement.props.dblWindowType;
           const envelopeYearProduction = dblElement.props.dblYearProduction
@@ -193,7 +200,7 @@ export async function classifyEnvelope(...obj) {
           if(dblElement.hasOwnProperty("entity")&& dblElement.entity.hasOwnProperty("entityType")){
             dblEnvelopeWindow.dblComposedEntity.dblIfcType = dblElement.entity.entityType
           }
-          //console.log(dblEnvelopeWindow)
+
           const envelopeIndex = checkEnvelopeValue(envelopeCode,dblEnvelopeWindowLevelArray);
           const targetElement = dblEnvelopeWindowLevelArray[envelopeIndex];
           if (envelopeIndex !== -1 && targetElement != undefined) {
@@ -266,17 +273,14 @@ export async function classifyEnvelope(...obj) {
       }
     }
   });
-  console.log(dblEnvelopeWalls);
-  console.log(dblEnvelopeFloors);
-  console.log(dblEnvelopeRoofs);
-  console.log("EnvelopeWindows", dblEnvelopeWindows);
 }
 //
 
 export let dblEnvelopeSummaryVertical: { [key: string]: DBL.dblEnvelopeSummaryOrientationVertical }
 export let dblEnvelopeSummaryFloors:DBL.dblFloorEnvelopeSummary 
 export let dblEnvelopeSummaryRoofs:DBL.dblRoofEnvelopeSummary
-//
+
+// Summarize th thermal envelope depending on the orientation, gross area and window area and window to wall ratio
 export async function summarizeEnvelope (...env){
   dblEnvelopeSummaryVertical ={};
   dblEnvelopeSummaryRoofs = {
@@ -305,7 +309,6 @@ export async function summarizeEnvelope (...env){
             dblEnvelopeExpressIdArray: [],
             dblEnvelopeFragmentMap:{}
           }
-          //console.log(envelopeVerticalSummaryOrientation)
           if(!dblEnvelopeSummaryVertical[envelopeVerticalSummaryOrientation]){
             
             const dblEnvelopeSummaryElement: DBL.dblEnvelopeSummaryOrientationVertical = {
@@ -318,7 +321,6 @@ export async function summarizeEnvelope (...env){
               dblComposedEntity: dblComposedEntity
             }
             for (let fragmentId in envelopeFragmentMap){
-              //console.log("ahora si",[envelopeFragmentMap],envelopeFragmentMap[fragmentId]) //POR AQUI ESTAMOS 25
               if(!dblComposedEntity.dblEnvelopeFragmentMap[fragmentId]){
                 dblComposedEntity.dblEnvelopeFragmentMap[fragmentId] = new Set(envelopeFragmentMap[fragmentId]) 
               } 
@@ -334,7 +336,6 @@ export async function summarizeEnvelope (...env){
                 targetSummaryElement.dblComposedEntity.dblEnvelopeFragmentMap[fragmentId] = new Set(envelopeFragmentMap[fragmentId])
               } else{
                 envelopeFragmentMap[fragmentId].forEach(value => targetSummaryElement.dblComposedEntity?.dblEnvelopeFragmentMap[fragmentId].add(value))
-                //envelopeFragmentMap[fragmentId].forEach(value=> console.log("asdasd",envelopeFragmentMap[fragmentId],value))
               }
             }
           }
@@ -369,12 +370,11 @@ export async function summarizeEnvelope (...env){
     const element = dblEnvelopeSummaryVertical[key]
     if(element.dblWallEnvelopeSummaryGrossAreaSum!== undefined  && element.dblWindowEnvelopeSummaryNetAreaSum){
       const dblWindowToWallRatio = ((element.dblWindowEnvelopeSummaryNetAreaSum)/(element.dblWallEnvelopeSummaryGrossAreaSum))
+      element.dblWallEnvelopeSummaryGrossAreaSum = parseFloat(element.dblWallEnvelopeSummaryGrossAreaSum.toFixed(2))//
       element.dblWindowToWallRatio = parseFloat(dblWindowToWallRatio.toFixed(2))
       element.dblWallEnvelopeSummaryNetAreaSum = element.dblWallEnvelopeSummaryGrossAreaSum - element.dblWindowEnvelopeSummaryNetAreaSum
       //
       element.dblWindowEnvelopeSummaryNetAreaSum = parseFloat(element.dblWindowEnvelopeSummaryNetAreaSum.toFixed(2))
     }
   }
-  
-  console.log("Esto",dblEnvelopeSummaryVertical, dblEnvelopeSummaryRoofs, dblEnvelopeSummaryFloors)
 }

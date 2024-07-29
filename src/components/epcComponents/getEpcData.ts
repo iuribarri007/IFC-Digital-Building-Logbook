@@ -120,6 +120,5 @@ export function transformCertificateData  (certificates){
         }
         dblEpcData.push(dblEpc)
     });
-    console.log("Certificados energetics", certificates)
 }
 

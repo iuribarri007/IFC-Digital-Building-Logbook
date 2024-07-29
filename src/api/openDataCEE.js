@@ -1,7 +1,7 @@
 const API_BASE_URL = 'https://api.euskadi.eus/energy-efficiency';
 const validEnergyCertificates = [];  
 
-// Función principal para obtener los resultados deseados
+// Auxiliar function to get the closest date to present date
 function findClosestStartDate(items) {
   const today = new Date();
   let minDiff = Infinity;
@@ -19,6 +19,7 @@ function findClosestStartDate(items) {
 
   return closestItem;
 }
+// Auxiliar function to filter the certificates in case of duplicates
 function getUniqueObjectsWithClosestStartDate(certificateData) {
   // Objeto para almacenar temporalmente los objetos con la fecha más cercana por cada 'scope'
   const tempResult = {};
@@ -33,18 +34,16 @@ function getUniqueObjectsWithClosestStartDate(certificateData) {
       }
   });
 
-  // Convertir el objeto temporal en un array de resultados válidos
   const validEnergyCertificates = Object.values(tempResult);
 
   return validEnergyCertificates;
 }
-//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+// Get the certificates from Open Data Euskadi
 export async function getCertificates(county, municipality, street, portal, currentPage = 1, itemsPerPage = 10) {
   const endpoint = `buildings/counties/${county}/municipalities/${municipality}?street=${encodeURIComponent(street)}&portal=${encodeURIComponent(portal)}&currentPage=${currentPage}&itemsOfPage=${itemsPerPage}`;
   
   try {
     const response = await fetch(`${API_BASE_URL}/${endpoint}`);
-    //console.log(response)
     
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -59,19 +58,15 @@ export async function getCertificates(county, municipality, street, portal, curr
     })
     if(building !== undefined ){
       let certificates= []
-      //console.log(building)
       const energyCertificateArray = building.properties._links.certificates.buildings
       for (let energyCertificate of energyCertificateArray){
-        //console.log(energyCertificate)
         const certificateLink = energyCertificate.href
         try{const certificateResponse = await fetch(certificateLink)
           const certificateData = await certificateResponse.json();
-          //console.log(certificateData)
           certificates.push(certificateData)}
-        catch{console.log("El certificado no carga")}
+        catch{console.log("No certificate found")}
       }
       const validEnergyCertificates = getUniqueObjectsWithClosestStartDate(certificates);
-      //console.log(validEnergyCertificates)
     }
 
   } catch (error) {

@@ -82,10 +82,11 @@ main {
 
 .nav-container {
   position: relative;
-  max-width: 1200px;
   margin: 0px;
   padding: 0px;
   display: flex;
+  justify-content: space-between;
+
 }
 
 .site-navigation {
@@ -187,8 +188,8 @@ main {
 .subcategory-sidebar-top>.category-title-container {
   display: inline-block;
   position: sticky;
-  align-items: center; /* Centra verticalmente */
-  justify-content: center; /* Centra horizontalmente */
+  align-items: center; 
+  justify-content: center; 
   height: 2rem;
   width: var(--logo-container-Width);
   background-color: var(--color-c0);
@@ -211,6 +212,9 @@ main {
   width: var(--logo-container-Width);
   z-index: 1;
 }
+.active-subcategory {
+  background-color: var(--color-c4); /* Cambia esto al color que desees */
+}
 .subcategory-title-container {
   width: var(--logo-container-Width);
   flex: 1;
@@ -224,10 +228,13 @@ main {
 
 .subcategory-title-btn {
   flex: 1;
-  font-size: var(--size-s);
+  font-size: var(--size-ms);
   height: 2rem;
   background-color: var(--color-c0);
   border: 0.5px dashed black;
+}
+.active-subcategory {
+  background-color: var(--color-c5)
 }
 
 .subcategory-title-btn:hover {
@@ -375,14 +382,7 @@ main {
 .phases-text{
   text-align: left;
 }
-.nav-container {
-  position: relative;
-  max-width: 1200px;
-  margin: 0px;
-  padding: 0px;
-  display: flex;
-  
-}
+
 .nav-container>.phases-navigation{
   text-align: center;
   height: var(--header-Height);
@@ -431,12 +431,12 @@ main {
 }
 
 .category-title-text {
-  display: flex; /* Asegura que el h2 sea un contenedor flex */
-  align-items: center; /* Centra verticalmente el texto dentro del h2 */
-  justify-content: center; /* Centra horizontalmente el texto dentro del h2 */
-  width: 100%; /* Asegura que el h2 tome todo el ancho del contenedor padre */
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  width: 100%; 
   height: 2rem;
-  text-align: center; /* Centra el texto dentro del h2 */
+  text-align: center; 
   text-decoration: underline;
 }
 .subcategory{
@@ -469,12 +469,12 @@ main {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
-  align-items: center; /* Para centrar los botones verticalmente */
+  align-items: center; 
 }
 .subcategory-menu {
   position: relative;
   min-width: 30rem;
-  max-width: 60%;
+  max-width: 70%;
   height: 100%;
   background-color: var(--color-g1);
 }
@@ -589,18 +589,28 @@ button.toggle-sidebar {
 }
 
 .menu-item {
-  margin: 0 1rem;
+  margin: 0 0.5rem;
   position: relative;
   text-align: left;
-}
+  border-radius: 0.5rem;
 
+}
+.active-category {
+  background-color: var(--color-c1);
+  border: solid 2px var(--color-c5);
+  border-radius: 0.5rem;
+
+}
 .menu-item a {
   color: black;
   text-decoration: none;
-  font-size: 1rem;
+  font-size: var(--size-m);
   display: flex;
   align-items: center;
   font-family: var(--font-f1);
+  height: calc(var(--header-Height) - 1rem) ;
+  padding: 0rem 0.5rem 0rem 0.5rem;
+
 }
 
 .icon-placeholder {
@@ -623,6 +633,7 @@ button.toggle-sidebar {
 .menu-item a:hover {
   text-decoration: underline;
   background-color: var(--color-c1);
+  border-radius: 0.5rem;
 }
 
 .dropdown-menu {
@@ -731,10 +742,27 @@ th, td {
   flex-direction: column;
 }
 .cell{
-  font-size: var(--size-s);
+  font-family: var(--font-f1);
+  font-size: var(--size-ms);
+  color: black;
+  font-weight: bold;
+  display: flex;
+  flex-direction: row;
+
+}
+.cell span{
+  font-weight: normal;
+  color: var(--color-g3);
+  margin: 0px 0.5rem;
+}
+.cell a {
+  font-weight: normal;
+  text-decoration: underline;
+  color: var(--color-c5);
+  margin: 0px 0.5rem;
 }
 .subcategory-section-title{
-  font-size: var(--size-ms);
+  font-size: var(--size-m);
   font-family: var(--font-f1);
   text-decoration: underline;
   font-weight: 500;
@@ -742,22 +770,24 @@ th, td {
 }
 
 .subcategory-section td {
-  padding: 5x; /* Añade relleno para espaciar el contenido de las celdas */
-  border: 1px solid #ccc; /* Añade bordes para separar visualmente las celdas */
-  text-align: center; /* Centra el texto dentro de las celdas */
+  padding: 5x; 
+  border: 1px solid #ccc; 
+  text-align: center; 
 }
 
-/* Primeras dos columnas */
+/* Table first two columns */
 .subcategory-section td:nth-child(1),
 .subcategory-section td:nth-child(2) {
-  width: 40%; /* Establece el ancho al 40% para la primera y segunda columna */
+  width: 40%; 
   text-align: left;
 }
 
-/* Tercera columna */
+/* Table third column */
 .subcategory-section td:nth-child(3) {
-  width: 20%; /* Establece el ancho al 20% para la tercera columna */
+  width: 20%; 
 }
 body.loading{
   cursor: url('../../assets/images/logos/dblLogo.png'), auto;
 }
+
+

@@ -41,19 +41,19 @@ export async function getEntityFragmentsByLevel(
         const fragmentArray= modelEntityIdFragment.fragmentIds
         classifiedIdProps = properties[classifiedId];
         ifcEntityType = classifiedIdProps.type;
-        //
-        //console.log(modelEntityIdFragment)
+
         if ( DBL.isDblCommonElement(ifcEntityType)) {
           const index = checkPresentExpressIdIndex(
             classifiedId,
             modelEntityFragmentLevelArray
           );
+          // Case where the Id already exist
           if (index !== -1) {
             modelEntityFragmentLevelArray[index].fragmentIds.push(fragmentId);
-            //console.log("Is already in",fragmentId,modelEntityFragmentLevelArray[index])
-          } else {
+          } 
+          // Case where the id is new
+          else {
             modelEntityFragmentLevelArray.push(modelEntityIdFragment);
-            //console.log("New Index")
           }
         }
       }
@@ -76,8 +76,8 @@ export async function getEntityFragmentsByLevel(
       })
     }
   }
-  console.log("These are the fragments",modelFragmentIdByLevel)
 }
+
 function checkPresentExpressIdIndex(
   expressId: number,
   fragments: DBL.ModelEntityIdFragment[]
@@ -85,27 +85,27 @@ function checkPresentExpressIdIndex(
   return fragments.findIndex((fragment) => fragment.expressId === expressId);
 }
 
-// Define and export Entities
 export const wallEntitiesByLevel: { [key: string]: DBL.ModelEntity[] } = {};
 export const windowEntitiesByLevel: { [key: string]: DBL.ModelEntity[] } = {};
 export const floorEntitiesByLevel: { [key: string]: DBL.ModelEntity[] } = {};
 export const roofEntitiesByLevel: { [key: string]: DBL.ModelEntity[] } = {};
 
-//Define and export ExternalEntities
+
 export const dblEnvelopeWallElements: any = {};
 export const dblEnvelopeWindowElements: any = {};
 export const dblEnvelopeFloorElements: any = {};
 export const dblEnvelopeRoofElements: any = {};
-//
+
 export let dblWallElements: any 
 export let dblWindowElements: any
 export let dblFloorElements: any
 export let dblRoofElements: any 
-//
+
 export let dblStrLinealElements: any 
 export let dblCoveringElements: any
-//
-//Function
+
+
+// Structure the information associated with the selected Ids: Properties, quantities and materials.
 export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
   dblWallElements = {};
   dblWindowElements = {};
@@ -134,8 +134,6 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
     //
     let levelArray = obj[level];
     console.log(level);
-    //const mPsets = OBC.IfcPropertiesUtils.getAllItemsOfType(properties,WEBIFC.IFCMATERIALPROPERTIES)
-    //console.log(mPsets)
     const dblModelWallsLevelArray: any = [];
     const dblModelWindowsLevelArray: any = [];
     const dblModelFloorsLevelArray: any = [];
@@ -146,7 +144,7 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
     //
     const dblModelStairsLevelArray:any=[]
     const dblModelRailingLevelArray:any=[]
-    //ExternalLevel Arrays
+
     const dblExternalWallsLevelArray: any = [];
     const dblExternalWindowsLevelArray: any = [];
     const dblExternalFloorsLevelArray: any = [];
@@ -249,8 +247,6 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
         dblCoveringGrossArea: undefined,
         dblCoveringNetArea: undefined
       }
-      //console.log(expressID,idProps)
-      //
       const dblEntity: DBL.dblEntity = {
         expressId: parseFloat(expressID),
         fragmentId: fragmentIdArray,
@@ -258,7 +254,6 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
         globalId: idProps.GlobalId,
         fragmentMap:fragmentMap
       };
-      //
       //Type
       let elementTypeId: any = undefined;
       //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -287,7 +282,6 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
       let horElementNetVolume: undefined | number;
       //WallProperties
       let elementEnvelopeOrientation: undefined | string = undefined;
-      //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
       //WindowProperties
       let windowGlazingFraction: undefined | number = undefined;
       let WindowGvalue: undefined | number = undefined;
@@ -305,28 +299,17 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
       let windowGlassThickness1: undefined | number = undefined;
       let windowGlassThickness2: undefined | number = undefined;
       let windowGlassThickness3: undefined | number = undefined;
-      //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
       //Columns && Beams
       let strCrossSectionArea:number|undefined
       let strLength:number|undefined
       let strNetSurfaceArea:number|undefined
       let strNetVolume: number|undefined
-      //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
       //Coverings
       let coveringWidth: number|undefined
       let coveringGrossArea: number|undefined
       let coveringNetArea: number|undefined
-      //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-      //LayerSetMaterials
-      let layerMaterialName: undefined | string = undefined;
-      let layerMaterialThickness: undefined | number;
-      let layerMaterialThermalConductivity: undefined | number = undefined;
-      let layerMaterialDensity: undefined | number;
-      let layerNetVolume: undefined | number = undefined;
-      let layerWeight: undefined | number = undefined;
       //Materials
       let materialThermalConductivity: number | undefined = undefined;
-      let materialSpecificHeat: number | undefined = undefined;
       let materialMassDensity: number | undefined = undefined;
       let materialWeight: number | undefined = undefined;
       let materialNetVolume: number | undefined = undefined;
@@ -341,7 +324,8 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
       let materialLifeSpan: number | undefined = undefined;
       let materialConstituentName: string | undefined = undefined;
       let materialFraction: number | undefined = undefined;
-      // getting the type
+
+      // Get the IFC element type
       OBC.IfcPropertiesUtils.getRelationMap(
         properties,
         WEBIFC.IFCRELDEFINESBYTYPE,
@@ -354,7 +338,6 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
       );
       //
       const elementTypeProps = properties[elementTypeId]
-      // Get the type Psets and Properties
       if (
         elementTypeId === undefined||null||
         !elementTypeProps.hasOwnProperty("HasPropertySets") ||
@@ -419,7 +402,6 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
                     break;
                 }
               } else if (DBL.isDblWindow(idType) && conditionPsetWindow) {
-                //console.log(expressID,elementTypePset)
                 switch (typePropName) {
                   case "ThermalTransmittance":
                     elementUvalue = parseFloat(typePropValue.toFixed(3));
@@ -487,7 +469,7 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
           }
         }
       }
-      //Get the elementPsets and properties
+      //Get the element Psets and Properties
       OBC.IfcPropertiesUtils.getRelationMap(
         properties,
         WEBIFC.IFCRELDEFINESBYPROPERTIES,
@@ -510,11 +492,9 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
               set.type === WEBIFC.IFCPROPERTYSET
             ) {
               const propsArray = set.HasProperties;
-              //console.log("Pset",expressID,setID,set)
               for (let p of propsArray) {
                 const pID = p.value;
                 const property = properties[pID];
-                //console.log(expressID,setID,pID,property)
                 if (
                   !property.hasOwnProperty("Name") &&
                   !property.Name.hasOwnProperty("value") &&
@@ -649,6 +629,7 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
           }
         }
       );
+
       // Get the element Material
       OBC.IfcPropertiesUtils.getRelationMap(
         properties,
@@ -656,9 +637,7 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
         (layMatSet, relatedID) => {
           const workingLayId = relatedID.filter((id) => id == expressID);
           const layMatProp = properties[layMatSet];
-          //console.log(expressID,layMatProp.type,relatedID)
-          //console.log(expressID,layMatProp.type,layMatProp)
-          // MaterialLayerSet
+          // Case where the element is formed by a single material, therefore is not a constituentset
           if (
             workingLayId.length !== 0 &&
             layMatProp.type !== WEBIFC.IFCMATERIALCONSTITUENTSET &&
@@ -682,7 +661,7 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
               dblMaterialNetVolume: undefined,
               dblMaterialWeight: undefined,
             };
-            //
+            
             let materialName: string | undefined = undefined;
             if (
               singleMaterial.hasOwnProperty("Name") &&
@@ -693,25 +672,25 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
             const materialPsets = modelMatPsets.filter(
               (item) => item.Material.value === singleMaterialId
             );
-            //
+            
             for (let pset in materialPsets) {
               const materialPset = materialPsets[pset];
               const materialPsetName = materialPset.Name.value;
               const materialPropsArray = materialPsets[pset].Properties;
-              //console.log(expressID,singleMaterial,materialPsetName)
+
               if (
                 materialPsetName == "Pset_MaterialThermal" ||
                 materialPsetName == "Pset_MaterialCommon" ||
                 materialPsetName.includes("DBL")
               ) {
-                //console.log("I am a materialPset",materialPsetName,materialPset)
+
                 for (const i in materialPropsArray) {
                   const materialPropertyId = materialPropsArray[i].value;
                   const materialProperty = properties[materialPropertyId];
                   const materialPropertyName = materialProperty.Name.value;
                   const materialPropertyValue =
                     materialProperty.NominalValue.value;
-                  //console.log(idType,materialPsetName,materialPropertyName,materialPropertyValue)
+
                   if (materialPsetName == "Pset_MaterialThermal") {
                     switch (materialPropertyName) {
                       case "ThermalConductivity":
@@ -719,11 +698,7 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
                           materialPropertyValue.toFixed(3)
                         );
                         break;
-                      case "SpecificHeatCapacity":
-                        materialSpecificHeat = parseFloat(
-                          materialPropertyValue.toFixed(3)
-                        );
-                        break;
+      
                     }
                   } else if (materialPsetName == "Pset_MaterialCommon") {
                     switch (materialPropertyName) {
@@ -760,7 +735,7 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
                 }
               }
             }
-            //console.log(productUniclassCode, productUniclassName)
+
             if (
               DBL.isDblWall(idType) &&
               wallNetVolume !== undefined &&
@@ -819,13 +794,13 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
             };
             dblElementMaterialSet.push(dblElementSingleMaterial);
           }
-          //
+          // Case where the elements is composed by a set of material constituents
           else if (
             workingLayId.length !== 0 &&
             layMatProp.type === WEBIFC.IFCMATERIALCONSTITUENTSET  &&
             DBL.isDblCommonElement(idType)
           ) {
-            //console.log("Materials",expressID,"constituentSet",layMatProp)
+
             let materialConstituentArray: any[] = [];
             for (const key in layMatProp) {
               if (key.includes("Material")) {
@@ -902,7 +877,6 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
                       materialPsetName == "Pset_MaterialCommon" ||
                       materialPsetName.includes("DBL")
                     ) {
-                      //console.log("I am a materialPset",materialPsetName,materialPset)
                       for (const i in materialPropsArray) {
                         const materialPropertyId = materialPropsArray[i].value;
                         const materialProperty = properties[materialPropertyId];
@@ -910,16 +884,10 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
                           materialProperty.Name.value;
                         const materialPropertyValue =
                           materialProperty.NominalValue.value;
-                        //console.log(idType,materialPsetName,materialPropertyName,materialPropertyValue)
                         if (materialPsetName == "Pset_MaterialThermal") {
                           switch (materialPropertyName) {
                             case "ThermalConductivity":
                               materialThermalConductivity = parseFloat(
-                                materialPropertyValue.toFixed(2)
-                              );
-                              break;
-                            case "SpecificHeatCapacity":
-                              materialSpecificHeat = parseFloat(
                                 materialPropertyValue.toFixed(2)
                               );
                               break;
@@ -994,14 +962,7 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
                       windowPerimeter !== undefined &&
                       materialMassDensity !== undefined
                     ) {
-                      materialNetVolume =
-                        0.001 *
-                          (windowLiningDepth * windowLiningThickness) *
-                          windowPerimeter -
-                        4 *
-                          (0.001 *
-                            windowLiningDepth *
-                            (0.001 * windowLiningThickness ** 2));
+                      materialNetVolume = 0.001 *(windowLiningDepth * windowLiningThickness) * windowPerimeter - (4 *((0.001 *windowLiningDepth )*(0.001 * windowLiningThickness ** 2)));
                       materialWeight = materialMassDensity * materialNetVolume;
                     }
                     // Opening Window 1 Pane
@@ -1013,14 +974,7 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
                       windowPerimeter !== undefined &&
                       materialMassDensity !== undefined
                     ) {
-                      windowLiningVolume =
-                        
-                          (windowLiningDepth * windowLiningThickness) *
-                          windowPerimeter -
-                        4 *
-                          (
-                            windowLiningThickness *
-                            ( windowLiningDepth ** 2));
+                      windowLiningVolume = (windowLiningDepth * windowLiningThickness) * windowPerimeter - 4 *(windowLiningThickness * ( windowLiningDepth ** 2));
                       windowFrameVolume = (windowFrameDepth * windowFrameThickness) * windowPerimeter -(4 *(windowFrameThickness *( windowFrameDepth ** 2)));
                       materialNetVolume =windowFrameVolume + windowLiningVolume;
                       materialWeight = materialMassDensity * materialNetVolume;
@@ -1033,7 +987,6 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
                       windowGlassLayers !== undefined &&
                       materialMassDensity !== undefined
                     ) {
-                      //TAMOS AQUI
                       if (
                         windowGlassLayers == 1 &&
                         windowGlassThickness1 !== undefined
@@ -1055,21 +1008,14 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
                         windowGlassThickness2 !== undefined &&
                         windowGlassThickness3 !== undefined
                       ) {
-                        materialNetVolume =
-                          0.001 *
-                          (windowGlassThickness1 +
-                            windowGlassThickness2 +
-                            windowGlassThickness3) *
-                          (windowArea * windowGlazingFraction);
-                        materialWeight =
-                          materialMassDensity * materialNetVolume;
+                        materialNetVolume = 0.001 * (windowGlassThickness1 + windowGlassThickness2 + windowGlassThickness3) * (windowArea * windowGlazingFraction);
+                        materialWeight = materialMassDensity * materialNetVolume;
                       }
                     }
                   } else if (materialConstituentName.includes("Sill")) {
                     materialNetVolume = undefined;
                     materialWeight = undefined;
                   }
-                  //MaterialConstituent Sill is missing
                 } else if ((DBL.isDblStructuralLinealElement(idType)) &&
                   materialFraction !== undefined &&
                   materialMassDensity !== undefined){
@@ -1115,7 +1061,6 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
           }
         }
       );
-      //console.log(idType,expressID,"ElementMaterialSet",dblElementMaterialSet)
       if (DBL.isDblWall(idType)) {
         dblWallProps  = {
           dblWallType: elementType,
@@ -1139,8 +1084,6 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
           dblWallGrossArea: wallGrossArea,
           dblWallNetVolume: wallNetVolume,
         };
-        
-        //console.log("DBL_Wall",dblWallProps,dblWallQtos,dblElementMaterialLayerSet)
         const dblWall = {
           entity: dblEntity,
           props: dblWallProps,
@@ -1153,7 +1096,6 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
         } else {
           dblModelWallsLevelArray.push(dblWall);
         }
-        //console.log(expressID,dblWall)
       }
       if (DBL.isDblWindow(idType)) {
         dblWindowProps = {
@@ -1173,8 +1115,6 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
           dblWindowArea: windowPerimeter,
           dblWindowPerimeter: windowArea,
         };
-
-        //console.log("DBL_Window",dblWindowProps, dblWindowQtos)
         const dblWindow = {
           entity: dblEntity,
           props: dblWindowProps,
@@ -1187,7 +1127,6 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
         } else {
           dblModelWindowsLevelArray.push(dblWindow);
         }
-        //console.log(expressID,dblWindow)
       }
       if (DBL.isDblFloor(idType)) {
         dblFloorProps = {
@@ -1206,7 +1145,6 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
           dblHorElementNetArea: horElementNetArea,
           dblHorElementNetVolume: horElementNetVolume,
         };
-        //console.log("DBL_Floor",dblFloorProps,dblFloorQtos,dblElementMaterialLayerSet)
         const dblFloor = {
           entity: dblEntity,
           props: dblFloorProps,
@@ -1217,7 +1155,7 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
           dblExternalFloorsLevelArray.push(dblFloor);
           dblModelFloorsLevelArray.push(dblFloor);
         } else dblModelFloorsLevelArray.push(dblFloor);
-        //console.log("Floor",expressID,dblFloor)
+
       } else if (DBL.isDblRoof(idType)) {
         dblRoofProps = {
           dblHorElementType: elementType,
@@ -1235,7 +1173,7 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
           dblHorElementNetArea: horElementNetArea,
           dblHorElementNetVolume: horElementNetVolume,
         };
-        //console.log("DBL_Roof",dblRoofProps,dblRoofQtos,dblElementMaterialLayerSet)
+  
         const dblRoof = {
           entity: dblEntity,
           props: dblRoofProps,
@@ -1249,7 +1187,6 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
           dblModelRoofsLevelArray.push(dblRoof);
         }
 
-        //console.log(expressID,dblRoof)
       } else if (DBL.isDblStructuralLinealElement(idType)){
         dblStrLinealProps={
           dblIsLoadBearing: elementIsLoadBearing,
@@ -1306,395 +1243,4 @@ export async function getDblEntitiesByLevel(model: FragmentsGroup, obj: any) {
       }
     });
   }
-  console.log("All Walls", dblWallElements);
-  console.log("All Windows", dblWindowElements);
-  console.log("All Floors", dblFloorElements);
-  console.log("All Roofs", dblRoofElements);
-  console.log ("AllStrLineal", dblStrLinealElements)
-  console.log ("All Coverings", dblCoveringElements)
-  console.log("DBLExternalWalls",dblEnvelopeWallElements)
-  console.log("DBLExternalWindow",dblEnvelopeWindowElements)
-  console.log("DBLExternalFloors",dblEnvelopeFloorElements)
-  console.log("DBLExternalRoofs",dblEnvelopeRoofElements)
 }
-
-// //
-// function checkEnvelopeValue(envelopeValue: string, array: any[]) {
-//   return array.findIndex(
-//     (dblElement) => dblElement.dblEnvelopeCode === envelopeValue
-//   );
-// }
-// //
-// export let dblEnvelopeWalls: {}
-// export let dblEnvelopeFloors: {} 
-// export let dblEnvelopeWindows: {} 
-// export let dblEnvelopeRoofs: {} 
-
-// export async function classifyEnvelope(...obj) {
-//   dblEnvelopeWalls = {};
-//   dblEnvelopeFloors = {};
-//   dblEnvelopeWindows = {};
-//   dblEnvelopeRoofs = {};
-//   obj.forEach((obj) => {
-    
-//     for (const level in obj) {
-//       const dblLevel = obj[level];
-//       const dblEnvelopeWallLevelArray: any = [];
-//       const dblEnvelopeWindowLevelArray: any = [];
-//       const dblEnvelopeFloorLevelArray: any = [];
-//       const dblEnvelopeRoofLevelArray: any = [];
-//       //
-//       for (const e in dblLevel) {
-//         const dblElement = dblLevel[e];
-//         const dblEntity:DBL.dblEntity = dblElement.entity
-//         const idType = dblElement.entity.entityType;
-//         const componentExpressId = dblElement.entity.expressId;
-//         const componentFragmentMap= dblEntity.fragmentMap
-//         //
-//         let dblComposedEntity:DBL.dblComposedEntity ={
-//           dblIfcType:undefined,
-//           dblEnvelopeExpressIdArray:[],
-//           dblEnvelopeFragmentMap:{}
-//         }
-//         //
-//         if (DBL.isDblWall(idType)) {
-//           const envelopeCode = dblElement.props.dblWallEnvelopeCode;
-//           const componentType = dblElement.props.dblWallType;
-//           const componentEnvelopeCode = dblElement.props.dblWallEnvelopeCode;
-//           const componentRvalue = dblElement.props.dblWallRvalue;
-//           const componentWidth = dblElement.qtos.dblWallWidth;
-//           const componentNetArea = dblElement.qtos.dblWallNetArea;
-//           const componentGrossArea = dblElement.qtos.dblWallGrossArea
-//           const componentOrientation = dblElement.props.dblWallEnvelopeOrientation;
-//           const componentYearProduction = dblElement.props.dblYearProduction 
-//           //
-//           const dblEnvelopeComponent: DBL.dblEnvelopeVerticalComponent = {
-//             dblComponentExpressId: componentExpressId,
-//             dblComponentEntityType: idType,
-//             dblComponentEnvelopeCode: componentEnvelopeCode,
-//             dblComponentType: componentType,
-//             dblComponentRvalue: componentRvalue,
-//             dblComponentOrientation: componentOrientation,
-//             dblComponentWidth: componentWidth,
-//             dblComponentNetArea: componentNetArea,
-//             dblComponentGrossArea:componentGrossArea,
-//             dblComponentYearProduction:componentYearProduction,
-//             dblEntity:dblEntity
-//           };
-//           const dblEnvelopeWall: DBL.dblEnvelopeVerticalLayered = {
-//             dblEnvelopeCode: envelopeCode,
-//             dblEnvelopeType: undefined,
-//             dblEnvelopeUvalue: undefined,
-//             dblEnvelopeWidth: undefined,
-//             dblEnvelopeNetArea: undefined,
-//             dblEnvelopeGrossArea: undefined,
-//             dblEnvelopeOrientation: componentOrientation,
-//             dblEnvelopeComponents: [],
-//             dblComposedEntity:dblComposedEntity
-//           };
-//           dblEnvelopeWall.dblComposedEntity.dblIfcType = dblElement.entity.entityType
-//           //console.log(dblElement)
-//           const envelopeIndex = checkEnvelopeValue(envelopeCode,dblEnvelopeWallLevelArray);
-//           const targetElement = dblEnvelopeWallLevelArray[envelopeIndex];
-//           if (envelopeIndex !== -1 && targetElement !== undefined) {
-//             //console.log("si está", envelopeIndex,dblEnvelopeWallLevelArray[envelopeIndex])
-//             targetElement.dblEnvelopeComponents.push(dblEnvelopeComponent);
-//             for (let fragmentId in componentFragmentMap){
-//               if(componentFragmentMap.hasOwnProperty(fragmentId)){
-//                 targetElement.dblComposedEntity.dblEnvelopeFragmentMap[fragmentId] = new Set(componentFragmentMap[fragmentId])
-//               }
-//             }  
-//           } else {
-//             dblEnvelopeWallLevelArray.push(dblEnvelopeWall);
-//             dblEnvelopeWall.dblEnvelopeComponents.push(dblEnvelopeComponent);
-//             for (let fragmentId in componentFragmentMap){
-//               if(componentFragmentMap.hasOwnProperty(fragmentId)){
-//                 dblEnvelopeWall.dblComposedEntity.dblEnvelopeFragmentMap[fragmentId] = new Set (componentFragmentMap[fragmentId])
-//               }
-//             }
-//           }
-//         } else if (DBL.isDblFloor(idType) || DBL.isDblRoof(idType)) {
-//           const envelopeCode = dblElement.props.dblHorElementEnvelopeCode;
-//           const componentType = dblElement.props.dblHorElementType;
-//           const componentEnvelopeCode = dblElement.props.dblHorElementEnvelopeCode;
-//           const componentRvalue = dblElement.props.dbHorElementrRvalue;
-//           const componentYearProduction = dblElement.props.dblYearProduction
-//           const componentWidth = dblElement.qtos.dblHorElementWidth;
-//           const componentNetArea = dblElement.qtos.dblHorElementNetArea;
-  
-//           const dblEnvelopeHorizontalComponent: DBL.dblEnvelopeHorizontalComponent =
-//             {
-//               dblComponentExpressId: componentExpressId,
-//               dblComponentEntityType: idType,
-//               dblComponentEnvelopeCode: componentEnvelopeCode,
-//               dblComponentType: componentType,
-//               dblComponentRvalue: componentRvalue,
-//               dblComponenYearProduction:componentYearProduction,
-//               dblComponentWidth: componentWidth,
-//               dblComponentNetArea: componentNetArea,
-//               dblEntity:dblEntity
-//             };
-//           const dblEnvelopeHorizontal: DBL.dblEnvelopeHorizontalLayered = {
-//             dblEnvelopeCode: envelopeCode,
-//             dblEnvelopeType: undefined,
-//             dblEnvelopeUvalue: undefined,
-//             dblEnvelopeWidth: undefined,
-//             dblEnvelopeNetArea: undefined,
-//             dblEnvelopeComponents: [],
-//             dblComposedEntity:dblComposedEntity
-//           };
-//           if(dblElement.entity.entityType!== undefined){
-//             dblEnvelopeHorizontal.dblComposedEntity.dblIfcType = dblElement.entity.entityType
-//           }
-//           //
-//           if (DBL.isDblFloor(idType)) {
-//             const envelopeIndex = checkEnvelopeValue(envelopeCode,dblEnvelopeFloorLevelArray);
-//             const targetElement = dblEnvelopeFloorLevelArray[envelopeIndex];
-//             if (envelopeIndex !== -1 && targetElement !== undefined) {
-//               targetElement.dblEnvelopeComponents.push(dblEnvelopeHorizontalComponent);
-//               for (let fragmentId in componentFragmentMap){
-//                 if(componentFragmentMap.hasOwnProperty(fragmentId)){
-//                   targetElement.dblComposedEntity.dblEnvelopeFragmentMap[fragmentId] = new Set(componentFragmentMap[fragmentId])
-//                 }}
-//             } else {
-//               dblEnvelopeFloorLevelArray.push(dblEnvelopeHorizontal);
-//               dblEnvelopeHorizontal.dblEnvelopeComponents.push(dblEnvelopeHorizontalComponent);
-//               for (let fragmentId in componentFragmentMap){
-//                 if(componentFragmentMap.hasOwnProperty(fragmentId)){
-//                   dblEnvelopeHorizontal.dblComposedEntity.dblEnvelopeFragmentMap[fragmentId]= new Set (componentFragmentMap[fragmentId])
-//                 }
-//               }
-//             }
-//           } else if (DBL.isDblRoof(idType)) {
-//             const envelopeIndex = checkEnvelopeValue(envelopeCode, dblEnvelopeRoofLevelArray);
-//             const targetElement = dblEnvelopeRoofLevelArray[envelopeIndex];
-//             if (envelopeIndex !== -1 && targetElement !== undefined) {
-//               targetElement.dblEnvelopeComponents.push(dblEnvelopeHorizontalComponent);
-//               for (let fragmentId in componentFragmentMap){
-//                 if(componentFragmentMap.hasOwnProperty(fragmentId)){
-//                   targetElement.dblComposedEntity.dblEnvelopeFragmentMap[fragmentId] = new Set(componentFragmentMap[fragmentId])
-//                 }}
-//             } else {
-//               dblEnvelopeRoofLevelArray.push(dblEnvelopeHorizontal);
-//               dblEnvelopeHorizontal.dblEnvelopeComponents.push(dblEnvelopeHorizontalComponent);
-//               for (let fragmentId in componentFragmentMap){
-//                 if(componentFragmentMap.hasOwnProperty(fragmentId)){
-//                   dblEnvelopeHorizontal.dblComposedEntity.dblEnvelopeFragmentMap[fragmentId] = new Set (componentFragmentMap[fragmentId])
-//                 }
-//               }
-//             }
-//           }
-//         } else if (DBL.isDblWindow(idType)) {
-//           const envelopeWindowOrientation = dblElement.props.dblWindowEnvelopeOrientation
-//           const envelopeWindowType = dblElement.props.dblWindowType;
-//           const envelopeYearProduction = dblElement.props.dblYearProduction
-//           const envelopeCode = dblElement.props.dblWindowEnvelopeCode;
-//           const envelopeWindowUvalue = dblElement.props.dblWindowUvalue;
-//           const envelopeWindowGvalue = dblElement.props.dblWindowGvalue;
-//           const envelopeWindowWidth = dblElement.qtos.dblWindowWidth;
-//           const envelopeWindowHeight = dblElement.qtos.dblWindowHeight;
-//           const dblWindowEnvelopeComponent: DBL.dblEnvelopeWindowComponent = {
-//             dblEnvelopeExpressId: componentExpressId,
-//           };
-//           const dblEnvelopeWindow: DBL.dblEnvelopeWindow = {
-//             dblEnvelopeCode: envelopeCode,
-//             dblEnvelopeOrientation: envelopeWindowOrientation,
-//             dblEnvelopeNetArea: (envelopeWindowWidth * envelopeWindowHeight),
-//             dblEnvelopeWindowType: envelopeWindowType,
-//             dblEnvelopeWindowYearProduction: envelopeYearProduction,
-//             dblEnvelopeWindowWidth: envelopeWindowWidth,
-//             dblEnvelopeWindowHeight: envelopeWindowHeight,
-//             dblEnvelopeWindowUvalue: envelopeWindowUvalue,
-//             dblEnvelopeWindowgValue: envelopeWindowGvalue,
-//             dblEnvelopeComponents: [],
-//             dblComposedEntity:dblComposedEntity
-//           };
-          
-//           if(dblElement.hasOwnProperty("entity")&& dblElement.entity.hasOwnProperty("entityType")){
-//             dblEnvelopeWindow.dblComposedEntity.dblIfcType = dblElement.entity.entityType
-//           }
-//           //console.log(dblEnvelopeWindow)
-//           const envelopeIndex = checkEnvelopeValue(envelopeCode,dblEnvelopeWindowLevelArray);
-//           const targetElement = dblEnvelopeWindowLevelArray[envelopeIndex];
-//           if (envelopeIndex !== -1 && targetElement != undefined) {
-//             targetElement.dblEnvelopeComponents.push(dblWindowEnvelopeComponent);
-//             for (let fragmentId in componentFragmentMap){
-//               if(componentFragmentMap.hasOwnProperty(fragmentId)){
-//                 targetElement.dblComposedEntity.dblEnvelopeFragmentMap[fragmentId] = new Set(componentFragmentMap[fragmentId])
-//               }}
-//           } else {
-//             dblEnvelopeWindowLevelArray.push(dblEnvelopeWindow);
-//             dblEnvelopeWindow.dblEnvelopeComponents.push(dblWindowEnvelopeComponent);
-//             for (let fragmentId in componentFragmentMap){
-//               if(componentFragmentMap.hasOwnProperty(fragmentId)){
-//                 dblEnvelopeWindow.dblComposedEntity.dblEnvelopeFragmentMap[fragmentId]= new Set (componentFragmentMap[fragmentId])
-//               }
-//             }
-//           }
-//         }
-//       }
-//       if (dblEnvelopeWallLevelArray.length !== 0) {
-//         dblEnvelopeWalls[level] = dblEnvelopeWallLevelArray;
-//         for (const envelopeWall of dblEnvelopeWallLevelArray) {
-//           const componentArray = envelopeWall.dblEnvelopeComponents;
-//           const concatenatedTypes = componentArray.map((component) => component.dblComponentType).join("+");
-//           const envelopeWidth: number = componentArray.reduce((sum: number, component) => sum + component.dblComponentWidth,0);
-//           const envelopeRvalue: number = componentArray.reduce((sum: number, component) => sum + component.dblComponentRvalue,0);
-//           const envelopeNetArea: number = componentArray.reduce((sum: number, component) => sum + component.dblComponentNetArea,0);
-//           const envelopeGrossArea: number = componentArray.reduce((sum: number, component) => sum + component.dblComponentGrossArea,0);
-
-//           envelopeWall.dblEnvelopeType = concatenatedTypes;
-//           envelopeWall.dblEnvelopeWidth = envelopeWidth;
-//           envelopeWall.dblEnvelopeUvalue = parseFloat((1 / envelopeRvalue).toFixed(2));
-//           envelopeWall.dblEnvelopeNetArea = envelopeNetArea / componentArray.length;
-//           envelopeWall.dblEnvelopeGrossArea = envelopeGrossArea/ componentArray.length; //OJO CUIDADAO
-//         }
-//       }
-//       if (dblEnvelopeFloorLevelArray.length !== 0) {
-//         dblEnvelopeFloors[level] = dblEnvelopeFloorLevelArray;
-//         for (const envelopeFloor of dblEnvelopeFloorLevelArray) {
-//           const componentArray = envelopeFloor.dblEnvelopeComponents;
-//           const concatenatedTypes = componentArray
-//             .map((component) => component.dblComponentType).join("+");
-//           const envelopeWidth: number = componentArray.reduce((sum: number, component) => sum + component.dblComponentWidth,0);
-//           const envelopeRvalue: number = componentArray.reduce((sum: number, component) => sum + component.dblComponentRvalue,0);
-//           const envelopeNetArea: number = componentArray.reduce((sum: number, component) => sum + component.dblComponentNetArea,0);
-
-//           envelopeFloor.dblEnvelopeType = concatenatedTypes;
-//           envelopeFloor.dblEnvelopeWidth = parseFloat(envelopeWidth.toFixed(2));
-//           envelopeFloor.dblEnvelopeUvalue = parseFloat((1 / envelopeRvalue).toFixed(2));
-//           envelopeFloor.dblEnvelopeNetArea =envelopeNetArea / componentArray.length;
-//         }
-//       }
-//       if (dblEnvelopeRoofLevelArray.length !== 0) {
-//         dblEnvelopeRoofs[level] = dblEnvelopeRoofLevelArray;
-//         for (const envelopeRoof of dblEnvelopeRoofLevelArray) {
-//           const componentArray = envelopeRoof.dblEnvelopeComponents;
-//           const concatenatedTypes = componentArray.map((component) => component.dblComponentType).join("+");
-//           const envelopeWidth: number = componentArray.reduce((sum: number, component) => sum + component.dblComponentWidth,0);
-//           const envelopeRvalue: number = componentArray.reduce((sum: number, component) => sum + component.dblComponentRvalue,0);
-//           const envelopeNetArea: number = componentArray.reduce((sum: number, component) => sum + component.dblComponentNetArea,0);
-
-//           envelopeRoof.dblEnvelopeType = concatenatedTypes;
-//           envelopeRoof.dblEnvelopeWidth = parseFloat(envelopeWidth.toFixed(2));
-//           envelopeRoof.dblEnvelopeUvalue = parseFloat((1 / envelopeRvalue).toFixed(2));
-//           envelopeRoof.dblEnvelopeNetArea = envelopeNetArea / componentArray.length;
-//         }
-//       }
-//       if (dblEnvelopeWindowLevelArray.length !== 0) {
-//         dblEnvelopeWindows[level] = dblEnvelopeWindowLevelArray;
-//       }
-//     }
-//   });
-//   console.log(dblEnvelopeWalls);
-//   console.log(dblEnvelopeFloors);
-//   console.log(dblEnvelopeRoofs);
-//   console.log("HOOOOLA", dblEnvelopeWindows);
-// }
-// //
-
-// export let dblEnvelopeSummaryVertical: { [key: string]: DBL.dblEnvelopeSummaryOrientationVertical }
-// export let dblEnvelopeSummaryFloors:DBL.dblFloorEnvelopeSummary 
-// export let dblEnvelopeSummaryRoofs:DBL.dblRoofEnvelopeSummary
-// //
-// export async function summarizeEnvelope (...env){
-//   dblEnvelopeSummaryVertical ={};
-//   dblEnvelopeSummaryRoofs = {
-//     dblRoofEnvelopeSummaryAreaSum:0
-//   };
-//   dblEnvelopeSummaryFloors = {
-//     dblFloorEnvelopeSummaryAreaSum:0
-//   };
-//   //
-//   env.forEach((env)=>{
-//     for (let l in env){
-//       const level= env[l]
-//       for (const element of level){
-//         const ifcEntityType = element.dblComposedEntity.dblIfcType
-//         const envelopeVerticalSummaryOrientation = element.dblEnvelopeOrientation
-//         const envelopeSummaryNetArea = element.dblEnvelopeNetArea
-//         //
-//         const envelopeFragmentMap =  element.dblComposedEntity.dblEnvelopeFragmentMap
-//         const targetSummaryElement = dblEnvelopeSummaryVertical[envelopeVerticalSummaryOrientation]
-//         //
-//         if(DBL.isDblWall(ifcEntityType) && element.hasOwnProperty("dblEnvelopeGrossArea") && element.hasOwnProperty("dblEnvelopeOrientation")&& element.hasOwnProperty("dblComposedEntity")){
-//           const envelopeSummaryGrossArea = element.dblEnvelopeGrossArea
-          
-//           const dblComposedEntity:DBL.dblComposedEntity = {
-//             dblIfcType:ifcEntityType,
-//             dblEnvelopeExpressIdArray: [],
-//             dblEnvelopeFragmentMap:{}
-//           }
-//           //console.log(envelopeVerticalSummaryOrientation)
-//           if(!dblEnvelopeSummaryVertical[envelopeVerticalSummaryOrientation]){
-            
-//             const dblEnvelopeSummaryElement: DBL.dblEnvelopeSummaryOrientationVertical = {
-//               dblVerticalEnvelopeSummaryOrientation: envelopeVerticalSummaryOrientation,
-//               dblWallEnvelopeSummaryNetAreaSum: 0,
-//               dblWallEnvelopeSummaryGrossAreaSum: parseFloat(envelopeSummaryGrossArea.toFixed(2)),
-//               dblWindowToWallRatio: 0,
-//               dblWindowEnvelopeSummaryNetAreaSum:0,
-//               dblEnvelopePercentageOverTotal:0,
-//               dblComposedEntity: dblComposedEntity
-//             }
-//             for (let fragmentId in envelopeFragmentMap){
-//               //console.log("ahora si",[envelopeFragmentMap],envelopeFragmentMap[fragmentId]) //POR AQUI ESTAMOS 25
-//               if(!dblComposedEntity.dblEnvelopeFragmentMap[fragmentId]){
-//                 dblComposedEntity.dblEnvelopeFragmentMap[fragmentId] = new Set(envelopeFragmentMap[fragmentId]) 
-//               } 
-//             }
-//             dblEnvelopeSummaryVertical[envelopeVerticalSummaryOrientation]= dblEnvelopeSummaryElement 
-//           }
-//           else if(targetSummaryElement.dblWallEnvelopeSummaryNetAreaSum !== undefined && targetSummaryElement.dblComposedEntity!== undefined && targetSummaryElement.dblWallEnvelopeSummaryGrossAreaSum!== undefined  ){
-            
-//             targetSummaryElement.dblWallEnvelopeSummaryNetAreaSum += parseFloat(envelopeSummaryGrossArea.toFixed(2))
-//             targetSummaryElement.dblWallEnvelopeSummaryGrossAreaSum += parseFloat(envelopeSummaryGrossArea.toFixed(2))
-//             for (let fragmentId in envelopeFragmentMap){
-//               if(!targetSummaryElement.dblComposedEntity.dblEnvelopeFragmentMap[fragmentId]){
-//                 targetSummaryElement.dblComposedEntity.dblEnvelopeFragmentMap[fragmentId] = new Set(envelopeFragmentMap[fragmentId])
-//               } else{
-//                 envelopeFragmentMap[fragmentId].forEach(value => targetSummaryElement.dblComposedEntity?.dblEnvelopeFragmentMap[fragmentId].add(value))
-//                 //envelopeFragmentMap[fragmentId].forEach(value=> console.log("asdasd",envelopeFragmentMap[fragmentId],value))
-//               }
-//             }
-//           }
-//         }
-//         else if(DBL.isDblWindow(ifcEntityType)){
-//           if(!dblEnvelopeSummaryVertical[envelopeVerticalSummaryOrientation]){
-//             const dblEnvelopeVerticalSummaryElement: DBL.dblEnvelopeSummaryOrientationVertical = {
-//               dblVerticalEnvelopeSummaryOrientation: envelopeVerticalSummaryOrientation,
-//               dblWallEnvelopeSummaryNetAreaSum: 0,
-//               dblWallEnvelopeSummaryGrossAreaSum: 0,
-//               dblWindowToWallRatio: 0,
-//               dblWindowEnvelopeSummaryNetAreaSum:envelopeSummaryNetArea,
-//               dblEnvelopePercentageOverTotal:0,
-//               dblComposedEntity:undefined
-//             }
-//             dblEnvelopeSummaryVertical[envelopeVerticalSummaryOrientation] = dblEnvelopeVerticalSummaryElement
-
-//           } else if( dblEnvelopeSummaryVertical[envelopeVerticalSummaryOrientation].dblWindowEnvelopeSummaryNetAreaSum !== undefined){
-//             dblEnvelopeSummaryVertical[envelopeVerticalSummaryOrientation].dblWindowEnvelopeSummaryNetAreaSum += envelopeSummaryNetArea
-//           }
-//         }
-//         else if (DBL.isDblFloor(ifcEntityType) && envelopeSummaryNetArea!== undefined){
-//           dblEnvelopeSummaryFloors.dblFloorEnvelopeSummaryAreaSum += envelopeSummaryNetArea
-//         }
-//         else if (DBL.isDblRoof(ifcEntityType) && envelopeSummaryNetArea!== undefined){
-//           dblEnvelopeSummaryRoofs.dblRoofEnvelopeSummaryAreaSum += envelopeSummaryNetArea
-//         }
-//       }
-//     }
-//   })
-//   for (let key in dblEnvelopeSummaryVertical){
-//     const element = dblEnvelopeSummaryVertical[key]
-//     if(element.dblWallEnvelopeSummaryGrossAreaSum!== undefined  && element.dblWindowEnvelopeSummaryNetAreaSum){
-//       const dblWindowToWallRatio = ((element.dblWindowEnvelopeSummaryNetAreaSum)/(element.dblWallEnvelopeSummaryGrossAreaSum))
-//       element.dblWindowToWallRatio = parseFloat(dblWindowToWallRatio.toFixed(2))
-//       element.dblWallEnvelopeSummaryNetAreaSum = element.dblWallEnvelopeSummaryGrossAreaSum - element.dblWindowEnvelopeSummaryNetAreaSum
-//       //
-//       element.dblWindowEnvelopeSummaryNetAreaSum = parseFloat(element.dblWindowEnvelopeSummaryNetAreaSum.toFixed(2))
-//     }
-//   }
-  
-//   console.log("Esto",dblEnvelopeSummaryVertical, dblEnvelopeSummaryRoofs, dblEnvelopeSummaryFloors)
-// }

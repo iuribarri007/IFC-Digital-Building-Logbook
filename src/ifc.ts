@@ -31,36 +31,22 @@ viewer.camera = cameraComponent
 cameraComponent.setProjection("Orthographic");
 cameraComponent.updateAspect()
 const raycasterComponent = new OBC.SimpleRaycaster(viewer)
-
 viewer.init()
 
 const {postproduction} = rendererComponent;
 postproduction.enabled = true;
 
-
 const scene = sceneComponent.get()
 sceneComponent.setup()
-
 scene.background = null
 //Creating the Renderer
-
 rendererComponent.postproduction.enabled = true
 
 //Creating the camera
 viewer.raycaster = raycasterComponent
 //Creating the highlighter
 const highlighter = new OBC.FragmentHighlighter(viewer)
-highlighter.zoomToSelection = false
-highlighter.outlineEnabled = true
-highlighter.outlineMaterial = new THREE.MeshBasicMaterial ({color:"rgb(178,178,108)",wireframeLinewidth:0.2}) 
-//Changing the colour to the highlighter
 
-highlighter.setup()
-
-//Setting the fragment manager in order to be able to download the fragment file 
-const threeColor = new THREE.Color("rgb(255,50,40)")
-highlighter.add("dblSelection", [new THREE.MeshStandardMaterial({ color: 0xa33a3a,side:2,depthTest:true,depthWrite: false,roughness:0,flatShading:true})])
-highlighter.add("transparentMaterial" , [new THREE.MeshStandardMaterial({ color:0x8b9eb4, transparent:true,opacity:0.1, depthTest: false,depthWrite: false})])
 let fragments = new OBC.FragmentManager(viewer)
 const ifcLoader = new OBC.FragmentIfcLoader(viewer)
 
@@ -71,24 +57,9 @@ const grid = new OBC.SimpleGrid(viewer);
 grid.visible = false
 
 //Clipper
-const styler = new OBC.FragmentClipStyler(viewer);
-
 const clipper = new OBC.EdgesClipper(viewer);
-const sectionMaterial = new THREE.LineBasicMaterial({ color: 'black', linewidth: 400 });
-const fillMaterial = new THREE.MeshBasicMaterial({ color: 'gray', side: 2 });
-const fillOutline = new THREE.MeshBasicMaterial({ color: 'black', side: 1, opacity: 0.5, transparent: true })
-
-clipper.styles.create("filled", new Set(), sectionMaterial, fillMaterial, fillOutline);
-clipper.styles.create("projected", new Set(), sectionMaterial);
-const styles = clipper.styles.get();
-//
-clipper.enabled = true;
-
-await styler.setup();
-
-
-
-postproduction.customEffects.outlineEnabled = true;
+clipper.material.opacity = 0.01;
+const styler = new OBC.FragmentClipStyler(viewer);
 
 //Adding properties proccessor
 const propertiesProcessor = new OBC.IfcPropertiesProcessor(viewer)
@@ -108,9 +79,6 @@ classificationsBtn.onClick.add(() => {
   classificationWindow.active = classificationWindow.visible
 })
 
-//::::::::::::
-const plans = new OBC.FragmentPlans(viewer)
-
 //ToolBar
 const toolbar = new OBC.Toolbar(viewer);
 toolbar.name = "Main toolbar";
@@ -118,14 +86,22 @@ viewer.ui.addToolbar(toolbar);
 toolbar.addChild(
   classificationsBtn,
   propertiesProcessor.uiElement.get("main"),
-  plans.uiElement.get('main'),
-  plans.uiElement.get('main'),
-  cameraComponent.uiElement.get("main")
+  cameraComponent.uiElement.get("main"),
+  
 )
 const hider = new OBC.FragmentHider(viewer);
 //
-const stylerButton = styler.uiElement.get("mainButton");
-//Logic to clipper
+//Styler
+postproduction.customEffects.outlineEnabled = true;
+toolbar.addChild(styler.uiElement.get("mainButton"))
+await styler.setup();
+const sectionMaterial = new THREE.LineBasicMaterial({ color: 'black', linewidth: 400 });
+const fillMaterial = new THREE.MeshBasicMaterial({ color: 'gray', side: 2 });
+const fillOutline = new THREE.MeshBasicMaterial({ color: 'black', side: 1, opacity: 0.5, transparent: true })
+clipper.styles.create("filled", new Set(), sectionMaterial, fillMaterial, fillOutline);
+clipper.styles.create("projected", new Set(), sectionMaterial);
+const styles = clipper.styles.get();
+clipper.enabled = true;
 
 //Create IFC tree function 
 async function createModelTree() {
@@ -143,22 +119,7 @@ async function createModelTree() {
   return tree
 }
 
-// //Load fragments
-// function disposeFragments(model) {
-//   fragments.disposeGroup(model);
-// }
-
-const highlightMat = new THREE.MeshBasicMaterial({
-  depthTest: false,
-  color: 0xBCF124,
-  transparent: true,
-  opacity: 0.3
-});
-highlighter.add("default", [highlightMat]);
-//
-
 export async function loadIfcAsFragments(ifcModelFile) {
-  
   
   //IfcLoaderConfiguration
   ifcLoader.settings.wasm = {
@@ -179,25 +140,42 @@ export async function loadIfcAsFragments(ifcModelFile) {
     }
     if (previousModel!== undefined){
       scene.remove(previousModel)
+      console.log(highlighter)
+       highlighter.dispose()
+       highlighter.update()
+
+       if (clipper.enabled) {
+        clipper.delete()
+      }
     }
     if(child.type === "Mesh"){
       scene.remove(child)
     }
   })
-  if(plans){
-    plans.updatePlansList()
-    
-  }
-  
-  // plans.dispose()//Esto es un problema
+
   //Getting rid of previous tree if any
   let tree
   if(tree!==undefined){
     classificationWindow.removeChild(tree)    
     tree.dispose()
   }
+  // Highlighter
+  highlighter.zoomToSelection = false
+  highlighter.outlineEnabled = false
+  //Changing the colour to the highlighter
 
- 
+  highlighter.setup()
+  const highlightMat = new THREE.MeshBasicMaterial({
+    depthTest: false,
+    color: 0xBCF124,
+    transparent: true,
+    opacity: 0.3
+  });
+  highlighter.add("default", [highlightMat]);
+  highlighter.add("dblSelection", [new THREE.MeshStandardMaterial({ color: "rgb(178,178,108)",side:2,depthTest:true,depthWrite: false,roughness:0,flatShading:true})])
+  highlighter.add("transparentMaterial" , [new THREE.MeshStandardMaterial({ color:0x8b9eb4, transparent:true,opacity:0.05, depthTest: false,depthWrite: false})])
+
+  
   let properties:IfcProperties | undefined = undefined;
   let model:FragmentsGroup |undefined =undefined;
 
@@ -206,8 +184,6 @@ export async function loadIfcAsFragments(ifcModelFile) {
   let buffer = new Uint8Array(data);
   model = await ifcLoader.load(buffer, file.url);
   scene.add(model);
-
-   
 
   properties = model.properties
   if (properties === undefined) { return }
@@ -221,50 +197,7 @@ export async function loadIfcAsFragments(ifcModelFile) {
   highlighter.events.select.onClear.add(() => {
     propertiesProcessor.cleanPropertiesList()
   })
-  //Plans
-  let meshes: any = [];//COMENTADO
-  await plans.computeAllPlanViews(model);
-  console.log(plans)
-   for (const fragment of model.items) {
-     const { mesh } = fragment;
-     meshes.push(mesh);
-     styles.projected.meshes.add(mesh);
-   }
-  plans.commands = {
-
-    "Select": async (plan) => {
-      if (plan !== undefined) {
-        const found = await classifier.find({ storeys: [plan.name] });
-        highlighter.highlightByID("default", found);
-      }
-    },
-    "Show": async (plan) => {
-      if (plan !== undefined) {
-        const found = await classifier.find({ storeys: [plan.name] });
-        hider.set(true, found);
-      }
-    },
-    "Hide": async (plan) => {
-      if (plan !== undefined) {
-        const found = await classifier.find({ storeys: [plan.name] });
-        hider.set(false, found);
-      }
-    },
-  }
-  plans.updatePlansList();
-
-  plans.onNavigated.add(() => {
-    materialManager.setBackgroundColor(whiteColor);
-    materialManager.set(true, ["white"]);
-
-  });
-  plans.onExited.add(() => {
-    materialManager.resetBackgroundColor();
-    materialManager.set(false, ["white"]);
-
-  });
-
-
+  highlighterActive = false;
   //Cube 
   const navCube = new OBC.CubeMap(viewer);
   navCube.offset = 1;
@@ -295,31 +228,12 @@ export async function loadIfcAsFragments(ifcModelFile) {
     }
   }
 
-  const found = classifier.find({ entities: ["IFCWALLSTANDARDCASE", "IFCWALL"] });
-  for (const fragID in found) {
-    const { mesh } = fragments.list[fragID];
-    styles.filled.fragments[fragID] = new Set(found[fragID]);
-    styles.filled.meshes.add(mesh);
-  }
-  //
-  const whiteColor = new THREE.Color("white");
-  const whiteMaterial = new THREE.MeshBasicMaterial({ color: whiteColor });
-  const materialManager = new OBC.MaterialManager(viewer);
-  materialManager.addMaterial("white", whiteMaterial);
-  materialManager.addMeshes("white", meshes);
-  //
-
- 
   //Highligter logic once the model is loaded
-  
-
   const canvas = rendererComponent.get().domElement;
 
   canvas.addEventListener("click", () => highlighter.clear("default"))
   highlighter.update();
 
-  
-  
   //Classify the entities to proccess the DBL properties
   let objProp = {}
   classifier.byStorey(model)
@@ -331,8 +245,8 @@ export async function loadIfcAsFragments(ifcModelFile) {
   classifier.byEntity(model) 
   tree = await createModelTree()
   await classificationWindow.slots.content.dispose(true)
+  await styler.update()
   classificationWindow.addChild(tree)
-
 
   //Obtain data from ifc
   await getEntityFragmentsByLevel(model, objProp)
@@ -341,15 +255,11 @@ export async function loadIfcAsFragments(ifcModelFile) {
   await classifyMaterials(dblWallElements, dblFloorElements, dblWindowElements, dblRoofElements, dblStrLinealElements, dblCoveringElements)
   await summarizeEnvelope(dblEnvelopeWalls, dblEnvelopeWindows, dblEnvelopeFloors, dblEnvelopeRoofs)
 
-
-  console.log("This is the model",model)
-   getAllFragments(model)
+  getAllFragments(model)
+  console.log(allModelFragments)
 }
-export let dblEpcPhaseData: UndefinedDblEpc = {}
-//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 let allModelFragments
-
 async function getAllFragments (model){
   allModelFragments={}
   await model
@@ -361,7 +271,6 @@ async function getAllFragments (model){
       allModelFragments[fragmentId] = new Set(expressIdArray)
     }
   })
-  //console.log("Aver",allModelFragments)
 }
 let allFragmentsExceptSelected
 async function getAllFragmentExceptSelected (highlightedFragments, allModelFragments){
@@ -369,7 +278,6 @@ async function getAllFragmentExceptSelected (highlightedFragments, allModelFragm
   if(allModelFragments!==undefined){
     for (let key in highlightedFragments){
       const substractingExpressId:any = []
-      const substractedExpressId:any = []
       const intersectionFragmentKey = highlightedFragments[key]
       intersectionFragmentKey.forEach(value=>{
         substractingExpressId.push(value)
@@ -386,7 +294,6 @@ async function getAllFragmentExceptSelected (highlightedFragments, allModelFragm
           allFragmentsExceptSelected[key] = newFragmentMap[key];}
       }
     }
-    console.log(allModelFragments,allFragmentsExceptSelected)
   }
 }
 function findFragmentMap(envelopeCode, dataSetName, levelKey) {
@@ -401,7 +308,9 @@ function findFragmentMap(envelopeCode, dataSetName, levelKey) {
   // Find objetct which matches dblEnvelopeCode in object
   const envelopeData = baseObject.find(obj => obj.dblEnvelopeCode === envelopeCode);
   if (!envelopeData) {
+    console.log("No envelope Data found")
     return null; 
+    
   }
   const composedEntity = envelopeData.dblComposedEntity;
   if (composedEntity && composedEntity.dblEnvelopeFragmentMap) {
@@ -409,7 +318,7 @@ function findFragmentMap(envelopeCode, dataSetName, levelKey) {
   }
   return null; 
 }
-let highlighterActive = false;//
+let highlighterActive 
 
 export function getFragmentMapInfo() {
   document.querySelectorAll('.dbl-fragment-map-button').forEach(button => {
@@ -427,21 +336,20 @@ export function getFragmentMapInfo() {
         if (!highlighterActive) {
           const fragmentMapLenght = Object.keys(envelopeFragmentMap).length
           if (fragmentMapLenght > 0) {
+            highlighterActive = true;
             getAllFragmentExceptSelected(envelopeFragmentMap,allModelFragments)
             console.log("Envelope",envelopeFragmentMap)
-            highlighterActive = true;
-            highlighter.outlineMaterial = new THREE.MeshBasicMaterial ({color:"rgb(178,178,108)",wireframeLinewidth:0.1}) 
             highlighter.fillEnabled = true
-            // highlighter.highlightByID("transparentMaterial",allFragmentsExceptSelected,false)
+            highlighter.highlightByID("transparentMaterial",allFragmentsExceptSelected,false)
+            highlighter.highlightByID("dblSelection", envelopeFragmentMap,true)
+            highlighter.update()
             hider.isolate(envelopeFragmentMap)
-            // highlighter.highlightByID("dblSelection", envelopeFragmentMap,true)
-            
-            
           }
         } else {
           highlighterActive = false
-          // highlighter.clear("dblSelection")
-          // highlighter.clear("transparentMaterial")
+          highlighter.clear("dblSelection")
+          highlighter.clear("transparentMaterial")
+          highlighter.update()
           hider.set(true)
         }
       }
@@ -452,8 +360,8 @@ export function getFragmentMapInfo() {
 export function clearHighlighterOnOutsideClick() {
   if (highlighterActive = true) {
     viewerContainer.addEventListener('click', function () {
-      // highlighter.clear("dblSelection");
-      // highlighter.clear("transparentMaterial")
+      highlighter.clear("dblSelection");
+      highlighter.clear("transparentMaterial")
       highlighterActive = false;
       highlighter.zoomToSelection = false
       hider.set(true)
@@ -461,6 +369,7 @@ export function clearHighlighterOnOutsideClick() {
   }
 }
 
+export let dblEpcPhaseData: UndefinedDblEpc = {}
 export function findEpcPhaseData(epcStartDate) {
   return dblEpcData.find(certificate => {
     return certificate.dblEpcDynamic !== undefined && certificate.dblEpcDynamic.startDate === epcStartDate;
