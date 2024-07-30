@@ -9,7 +9,7 @@ The **Structure and Material** category is divided into two subcategories: **The
 
 As a case study, BIM models have been developed based on the energy retrofitting project and the installation of a new elevator in Block 1 of the Aramotz neighborhood in Durango. This renovation is part of the **OpenGela** initiative developed by the Basque government, which aims to rehabilitate disadvantaged neighborhoods in Euskadi. BIM models were created for both the current state and the renovated state, including the necessary information to later transform and display this data in the application.
 
-The project was developed from April to July 2024 by **Iñigo Uribarri** as part of the Master's thesis for the **"Máster en Investigación en Eficiencia Energética y Sostenibilidad"**, with assistance from **Asier Mediavilla**.
+The project was developed from April to July 2024 by **Iñigo Uribarri** as part of the Master's thesis for the **"Máster en Investigación en Eficiencia Energética y Sostenibilidad"**, in Tecnalia: Research and innovation with assistance from **Asier Mediavilla**, senior researcher and IFC expert.
 
 ## IFC-Based Digital Building Logbook
 
