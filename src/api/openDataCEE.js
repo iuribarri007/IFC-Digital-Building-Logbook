@@ -21,14 +21,13 @@ function findClosestStartDate(items) {
 }
 // Auxiliar function to filter the certificates in case of duplicates
 function getUniqueObjectsWithClosestStartDate(certificateData) {
-  // Objeto para almacenar temporalmente los objetos con la fecha más cercana por cada 'scope'
+
   const tempResult = {};
 
   certificateData.forEach(function(item) {
       const scope = item.scope;
       const startDate = new Date(item.startDate);
 
-      // Si aún no tenemos un objeto para este 'scope' o si este es más cercano, lo actualizamos
       if (!tempResult[scope] || startDate > new Date(tempResult[scope].startDate)) {
           tempResult[scope] = item;
       }

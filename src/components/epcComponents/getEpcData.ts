@@ -1,11 +1,10 @@
 import { certificates } from "../../static/energyPerformanceCertificate";
-import { dblEpc,dblEpcStatic,dblEpcDynamic,dblEpcEmissionsCO2,dblEpcNonRenEnergyConsumption,dblEpcEnergyDemand } from "./interfaceEpc";
+import { dblEpc,dblEpcStatic,dblEpcDynamic,dblEpcEmissionsCO2,dblEpcNonRenEnergyConsumption,dblEpcEnergyDemand } from "./epcInterface";
 
 export const dblEpcData:dblEpc[] =[]
 
 export function transformCertificateData  (certificates){
     certificates.forEach(certificate => {
-        console.log(certificate)
        
         let dblEpcStatic:dblEpcStatic = {
             buildingType:undefined,

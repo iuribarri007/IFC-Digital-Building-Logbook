@@ -14,7 +14,7 @@ import { classifyMaterials } from "./components/ifcComponents/getIfcMaterialInve
 import { classifyEnvelope, summarizeEnvelope } from "./components/ifcComponents/getIfcThermalEnvelopeData.js"
 import { dblEnvelopeWalls,dblEnvelopeFloors,dblEnvelopeRoofs,dblEnvelopeWindows } from "./components/ifcComponents/getIfcThermalEnvelopeData.js"
 import { dblEpcData } from "./components/epcComponents/getEpcData.js"
-import { UndefinedDblEpc } from "./components/epcComponents/interfaceEpc.js"
+import { UndefinedDblEpc } from "./components/epcComponents/epcInterface.js"
 
 const viewerContainer = document.getElementById("viewer-container") as HTMLDivElement
 
@@ -248,7 +248,8 @@ export async function loadIfcAsFragments(ifcModelFile) {
   await styler.update()
   classificationWindow.addChild(tree)
 
-  //Obtain data from ifc
+  //Proccess and organize data from the IFC model
+
   await getEntityFragmentsByLevel(model, objProp)
   await getDblEntitiesByLevel(model, modelFragmentIdByLevel)
   await classifyEnvelope(dblEnvelopeWallElements, dblEnvelopeFloorElements, dblEnvelopeRoofElements, dblEnvelopeWindowElements)
@@ -256,7 +257,7 @@ export async function loadIfcAsFragments(ifcModelFile) {
   await summarizeEnvelope(dblEnvelopeWalls, dblEnvelopeWindows, dblEnvelopeFloors, dblEnvelopeRoofs)
 
   getAllFragments(model)
-  console.log(allModelFragments)
+
 }
 
 let allModelFragments
@@ -289,7 +290,6 @@ async function getAllFragmentExceptSelected (highlightedFragments, allModelFragm
           let modifiedArray = originalArray.filter(valor=> !substractingExpressId.includes(valor) )
           let modifiedSet = new Set(modifiedArray.map(Number))
           let newFragmentMap:FragmentMap = {[key]:modifiedSet}
-          console.log(newFragmentMap)
           delete allFragmentsExceptSelected.originalExpressId
           allFragmentsExceptSelected[key] = newFragmentMap[key];}
       }

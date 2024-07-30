@@ -1,3 +1,4 @@
+// Show the EPC data in front end
 export function dblShowEpcData({ data, mainTitle }) {
     return {
         data,
@@ -82,6 +83,7 @@ export function dblShowEpcData({ data, mainTitle }) {
         }
     };
 }
+//EPC Data template
 export const epcDataTemplate = `
     <div>
         <!-- Section for dblEpcDynamic -->

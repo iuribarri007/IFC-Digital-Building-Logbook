@@ -2,7 +2,7 @@ import Alpine, { remove } from 'alpinejs';
 import * as AlpineConfig from "./templates/alpineConfig.js"
 import { loadIfcAsFragments,getFragmentMapInfo,clearHighlighterOnOutsideClick } from "./ifc.js"
 import { projectPhasesArray } from "./static/modelPhases.js";
-import { UndefinedDblEpc } from './components/epcComponents/interfaceEpc.js';
+import { UndefinedDblEpc } from './components/epcComponents/epcInterface.js';
 import { certificates } from './static/energyPerformanceCertificate.js';
 import { dblEpcData, transformCertificateData } from './components/epcComponents/getEpcData.js';
 

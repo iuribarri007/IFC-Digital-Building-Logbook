@@ -9,7 +9,7 @@ import { dblSkinMaterialInventory,dblStructuralMaterialInventory,dblServiceMater
 import { dblSkinMadasterSummary,dblStructuralMadasterSummary,dblServiceMadasterSummary,dblSpaceMadasterSummary,dblStuffMadasterSummary } from '../components/ifcComponents/getIfcMaterialInventoryData';
 import { dblEpcPhaseData } from '../main';
 
-
+// interface to clean the Alpine objects
 interface AlpineElement extends HTMLElement {
   __x?: {
     $destroy: () => void;
@@ -70,7 +70,7 @@ export function alpineAsignTemplateData() {
       thermalEnvelopeStaticVertical.setAttribute('x-data', 'dblThermalEnvelopeDynamicVertical()');
       thermalEnvelopeStaticVertical.innerHTML = envelopeVerticalSummaryTemplate;
     }
-    //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    //
     //MaterialInventory
     const materialInventoryDynamicSkin = document.getElementById('alpine-MaterialInventory-Dynamic-Skin');
     if (materialInventoryDynamicSkin) {
@@ -97,7 +97,7 @@ export function alpineAsignTemplateData() {
       stuffMaterialContainer.setAttribute('x-data', 'dblStuffMaterial()');
       stuffMaterialContainer.innerHTML = materialInventoryTemplate;
     }
-    //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    //
     const madasterSummaryStaticSkin = document.getElementById('alpine-MadasterSummary-Static-Skin')
     if(madasterSummaryStaticSkin){
       madasterSummaryStaticSkin.setAttribute('x-data', 'dblMadasterSummaryStaticSkin()');

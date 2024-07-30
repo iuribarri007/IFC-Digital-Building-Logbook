@@ -8,6 +8,8 @@ interface ObjectPhaseInfo{
 }
 
 export const projectPhasesArray:ObjectPhaseInfo[]=[]
+
+//Object that holds basic information from each phase
 let phase0:ObjectPhaseInfo ={
     id:0,
     year:1955,

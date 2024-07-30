@@ -11,7 +11,7 @@ export async function getEntityFragmentsByLevel(
 ) {
   const properties = model.properties;
   if (properties === undefined || null) {return;}
-  console.log(obj)
+
   let storeys
   storeys = obj.storeys;
   let classifiedIdProps: any = {};
@@ -32,7 +32,7 @@ export async function getEntityFragmentsByLevel(
       };
       for (let id in setArray) {
         let classifiedId: number = setArray[id] as number;
-        //console.log(classifiedId)
+
          modelEntityIdFragment = {
           expressId: classifiedId,
           fragmentIds: [fragmentId],

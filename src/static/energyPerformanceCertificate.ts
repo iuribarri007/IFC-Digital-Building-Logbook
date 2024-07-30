@@ -1,3 +1,4 @@
+// Certificates downloaded from Open Data Euskadi
 export const certificates = [{
     "certificateId": "CEE-CAPV-2022-00230983-P",
     "portalId": "84802700005507",
