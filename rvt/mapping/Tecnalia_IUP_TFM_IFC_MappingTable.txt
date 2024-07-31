@@ -1,0 +1,24 @@
+Pset_WallCommon	IsExternal	ARC_ENV_IsExternal
+Pset_WallCommon	LoadBearing	GEN_ELE_LoadBearing
+Pset_WallCommon	ThermalTransmittance	Heat Thermal Coefficient (U)
+
+Pset_CurtainWallCommon	IsExternal	ARC_ENV_IsExternal
+Pset_CurtainWallCommon	ThermalTransmittance	Heat Thermal Coefficient (U)
+
+Pset_WindowCommon	IsExternal	ARC_ENV_IsExternal
+Pset_WindowCommon	ThermalTransmittance	ARC_ENV_Uvalue
+Pset_WindowCommon	GlazingAreaFraction	ARC_WIN_GlazingFraction
+Pset_DoorWindowGlazingType	SolarHeatGainTransmittance	ARC_WIN_Gvalue
+
+Pset_SlabCommon	IsExternal	ARC_ENV_IsExternal
+Pset_SlabCommon	LoadBearing	GEN_ELE_LoadBearing
+Pset_SlabCommon	ThermalTransmittance	Heat Thermal Coefficient (U)
+
+Pset_RoofCommon	IsExternal	ARC_ENV_IsExternal
+Pset_RoofCommon	LoadBearing	GEN_ELE_LoadBearing
+Pset_RoofCommon	ThermalTransmittance	Heat Thermal Coefficient (U)
+
+Pset_MaterialCommon	MassDensity	GEN_MAT_MassDensity
+Pset_MaterialThermal	ThermalConductivity	Thermal Conductivity
+Pset_MaterialThermal	SpecificHeatCapacity	Specific Heat
+

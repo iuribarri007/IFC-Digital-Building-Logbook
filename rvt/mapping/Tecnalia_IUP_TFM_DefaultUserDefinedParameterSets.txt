@@ -1,0 +1,97 @@
+#
+# User Defined PropertySet Definition File
+#
+# Format:
+#    PropertySet:	<Pset Name>	I[nstance]/T[ype]	<element list separated by ','>
+#	<Property Name 1>	<Data type>	<[opt] Revit parameter name, if different from IFC>
+#	<Property Name 2>	<Data type>	<[opt] Revit parameter name, if different from IFC>
+#	...
+#
+# Data types supported: Area, Boolean, ClassificationReference, ColorTemperature, Count, Currency, 
+#	ElectricalCurrent, ElectricalEfficacy, ElectricalVoltage, Force, Frequency, Identifier, 
+#	Illuminance, Integer, Label, Length, Logical, LuminousFlux, LuminousIntensity, 
+#	NormalisedRatio, PlaneAngle, PositiveLength, PositivePlaneAngle, PositiveRatio, Power, 
+#	Pressure, Ratio, Real, Text, ThermalTransmittance, ThermodynamicTemperature, Volume, 
+#	VolumetricFlowRate
+# 
+# Since 24.1.0, type properties are not exported in case they are not specified in the user-defined property sets file.
+#	To export type properties for the IFCElement, for example, 
+#	a user should include "IFCElementType" in the proper .txt file.
+#
+# Example property set definition for COBie:
+#
+#PropertySet:	COBie_Specification	T	IfcElementType
+#	NominalLength	Real	COBie.Type.NominalLength
+#	NominalWidth	Real	COBie.Type.NominalWidth
+#	NominalHeight	Real	COBie.Type.NominalHeight
+#	Shape		Text	COBie.Type.Shape
+#	Size		Text	COBie.Type.Size
+#	Color		Text	COBie.Type.Color
+#	Finish		Text	COBie.Type.Finish
+#	Grade		Text	COBie.Type.Grade
+#	Material	Text	COBie.Type.Material
+#	Constituents	Text	COBie.Type.Constituents
+#	Features	Text	Cobie.Type.Features
+#	AccessibilityPerformance	Text	COBie.Type.AccessibilityPerformance
+#	CodePerformance	Text	COBie.Type.CodePerformance
+#	SustainabilityPerformance	Text	COBie.Type.SustainabilityPerformance
+# 
+
+PropertySet:	DBL_PsetThermalEnvelope	I	IfcWall,IfcCurtainWall,IfcWindow,IfcPlate,IfcDoor,IfcRoof,IfcSlab
+	DBL_EnvelopeCode	Text	ARC_ENV_ThermalEnvelopeCode
+	DBL_EnvelopeOrientation	Text	ARC_ENV_Orientation
+
+PropertySet:	DBL_PsetThermalEnvelope	T	IfcWallType,IfcCurtainWallType,IfcWindowType,IfcPlateType,IfcDoorType,IfcRoofType,IfcSlabType,IfcRailingType
+	DBL_YearProduction	Integer	GEN_ELE_YearProduction
+	DBL_IsThermalEnvelope	Boolean	ARC_ENV_IsThermalEnvelope
+	
+PropertySet:	Pset_WindowLiningProperties	T	IfcWindowType,IfcPlateType
+	LiningDepth	PositiveLength	ARC_WIN_LiningDepth
+	LiningThickness	PositiveLength	ARC_WIN_LiningThickness
+	TransomThickness	PositiveLength	ARC_WIN_TransomThickness
+	MullionThickness	PositiveLength	ARC_WIN_MullionThickness
+
+PropertySet:	Pset_DoorLiningProperties	T	IfcDoorType
+	LiningThickness	PositiveLength	ARC_DOO_LiningThickness
+
+PropertySet:	Pset_DoorLiningProperties	I	IfcDoor
+	LiningDepth	PositiveLength	ARC_DOO_LiningDepth
+
+PropertySet:	Pset_DoorPanelProperties	T	IfcDoorType
+	PanelDepth	PositiveLength	ARC_DOO_PanelDepth
+	PanelWidth	Real	ARC_DOO_PanelWidth
+
+PropertySet:	Pset_WindowPanelProperties	T	IfcWindowType,IfcPlateType
+	FrameThickness	PositiveLength	ARC_WIN_FrameDepth
+	FrameDepth	PositiveLength	ARC_WIN_FrameThickness
+
+
+PropertySet:	Pset_DoorWindowGlazingType	T	IfcWindowType
+	SolarHeatGainTransmittance	Real	ARC_WIN_Gvalue
+	GlassLayers	Count	ARC_WIN_GlassLayers
+	GlassThickness1	Integer	ARC_WIN_GlassThickness1
+	GlassThickness2	Integer	ARC_WIN_GlassThickness2
+	
+
+PropertySet:	DBL_PsetMaterial	T	IfcMaterial
+	DBL_MaterialUniclassCode	Text	GEN_MAT_UniclassCode
+	DBL_MaterialUniclassName	Text	GEN_MAT_UniclassName
+	DBL_ProductUniclassCode	Text	GEN_PRO_UniclassCode
+	DBL_ProductUniclassName	Text	GEN_PRO_UniclassName
+	DBL_MaterialMadasterCategory	Text	GEN_MAT_Category
+	DBL_MaterialWasteCategory	Text	GEN_MAT_WasteCategory
+
+PropertySet:	DBL_PsetSpace	I	IfcSpace
+	DBL_SpaceStorey	Text	GEN_SPA_Storey
+	DBL_SpaceStoreyElement	Text	GEN_SPA_StoreyElement
+	DBL_SpaceCadastralValue	Text	GEN_SPA_CadastralValue
+	DBL_SpaceParticipationRate	Text	GEN_SPA_ParticipationRate
+
+	
+
+
+
+
+	
+
+
