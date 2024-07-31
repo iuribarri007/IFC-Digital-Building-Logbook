@@ -1,9 +1,0 @@
-<div>
-    <h2 @click="toggleLevel(levelKey)" style="cursor: pointer;" :class="{'dbl-table-Level': true}" class="dbl-table-Level">
-        <span x-text="'Level: ' + levelKey" :class="{'dbl-table-LevelText': true}" class="dbl-table-LevelText">Level: 00_Ground Floor</span>
-        <span :class="{'arrow': true, 'down': isLevelOpen(levelKey),'dbl-table-LevelArrow' : true}" class="arrow dbl-table-LevelArrow">▶ </span>
-    </h2>
-    <div x-show="isLevelOpen(levelKey)" style="margin-left: 20px; display: none;">
-        
-    </div>
-</div>
